@@ -6,7 +6,7 @@ import Header from "../../components/header/Header.jsx";
 import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
 
-const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);

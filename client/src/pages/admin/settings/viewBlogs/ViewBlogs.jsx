@@ -5,7 +5,7 @@ import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/ImageBlog.jsx";
 
-const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function truncateText(text, limit) {
   // Check if text is a valid string before splitting

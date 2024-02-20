@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./Hero.scss";
-import logoImage from "../../assets/img/logo/LOGO-name.png";
+import logoImage from "../../assets/img/logo/favicon1.png";
 
 function Hero() {
   return (

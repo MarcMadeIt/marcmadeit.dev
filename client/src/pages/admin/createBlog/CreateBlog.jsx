@@ -19,7 +19,7 @@ function CreateBlog() {
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+  const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
   const createNewBlog = async (ev) => {
     ev.preventDefault();

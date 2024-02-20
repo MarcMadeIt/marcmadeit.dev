@@ -14,7 +14,7 @@ import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
 
-const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function Settings() {
   const { userInfo, setUserInfo } = useContext(UserContext);

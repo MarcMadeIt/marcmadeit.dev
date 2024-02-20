@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Preview.scss";
 
-const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function Preview() {
   const [blogCount, setBlogCount] = useState(null);
