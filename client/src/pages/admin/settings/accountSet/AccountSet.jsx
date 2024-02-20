@@ -4,6 +4,8 @@ import PasswordPop from "../../../../function/passwordPop/PasswordPop.jsx";
 import { IoLockClosed } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function AccountSet() {
   const { id } = useParams();
   const [username, setUsername] = useState("");
@@ -12,7 +14,7 @@ function AccountSet() {
   const [usernameLength, setUsernameLength] = useState(0);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/user/getusername`, {
+    fetch(`${apiUrl}/api/user/getusername`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -57,19 +59,16 @@ function AccountSet() {
         return;
       }
 
-      const response = await fetch(
-        `http://localhost:8000/api/user/updateUsername/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            newUsername: username,
-          }),
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/user/updateUsername/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          newUsername: username,
+        }),
+      });
 
       const responseData = await response.json();
 

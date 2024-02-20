@@ -30,9 +30,12 @@ app.use(session({
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
+
+const frontendDomain = process.env.BASE_URL || "http://localhost:5173";
+
 app.use(cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: frontendDomain,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [
         "Content-Type",
@@ -41,8 +44,6 @@ app.use(cors({
         "credentials",
     ]
 }));
-
-
 
 
 app.use("/api/auth", authRoutes);

@@ -5,6 +5,8 @@ import { Navigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import Editor from "../../../components/editor/Editor";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function EditBlog() {
   const options = [
     { value: "HTML", label: "HTML" },
@@ -22,7 +24,7 @@ function EditBlog() {
   const [redirect, setRedirect] = useState(false);
 
   const fetchBlogInfo = () => {
-    fetch(`http://localhost:8000/api/blog/get/${id}`)
+    fetch(`${apiUrl}/api/blog/get/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

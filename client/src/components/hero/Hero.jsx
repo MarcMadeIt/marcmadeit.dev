@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
 import "./Hero.scss";
+import logoImage from "../../assets/img/logo/LOGO-name.png";
 
 function Hero() {
   return (
     <div className="hero">
       <div className="hero-nav">
         <div className="logo">
-          <img
-            className="header-logo"
-            src="src/assets/img/logo/logo-mmi-single.png"
-            alt=""
-          />
+          <img className="header-logo" src={logoImage} alt="" />
         </div>
         <div className="navbar">
           <ul>

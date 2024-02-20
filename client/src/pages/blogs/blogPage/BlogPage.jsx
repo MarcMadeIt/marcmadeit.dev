@@ -10,6 +10,8 @@ import ProfilePic from "../../../assets/img/profile/profile-small.png";
 import ImageBlog from "../../../components/image/ImageBlog.jsx";
 import { RingLoader } from "react-spinners";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function BlogPage() {
   const [blogInfo, setBlogInfo] = useState(null);
   //const { userInfo } = useContext(UserContext);
@@ -20,7 +22,7 @@ function BlogPage() {
     if (id) {
       setLoading(true);
 
-      fetch(`http://localhost:8000/api/blog/get/${id}`)
+      fetch(`${apiUrl}/api/blog/get/${id}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);

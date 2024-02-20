@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../data/userContext.jsx";
 import "./Login.scss";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +30,7 @@ function Login() {
     try {
       requestBody = JSON.stringify({ username, password });
 
-      const response = await fetch("http://localhost:8000/api/auth/login", {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         body: requestBody,
         headers: { "Content-Type": "application/json" },

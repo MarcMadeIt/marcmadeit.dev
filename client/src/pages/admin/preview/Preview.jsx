@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Preview.scss";
+
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
 
 function Preview() {
   const [blogCount, setBlogCount] = useState(null);
 
   const fetchBlogCount = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/blog/count", {
+      const response = await fetch(`${apiUrl}/api/blog/count`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

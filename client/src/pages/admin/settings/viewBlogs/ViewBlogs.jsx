@@ -5,6 +5,8 @@ import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/ImageBlog.jsx";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function truncateText(text, limit) {
   // Check if text is a valid string before splitting
   const words = text && typeof text === "string" ? text.split(" ") : [];
@@ -17,7 +19,7 @@ function ViewBlogs() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/blog/getbyuser", {
+    fetch(`${apiUrl}/api/blog/getbyuser`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -37,13 +39,10 @@ function ViewBlogs() {
 
   const handleDelete = async (blogId) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/blog/get/${blogId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/blog/get/${blogId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
       if (response.ok) {
         setBlogs((prevBlogs) =>
           prevBlogs.filter((blog) => blog._id !== blogId)

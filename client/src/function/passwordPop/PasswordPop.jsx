@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./PasswordPop.scss";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,17 +21,14 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/user/updatepassword/${userId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ newPassword, currentPassword }),
-        }
-      );
+      const response = await fetch(`${apiUrl}/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ newPassword, currentPassword }),
+      });
 
       const data = await response.json();
 

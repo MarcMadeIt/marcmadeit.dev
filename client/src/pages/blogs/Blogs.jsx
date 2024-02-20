@@ -6,6 +6,8 @@ import Header from "../../components/header/Header.jsx";
 import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ function Blogs() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8000/api/blog/getlimit?page=${page}`
+          `${apiUrl}/api/blog/getlimit?page=${page}`
         );
         const data = await response.json();
         setBlogs(data.blogs);

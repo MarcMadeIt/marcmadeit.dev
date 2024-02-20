@@ -10,6 +10,8 @@ import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function Home() {
   const [blogs, setBlogs] = useState([]);
   const maxBlogsToShow = 2;
@@ -18,7 +20,7 @@ function Home() {
     : [];
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/blog/get")
+    fetch(`${apiUrl}/api/blog/get`)
       .then((response) => response.json())
       .then((blogs) => {
         setBlogs(blogs);

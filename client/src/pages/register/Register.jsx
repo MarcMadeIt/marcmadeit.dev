@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Register.scss";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +22,7 @@ function Register() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: "POST",
         body: JSON.stringify({ username, password }),
         headers: { "Content-Type": "application/json" },

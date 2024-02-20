@@ -14,11 +14,13 @@ import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
 
+const apiUrl = process.env.BASE_URL || "http://localhost:8000";
+
 function Settings() {
   const { userInfo, setUserInfo } = useContext(UserContext);
 
   function logout() {
-    fetch("http://localhost:8000/logout", {
+    fetch(`${apiUrl}/logout`, {
       credentials: "include",
       method: "POST",
     });

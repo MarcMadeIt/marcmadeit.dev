@@ -19,7 +19,7 @@ function CreateBlog() {
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiUrl = "http://localhost:8000/api/blog/create";
+  const apiUrl = process.env.BASE_URL || "http://localhost:8000";
 
   const createNewBlog = async (ev) => {
     ev.preventDefault();
@@ -36,7 +36,7 @@ function CreateBlog() {
       formData.append("tags", tags.map((tag) => tag.value).join(","));
       formData.append("file", file[0]);
 
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${apiUrl}/api/blog/create`, {
         method: "POST",
         body: formData,
         credentials: "include",
