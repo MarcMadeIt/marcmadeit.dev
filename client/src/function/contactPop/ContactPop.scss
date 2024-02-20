@@ -1,0 +1,50 @@
+@import "../../App.scss";
+
+.contact-popup {
+
+  .contact-btn {
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: $background;
+    color: $primary;
+    border: 2px solid $primary;
+    border-radius: 6px;
+    outline: none;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 400ms;
+    font-size: 15px;
+    font-weight: 700;
+
+    &:hover {
+      box-shadow: 0 0 7px 1px $primary;
+      transition: 400ms;
+    }
+  }
+
+  .popup-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.99);
+
+    .popup-item {
+      position: relative;
+
+      .close {
+        color: $primary;
+        font-size: 40px;
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 0px;
+      }
+    }
+  }
+}

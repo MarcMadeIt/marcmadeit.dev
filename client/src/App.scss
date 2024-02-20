@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
+
+$background: #000000;
+$primary: #06F9EC;
+$secondary: #118D87;
+$text: #CBFFFC;
+$text-low: #05BBB2;
+
+$placeholder: #367e86; 
+$shadow: #031e1e;
+
+$error: #ea796fd3;
+
+$transparent: #06f9ed5e;
+
+$borderradius: 7px;
+
+/* Shadow darker version #283030 */
+
+
+body {
+    height: 100vh;
+    font-family: 'poppins', sans-serif;
+    background-color: $background;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.link {
+    text-decoration: none;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+.loading-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    background: $background;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $primary;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: $primary;
+}
+
+
+@mixin large-mobile {
+  @media (min-width: 450px) {
+    @content;
+  }
+} 
+
+@mixin mini-tablet {
+  @media (min-width: 700px) {
+    @content;
+
+  }
+} 
+
+@mixin desktop {
+  @media (min-width: 1100px) {
+    @content;
+
+  }
+}
+
+@mixin tablet {
+  @media (min-width: 900px) {
+    @content;
+
+  }
+}

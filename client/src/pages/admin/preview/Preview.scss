@@ -1,0 +1,36 @@
+@import "../../../App.scss";
+
+
+.preview {
+    color: $primary;
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 30px;
+
+
+    .preview-title{
+        h3 {
+            color: $primary;
+            font-weight: 500;
+        }
+    }
+
+    .pre-blogs {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        border-radius: 6px;
+        gap: 30px;
+        box-shadow: $primary 0 1px 6px;
+        font-size: 17px;
+        font-weight: 600;
+
+        span {
+            font-weight: 700;
+            font-size: 25px;
+        }
+    }
+}

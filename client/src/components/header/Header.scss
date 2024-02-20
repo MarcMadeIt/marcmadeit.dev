@@ -1,0 +1,62 @@
+@import "../../App.scss";
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    width: 100%;
+    padding: 0 30px;
+    position: fixed;
+    top: 0;
+    background-color: $background;
+    z-index: 999;
+
+    @include mini-tablet {
+        height: 120px;
+        max-width: 1000px;
+        padding: 0 30px;
+    }
+
+    @include desktop {
+        margin-bottom: 100px;
+    }
+
+    a {
+        height: 50px;
+        width: auto;
+        display: flex;
+        align-items: center;
+
+        @include mini-tablet {
+            height: 60px;
+        }
+
+        .header-logo-name {
+            display: none;
+        }
+
+        .header-logo {
+            display: block;
+            height: 100%;
+            width: auto;
+            filter: drop-shadow($primary 0 0 17px);
+        }
+
+        @include mini-tablet {
+            .header-logo-name {
+                display: block;
+                height: 100%;
+                width: auto;
+            }
+
+            .header-logo {
+                display: none;
+            }
+        }
+    }
+
+    span {
+        color: $primary;
+    }
+}

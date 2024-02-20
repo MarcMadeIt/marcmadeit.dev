@@ -1,0 +1,71 @@
+@import "../../App.scss";
+
+.hero {
+    color: $primary;
+    min-height: 90vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    @include tablet {
+        min-height: 100vh;
+    }
+
+    .hero-nav {
+        display: flex;
+        margin-top: 100px;
+        align-items: center;
+        flex-direction: column;
+        gap: 50px;
+
+        @include tablet {
+            justify-content: center;
+            margin-top: 0;
+        }
+
+        .logo {
+            width: auto;
+            height: 150px;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+
+            @include tablet {
+                height: 200px;
+            }
+        }
+
+        .navbar {
+            text-align: center;
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                li {
+                    font-size: 22px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    padding: 5px;
+                    letter-spacing: 0.5px;
+
+                    @include desktop {
+                        transition: all 300ms ease;
+                        font-size: 25px;
+
+                        &:hover {
+                            transform: scale(1.1);
+                            transition: all 300ms ease;
+                            filter: drop-shadow($primary 0 0 15px);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,137 @@
+@import "../../App.scss";
+
+
+.footer {
+    height: 220px;
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: $background;
+    margin-top: 50px;
+    padding: 0 50px;
+    
+
+
+    @include tablet {
+        height: 100px;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    @include desktop {
+        max-width: 1000px;
+        margin-top: 100px;
+    }
+
+    .footer-item {
+        display: flex;
+        gap: 30px;
+    }
+
+    .footer-left { 
+
+        span {
+            display: flex;
+            align-items: center;
+            color: $primary;
+            font-size: 14px;
+            letter-spacing: .8px;
+            font-weight: 500;
+        }
+    }
+
+    .footer-center {
+        p {
+
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            color: $text-low;
+            font-size: 10px;
+            letter-spacing: .8px;
+            font-weight: 500;
+
+
+            span {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .footer-right {
+        display: flex;  
+        gap: 30px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+
+        .icon-footer {
+            width: 30px;
+            height: 30px;
+            background-color: $background;
+            margin: 5px;
+            border-radius: $borderradius;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: $primary;
+            overflow: hidden;
+            transition: 0.8s ease;
+
+            @include mini-tablet {
+                margin: 0 10px;
+                width: 40px;
+                height: 40px;
+            
+
+
+            &:before {
+                content: '';
+                position: absolute;
+                width: 130%;
+                height: 130%;
+                background-color: $primary;
+                left: -130%;
+                top: 75%;
+                transform: rotate(45deg);
+                z-index: -1;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+                transition: 0.5s ease;
+                color: black;
+            }
+
+            &:hover:before {
+                animation: animation 0.7s 1 forwards;
+                transition: all 0.8s ease;
+            }
+
+        }
+
+        }
+    }
+
+}
+
+@keyframes animation {
+    0% {
+        left: -130%;
+        top: 75%;
+    }
+
+    50% {
+        left: 50%;
+        top: -12%;
+    }
+
+    100% {
+        left: -15%;
+        top: -12%;
+    }
+}

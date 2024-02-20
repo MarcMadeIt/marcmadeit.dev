@@ -1,0 +1,104 @@
+@import "../../../App.scss";
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    width: 100%;
+    position: relative;
+    margin-top: 30px;
+
+    @include mini-tablet {
+        max-width: 700px;
+    }
+
+    .settings-title {
+        h3 {
+            color: $primary;
+            font-weight: 500;
+        }
+    }
+
+    .back-button {
+        color: $primary;
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        position: absolute;
+        left: 20px;
+        top: 10px;
+        cursor: pointer;
+
+
+        @include large-mobile {
+            left: 50px;
+        }
+    }
+
+    .set-content {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        padding: 0 15px;
+
+        .set-item {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            color: $primary;
+            border-bottom: 0.7px solid $placeholder;
+            background-color: $background;
+            padding: 15px 5px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: 300ms ease-in;
+
+            @include tablet {
+                &:hover {
+                    color: $secondary;
+                    transition: 200ms ease-in;
+                }
+            }
+
+            span {
+                font-weight: 600;
+                font-size: 14px;
+                color: $text-low;
+            }
+
+            .set-item-left {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    }
+
+    .btn-setting-logout {
+        width: auto;
+        margin: 0 auto;
+        padding: 6px 18px;
+        margin-top: 50px;
+        border: none;
+        outline: none;
+        border: 1px solid $primary;
+        background-color: $background;
+        color: $primary;
+        border-radius: $borderradius;
+        font-size: 17px;
+        cursor: pointer;
+        transition: 300ms ease-out;
+
+        &:hover {
+            border: 1px solid $secondary;
+            box-shadow: 0 0 13px $secondary;
+            transition: 300ms ease-out;
+        }
+    }
+}

@@ -1,0 +1,120 @@
+@import "../../App.scss";
+
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    gap: 60px;
+
+    .admin {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        top: 0px;
+        right: 5px;
+        gap: 15px;
+        width: auto;
+    
+        button {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: $background;
+            color: $text-low;
+            border: 0;
+            outline: 0;
+            padding: 5px 15px;
+            border-radius: 7px;
+            font-size: 12px;
+            letter-spacing: .5px;
+            cursor: pointer;
+        }
+    }
+
+    .home-hero {
+        width: 100%;
+    }
+
+    .home-blogs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+
+        .home-blogs-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            h2 {
+                font-size: 17px;
+                text-decoration: underline 3px;
+                text-underline-offset: 10px;
+                color: $primary;
+                letter-spacing: 0.5px;
+                font-weight: 700;
+
+                @include mini-tablet {
+                    font-size: 25px;
+                }
+            }
+        }
+
+        .home-blogs-content {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+
+            @include mini-tablet {
+                max-width: 900px;
+            }
+        
+        }
+
+        .home-blogs-button {
+
+            button {
+                display: inline-block;
+                padding: 7px 21px;
+                background-color: $background;
+                color: $primary;
+                border-radius: 6px;
+                outline: none;
+                border: none;
+                margin-top: 15px;
+                cursor: pointer;
+                transition: 400ms;
+                font-size: 15px;
+                font-weight: 600;
+
+                @include desktop {
+                    &:hover {
+                        box-shadow: 0 0 10px 1px $primary;
+                        transition: 400ms;
+                    }
+                }
+            }
+        }
+    }
+
+    .home-contact {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 50px;
+        height: 500px;
+
+        h2 {
+            font-size: 15px;
+            color: $text;
+            text-align: center;
+        }
+
+    }
+
+}
