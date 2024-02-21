@@ -36,7 +36,7 @@ const frontendDomain = process.env.BASE_URL || "http://localhost:5173";
 
 app.use(cors({
     credentials: true,
-    origin: frontendDomain,
+    origin: ["http://localhost:5173", "https://mmi.marccode.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: [
         "Content-Type",
