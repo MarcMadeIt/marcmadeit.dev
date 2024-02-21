@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import Home from "./pages/home/Home";
-import Login from "./pages/log/Login";
+import Home from "./pages/home/Home.jsx";
+import Login from "./pages/log/Login.jsx";
 import Register from "./pages/register/Register.jsx";
 import { UserContext, UserContextProvider } from "./data/userContext.jsx";
 import Admin from "./pages/admin/Admin.jsx";
