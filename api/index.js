@@ -9,11 +9,30 @@ import authRoutes from "./routes/auth.routes.js"
 import userRoutes from "./routes/user.routes.js"
 import blogRoutes from "./routes/blog.routes.js"
 
+dotenv.config();
+
 const app = express();
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", true);
     next();
+});
+
+app.use(cors({
+    credentials: true,
+    origin: ["http://localhost:5173", "https://mmi.marccode.com"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Access-Control-Allow-Credentials",
+        "credentials",
+    ]
+}));
+
+app.options('*', (req, res) => {
+    res.header('Access-Control-Allow-Private-Network', 'true');
+    res.status(200).send();
 });
 
 app.use(session({
@@ -31,28 +50,10 @@ app.use(session({
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
-
-const frontendDomain = process.env.BASE_URL || "http://localhost:5173";
-
-app.use(cors({
-    credentials: true,
-    origin: ["http://localhost:5173", "https://mmi.marccode.com"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "Access-Control-Allow-Credentials",
-        "credentials",
-    ]
-}));
-
-
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use('/api/blog', blogRoutes);
 
-
-dotenv.config();
 mongoose.set('strictQuery', true);
 
 const connect = async () => {
@@ -65,9 +66,7 @@ const connect = async () => {
     }
 };
 
-
 // CONNECTION
-
 app.listen(8000, () => {
     connect()
     console.log("Server is running on port 8000");
