@@ -27,13 +27,15 @@ app.use(cors({
         "Authorization",
         "Access-Control-Allow-Credentials",
         "credentials",
-    ]
+    ],
+    exposedHeaders: ["Access-Control-Allow-Private-Network"],
 }));
 
 app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Private-Network', 'true');
     res.status(200).send();
 });
+
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
