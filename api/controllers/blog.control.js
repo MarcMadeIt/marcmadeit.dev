@@ -41,7 +41,7 @@ export const uploadImage = async (req, res, next) => {
         const imageKey = crypto.randomBytes(20).toString("hex");
 
         const buffer = await sharp(req.file.buffer)
-            .resize({ height: 1000, width: 1920, fit: "contain" })
+            .resize({ height: 1000, width: 1920, fit: "cover" })
             .toBuffer();
 
         // Prepare parameters for uploading to S3

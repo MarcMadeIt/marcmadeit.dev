@@ -8,11 +8,10 @@ import ImageBlog from "../../../../components/image/ImageBlog.jsx";
 const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function truncateText(text, limit) {
-  // Check if text is a valid string before splitting
   const words = text && typeof text === "string" ? text.split(" ") : [];
-
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
 }
+
 function ViewBlogs() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +23,7 @@ function ViewBlogs() {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // Include credentials (cookies) in the request
+      credentials: "include",
     })
       .then((response) => response.json())
       .then((blogs) => {
@@ -120,16 +119,16 @@ function ViewBlogs() {
             <p>{deleteConfirmation.message}</p>
             <div className="delete-buttons">
               <button
+                className="no-opt-btn"
+                onClick={() => setDeleteConfirmation(null)}
+              >
+                No
+              </button>
+              <button
                 className="delete-opt-btn"
                 onClick={() => handleDelete(deleteConfirmation.blogId)}
               >
                 Delete
-              </button>
-              <button
-                className="delete-opt-btn"
-                onClick={() => setDeleteConfirmation(null)}
-              >
-                No
               </button>
             </div>
           </div>

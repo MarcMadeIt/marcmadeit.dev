@@ -15,7 +15,7 @@ function truncateText(text, limit) {
 }
 
 function Blog({ _id, title, desc, tags = [], imageinfo, createdAt, author }) {
-  const truncatedDesc = truncateText(desc, 25);
+  const truncatedDesc = truncateText(desc, 17);
 
   return (
     <Link className="link" to={`/blogs/blog/${_id}`}>
