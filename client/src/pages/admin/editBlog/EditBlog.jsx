@@ -5,7 +5,7 @@ import { Navigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import Editor from "../../../components/editor/Editor";
 
-const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.VITE_APP_BASE_URL;
 
 function EditBlog() {
   const options = [

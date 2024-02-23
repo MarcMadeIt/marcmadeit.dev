@@ -4,7 +4,7 @@ import PasswordPop from "../../../../function/passwordPop/PasswordPop.jsx";
 import { IoLockClosed } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 
-const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.VITE_APP_BASE_URL;
 
 function AccountSet() {
   const { id } = useParams();

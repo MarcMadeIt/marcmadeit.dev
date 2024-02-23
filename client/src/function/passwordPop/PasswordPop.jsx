@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./PasswordPop.scss";
 
-const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
+const apiUrl = import.meta.env.VITE_APP_BASE_URL;
 
 function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
   const [newPassword, setNewPassword] = useState("");

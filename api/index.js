@@ -18,18 +18,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cors({
+const corsOptions = {
     credentials: true,
-    origin: ["http://localhost:5173", "https://mmi.marccode.com"],
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-        "Content-Type",
-        "Authorization",
-        "Access-Control-Allow-Credentials",
-        "credentials",
-    ],
+    allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.options('*', (req, res) => {
     res.header('Access-Control-Allow-Private-Network', 'true');

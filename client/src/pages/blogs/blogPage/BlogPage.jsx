@@ -10,8 +10,7 @@ import ProfilePic from "../../../assets/img/profile/profile-small.png";
 import ImageBlog from "../../../components/image/ImageBlog.jsx";
 import { RingLoader } from "react-spinners";
 
-const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
-
+const apiUrl = import.meta.env.VITE_APP_BASE_URL;
 function BlogPage() {
   const [blogInfo, setBlogInfo] = useState(null);
   //const { userInfo } = useContext(UserContext);
