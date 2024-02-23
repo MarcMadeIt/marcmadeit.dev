@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 const corsOptions = {
     credentials: true,
-    origin: ["http://localhost:5173", "https://marcmadeit.vercel.app"],
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
