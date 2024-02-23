@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../data/userContext.jsx";
 import "./Login.scss";
 
-const apiUrl = import.meta.env.VITE_APP_BASE_URL;
+const apiUrl = import.meta.env.VITE_BASE_URL;
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
