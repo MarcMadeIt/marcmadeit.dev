@@ -14,7 +14,7 @@ import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function Settings() {
   const { userInfo, setUserInfo } = useContext(UserContext);
 

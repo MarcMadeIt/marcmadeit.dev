@@ -6,7 +6,7 @@ import Header from "../../components/header/Header.jsx";
 import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);

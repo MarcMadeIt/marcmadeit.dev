@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Preview.scss";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Preview() {
   const [blogCount, setBlogCount] = useState(null);
