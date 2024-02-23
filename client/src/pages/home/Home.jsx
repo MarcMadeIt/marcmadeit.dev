@@ -5,7 +5,6 @@ import ContactPop from "../../function/contactPop/ContactPop.jsx";
 import Footer from "../../components/footer/Footer.jsx";
 import Hero from "../../components/hero/Hero.jsx";
 import { Link } from "react-router-dom";
-import HomeImage from "../../assets/img/content/cat.png";
 import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
