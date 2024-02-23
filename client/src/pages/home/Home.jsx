@@ -9,7 +9,7 @@ import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
-const apiUrl = import.meta.env.REACT_APP_BASE_URL;
+const apiUrl = import.meta.env.REACT_APP_BASE_URL || "http://localhost:8000";
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
