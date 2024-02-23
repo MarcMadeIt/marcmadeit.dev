@@ -28,10 +28,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Private-Network', 'true');
-    res.status(200).send();
-});
+app.options('*', cors(corsOptions));
 
 
 app.use(session({
