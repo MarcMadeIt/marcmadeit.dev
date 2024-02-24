@@ -4,8 +4,11 @@
     "framework": "vite",
     "rewrites": [
       {
-        "source": "/api/(.*)",
-        "destination": "/index.js"
+        "rewrites": [
+          { "source": "/api/auth/(.*)", "destination": "/api/auth/$1.js" },
+          { "source": "/api/user/(.*)", "destination": "/api/user/$1.js" },
+          { "source": "/api/blog/(.*)", "destination": "/api/blog/$1.js" }
+        ]
       },
       {
         "source": "/(.*)",

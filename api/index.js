@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 const corsOptions = {
     credentials: true,
-    origin: "http://127.0.0.1:5173",
+    origin: ["http://127.0.0.1:5173", "https://marcmadeit.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
@@ -62,8 +62,6 @@ const connect = async () => {
     }
 };
 
-// CONNECTION
-app.listen(8000, () => {
-    connect()
-    console.log("Server is running on port 8000");
-});
+const server = app;
+
+export default server;
