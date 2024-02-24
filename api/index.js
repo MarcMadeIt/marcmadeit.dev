@@ -36,8 +36,8 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: true,
-        sameSite: 'none',
+        secure: false,
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000,
     },
     store: new session.MemoryStore(),
@@ -52,13 +52,13 @@ app.use('/api/blog', blogRoutes);
 
 mongoose.set('strictQuery', true);
 
-const connect = async () => {
+export const connectToMongo = async () => {
     try {
-        await mongoose.connect(process.env.MONGO);
+        await mongoose.connect(process.env.MONGO_URL);
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
-        process.exit(1);
+        throw error;
     }
 };
 
