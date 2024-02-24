@@ -5,8 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   define: {
-    'process.env.VITE_API_BASE_URL': process.env.NODE_ENV === 'production'
-      ? 'https://marcmadeit.vercel.app/api'
-      : 'http://127.0.0.1:8000/api'
+    'VITE_API_BASE_URL': '"http://X.X.X.X:8000/api"',
+
   },
 })
