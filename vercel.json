@@ -13,7 +13,7 @@
     }
   ],
   "functions": {
-    "api/blog/get.js": {
+    "api/server/blog.server.js": {
       "runtime": "nodejs16"
     }
 
