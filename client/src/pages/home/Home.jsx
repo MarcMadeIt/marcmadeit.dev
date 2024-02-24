@@ -9,9 +9,7 @@ import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 
-const apiUrl = import.meta.env.DEV
-  ? "http://localhost:8000/api"
-  : import.meta.env.VITE_API_BASE_URL || "https://marcmadeit.vercel.app/api";
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
