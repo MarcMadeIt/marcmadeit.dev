@@ -38,7 +38,8 @@ const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
 
 // Backend: blogController.js
-export const uploadImage = handler(async (req, res) => {
+
+export const uploadImage = handler(async (req, res, next) => {
     try {
         const imageKey = crypto.randomBytes(20).toString("hex");
 
