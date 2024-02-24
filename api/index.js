@@ -54,6 +54,15 @@ export default async (req, res) => {
         throw error;
     }
 
-    // Handle the request using the express app
-    app(req, res);
+    // Wrap the express app handling in a promise
+    return new Promise((resolve, reject) => {
+        app(req, res, (error) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
 };
+
