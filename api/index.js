@@ -13,22 +13,15 @@ dotenv.config();
 
 const app = express();
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Credentials", true);
-    next();
-});
-
 const corsOptions = {
     credentials: true,
-    origin: ["http://localhost:5173", "marcmadeit.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: ["http://localhost:5173", "https://marcmadeit.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],  // Specify the actual HTTP methods here
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
 };
 
 app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
