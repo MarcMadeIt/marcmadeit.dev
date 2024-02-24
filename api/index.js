@@ -22,7 +22,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('/api/auth/login', cors(corsOptions));
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
