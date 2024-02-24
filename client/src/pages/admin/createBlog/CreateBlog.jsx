@@ -36,7 +36,7 @@ function CreateBlog() {
       formData.append("tags", tags.map((tag) => tag.value).join(","));
       formData.append("file", file[0]);
 
-      const response = await fetch(`${apiUrl}/api/blog/create`, {
+      const response = await fetch(`${apiUrl}/blog/create`, {
         method: "POST",
         body: formData,
         credentials: "include",

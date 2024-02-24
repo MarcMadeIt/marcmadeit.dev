@@ -8,7 +8,7 @@ function Preview() {
 
   const fetchBlogCount = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/blog/count`, {
+      const response = await fetch(`${apiUrl}/blog/count`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

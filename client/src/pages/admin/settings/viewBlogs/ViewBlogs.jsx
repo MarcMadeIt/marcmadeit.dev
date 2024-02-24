@@ -18,7 +18,7 @@ function ViewBlogs() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/blog/getbyuser`, {
+    fetch(`${apiUrl}/blog/getbyuser`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +38,7 @@ function ViewBlogs() {
 
   const handleDelete = async (blogId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/blog/get/${blogId}`, {
+      const response = await fetch(`${apiUrl}/blog/get/${blogId}`, {
         method: "DELETE",
         credentials: "include",
       });

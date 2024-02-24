@@ -29,7 +29,7 @@ function Login() {
     try {
       requestBody = JSON.stringify({ username, password });
 
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         body: requestBody,
         headers: { "Content-Type": "application/json" },

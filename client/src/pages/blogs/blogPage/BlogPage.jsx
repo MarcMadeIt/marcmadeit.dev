@@ -21,7 +21,7 @@ function BlogPage() {
     if (id) {
       setLoading(true);
 
-      fetch(`${apiUrl}/api/blog/get/${id}`)
+      fetch(`${apiUrl}/blog/get/${id}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);

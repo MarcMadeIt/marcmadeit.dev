@@ -19,9 +19,7 @@ function Blogs() {
     const fetchPosts = async (page = currentPage) => {
       setLoading(true);
       try {
-        const response = await fetch(
-          `${apiUrl}/api/blog/getlimit?page=${page}`
-        );
+        const response = await fetch(`${apiUrl}/blog/getlimit?page=${page}`);
         const data = await response.json();
         setBlogs(data.blogs);
         setTotalCount(data.totalCount);

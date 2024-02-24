@@ -19,7 +19,7 @@ function Settings() {
   const { userInfo, setUserInfo } = useContext(UserContext);
 
   function logout() {
-    fetch(`${apiUrl}/logout`, {
+    fetch(`${apiUrl}/user/logout`, {
       credentials: "include",
       method: "POST",
     });

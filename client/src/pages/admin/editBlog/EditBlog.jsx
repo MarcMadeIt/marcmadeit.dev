@@ -24,7 +24,7 @@ function EditBlog() {
   const [redirect, setRedirect] = useState(false);
 
   const fetchBlogInfo = () => {
-    fetch(`${apiUrl}/api/blog/get/${id}`)
+    fetch(`${apiUrl}/blog/get/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

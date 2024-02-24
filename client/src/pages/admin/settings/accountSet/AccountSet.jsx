@@ -14,7 +14,7 @@ function AccountSet() {
   const [usernameLength, setUsernameLength] = useState(0);
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/user/getusername`, {
+    fetch(`${apiUrl}/user/getusername`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ function AccountSet() {
         return;
       }
 
-      const response = await fetch(`${apiUrl}/api/user/updateUsername/${id}`, {
+      const response = await fetch(`${apiUrl}/user/updateUsername/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
