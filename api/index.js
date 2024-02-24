@@ -55,8 +55,10 @@ const connectToMongo = async () => {
 };
 
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    connectToMongo();
-    console.log(`Server is running on port ${PORT}`);
-});
+export default async (req, res) => {
+    // Connect to MongoDB before handling the request
+    await connectToMongo();
+
+    // Pass the request to your Express app
+    app(req, res);
+};
