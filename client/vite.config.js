@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   define: {
-    'VITE_API_BASE_URL': '"http://X.X.X.X:8000/api"',
+    'VITE_API_BASE_URL': '"https:/marcmadeit.vercel.app/api"',
 
   },
 })
