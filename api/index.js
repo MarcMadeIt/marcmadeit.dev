@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 
 const corsOptions = {
     credentials: true,
-    origin: ["http://127.0.0.1:5173"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
@@ -63,7 +63,7 @@ const connectToMongo = async () => {
 
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, async () => {
-    await connectToMongo();
+app.listen(PORT, () => {
+    connectToMongo();
     console.log(`Server is running on port ${PORT}`);
 });

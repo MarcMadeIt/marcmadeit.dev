@@ -1,48 +1,38 @@
 {
-    "buildCommand": "cd client && npm install && ./node_modules/vite/bin/vite.js build",
-    "outputDirectory": "client/dist",
-    "framework": "vite",
-    "rewrites": [
-      {
-        "source": "/api/auth/(.*)",
-        "destination": "/api/auth/$1.js"
-      },
-      {
-        "source": "/api/user/(.*)",
-        "destination": "/api/user/$1.js"
-      },
-      {
-        "source": "/api/blog/(.*)",
-        "destination": "/api/blog/$1.js"
-      },
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/api/(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Credentials",
-            "value": "true"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          },
-          {
-            "key": "Access-Control-Allow-Methods",
-            "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-          }
-        ]
-      }
-    ]
-
-
+  "buildCommand": "cd client && npm install && ./node_modules/vite/bin/vite.js build",
+  "outputDirectory": "client/dist",
+  "framework": "vite",
+  "rewrites": [
+    { 
+      "source": "/api/(.*)", 
+      "destination": "/api/$1"  
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",  
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Credentials",
+          "value": "true"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"  
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+        }
+      ]
+    }
+  ]
+}
