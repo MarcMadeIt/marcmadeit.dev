@@ -34,6 +34,7 @@ export const upload = multer({ storage: storage });
 
 // Backend: blogController.js
 export const uploadImage = async (req, res) => {
+    mongoose.connect(process.env.MONGO_URL);
     try {
         const imageKey = crypto.randomBytes(20).toString("hex");
 
@@ -135,7 +136,7 @@ export const getBlogsLimit = async (req, res) => {
 };
 
 export const getBlogs = async (req, res) => {
-
+    mongoose.connect(process.env.MONGO_URL);
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
         res.status(200).json(blogs);
