@@ -5,9 +5,9 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import session from 'express-session';
 
-import authRoutes from "./routes/auth.routes.js"
-import userRoutes from "./routes/user.routes.js"
-import blogRoutes from "./routes/blog.routes.js"
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import blogRoutes from "./routes/blog.routes.js";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const app = express();
 const corsOptions = {
     credentials: true,
     origin: ["http://localhost:5173", "https://marcmadeit.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE"],  // Specify the actual HTTP methods here
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["Access-Control-Allow-Private-Network"],
 };
@@ -24,7 +24,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: "klfsgkefdoeiewoio33i2ohuo3i",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -53,7 +53,6 @@ const connectToMongo = async () => {
         throw error;
     }
 };
-
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
