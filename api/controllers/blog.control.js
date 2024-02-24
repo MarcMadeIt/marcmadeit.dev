@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+
 import handler from '../handler.js';
 
 
@@ -142,6 +143,7 @@ export const getBlogs = handler(async (req, res) => {
 
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
+        console.log('Fetched blogs:', blogs);
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Error fetching blogs:', error);
