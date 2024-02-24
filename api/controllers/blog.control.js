@@ -9,11 +9,6 @@ import mongoose from 'mongoose';
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-import handler from '../handler.js';
-
-
-
-
 
 dotenv.config();
 
@@ -38,8 +33,7 @@ const storage = multer.memoryStorage();
 export const upload = multer({ storage: storage });
 
 // Backend: blogController.js
-
-export const uploadImage = handler(async (req, res, next) => {
+export const uploadImage = async (req, res) => {
     try {
         const imageKey = crypto.randomBytes(20).toString("hex");
 
@@ -65,11 +59,11 @@ export const uploadImage = handler(async (req, res, next) => {
         console.error('Error uploading image:', error);
         res.status(500).json({ error: 'Failed to upload image' });
     }
-});
+};
 
 //Oprettelse af Blogpost
 
-export const createBlog = handler(async (req, res) => {
+export const createBlog = async (req, res) => {
     try {
         const { title, desc, content, tags } = req.body;
 
@@ -117,10 +111,10 @@ export const createBlog = handler(async (req, res) => {
         console.error('Error creating blog:', error);
         res.status(500).json({ error: 'Failed to create blog' });
     }
-});
+};
 
 //Fremkald alle blogs til fremvisning
-export const getBlogsLimit = handler(async (req, res) => {
+export const getBlogsLimit = async (req, res) => {
     try {
         const { page = 1, limit = 3 } = req.query;
         console.log('Requested Page:', page); // Add this log
@@ -138,9 +132,9 @@ export const getBlogsLimit = handler(async (req, res) => {
         console.error('Error fetching blogs:', error);
         res.status(500).json({ error: 'Failed to fetch blogs' });
     }
-});
+};
 
-export const getBlogs = handler(async (req, res) => {
+export const getBlogs = async (req, res) => {
 
     try {
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
@@ -150,11 +144,11 @@ export const getBlogs = handler(async (req, res) => {
         console.error('Error fetching blogs:', error);
         res.status(500).json({ error: 'Failed to fetch blogs' });
     }
-});
+};
 
 //Fremkald specefik blogpost
 
-export const getBlogById = handler(async (req, res) => {
+export const getBlogById = async (req, res) => {
 
     const { id } = req.params;
     const blogDoc = await Blog.findById(id).populate('author', ['username']);
@@ -162,10 +156,10 @@ export const getBlogById = handler(async (req, res) => {
         return res.status(404).json({ error: 'Blog post not found' });
     }
     res.json(blogDoc);
-});
+};
 
 //Fremkald info og få brugernavn til blogpost
-export const getBlogInfo = handler(async (req, res) => {
+export const getBlogInfo = async (req, res) => {
 
     try {
         const { token } = req.cookies;
@@ -185,10 +179,10 @@ export const getBlogInfo = handler(async (req, res) => {
         // Error in /blog route
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+};
 
 //Updating af blog
-export const updateBlog = handler(async (req, res) => {
+export const updateBlog = async (req, res) => {
     const { id } = req.params;
 
     const { token } = req.cookies;
@@ -224,11 +218,11 @@ export const updateBlog = handler(async (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     });
-});
+};
 
 //Fremkald blogposts tilknyttet til bestemt bruger
 
-export const getBlogsByUser = handler(async (req, res) => {
+export const getBlogsByUser = async (req, res) => {
     try {
         const { token } = req.cookies;
 
@@ -253,9 +247,9 @@ export const getBlogsByUser = handler(async (req, res) => {
         console.error('Error in /blog route:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+};
 
-export const getBlogCount = handler(async (req, res) => {
+export const getBlogCount = async (req, res) => {
 
     const { token } = req.cookies;
 
@@ -273,8 +267,8 @@ export const getBlogCount = handler(async (req, res) => {
             res.status(500).json({ error: 'Failed to fetch blog count' });
         }
     });
-});
-export const deleteBlog = handler(async (req, res) => {
+};
+export const deleteBlog = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -293,4 +287,4 @@ export const deleteBlog = handler(async (req, res) => {
         console.error('Error deleting blog:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+};

@@ -30,13 +30,12 @@ app.use(cors(corsOptions));
 
 app.options('*', cors(corsOptions));
 
-
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: false,
+        secure: true,
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000,
     },
@@ -52,7 +51,7 @@ app.use('/api/blog', blogRoutes);
 
 mongoose.set('strictQuery', true);
 
-export const connectToMongo = async () => {
+const connectToMongo = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL);
         console.log('Connected to MongoDB');
@@ -62,6 +61,9 @@ export const connectToMongo = async () => {
     }
 };
 
-const server = app;
 
-export default server;
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, async () => {
+    await connectToMongo();
+    console.log(`Server is running on port ${PORT}`);
+});
