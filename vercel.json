@@ -4,11 +4,11 @@
   "framework": "vite",
   "routes": [
     { 
-      "source": "/api/(.*)", 
+      "src": "/api/(.*)", 
       "destination": "/api/index.js"  
     },
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "destination": "/index.html"
     }
   ]
