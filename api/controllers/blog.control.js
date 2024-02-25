@@ -137,7 +137,6 @@ export const getBlogsLimit = async (req, res) => {
 
 export const getBlogs = async (req, res) => {
     try {
-        mongoose.connect(process.env.MONGO_URL);
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
         res.status(200).json(blogs);
     } catch (error) {
