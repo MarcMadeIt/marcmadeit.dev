@@ -15,10 +15,10 @@ const app = express();
 
 const corsOptions = {
     credentials: true,
-    origin: ["http://localhost:5173", "https://marcmadeit.vercel.app"],
+    origin: ["https://marcmadeit.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Access-Control-Allow-Private-Network"],
+
 };
 
 app.use(cors(corsOptions));
