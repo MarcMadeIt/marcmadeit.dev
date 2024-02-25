@@ -141,7 +141,8 @@ export const getBlogs = async (req, res) => {
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Error fetching blogs:', error);
-        res.status(500).json({ error: 'Failed to fetch blogs' });
+        res.status(500).json({ error: `Failed to fetch blogs: ${error.message}` });
+
     }
 };
 
