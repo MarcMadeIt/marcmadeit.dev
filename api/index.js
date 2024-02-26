@@ -16,12 +16,9 @@ const corsOptions = {
     origin: ["http://localhost:5173", "http://marcmadeit.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-
 };
 
 app.use(cors(corsOptions));
-
-
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
@@ -47,4 +44,5 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-
+// Export the app instance as a function
+export default () => app;
