@@ -14,7 +14,7 @@ const app = express();
 
 const corsOptions = {
     credentials: true,
-    origin: ["https://marcmadeit.vercel.app"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 
