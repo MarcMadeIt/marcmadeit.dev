@@ -9,27 +9,29 @@ import blogRoutes from "./routes/blog.routes.js";
 
 dotenv.config();
 
-const app = express();
+const createApp = () => {
+    const app = express();
 
-const corsOptions = {
-    credentials: true,
-    origin: ["http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    const corsOptions = {
+        credentials: true,
+        origin: ["http://localhost:5173"],
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    };
 
+    app.use(cors(corsOptions));
+
+    app.use(express.json());
+    app.use(cookieParser(process.env.JWT_SECRET));
+
+    app.use("/api/auth", authRoutes);
+    app.use("/api/user", userRoutes);
+    app.use('/api/blog', blogRoutes);
+
+    mongoose.set('strictQuery', true);
+
+    return app;
 };
-
-app.use(cors(corsOptions));
-
-
-app.use(express.json());
-app.use(cookieParser(process.env.JWT_SECRET));
-
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use('/api/blog', blogRoutes);
-
-mongoose.set('strictQuery', true);
 
 export const connectToMongo = async () => {
     try {
@@ -42,7 +44,10 @@ export const connectToMongo = async () => {
 };
 
 const PORT = process.env.PORT || 8000;
+const app = createApp();
 app.listen(PORT, () => {
     connectToMongo();
     console.log(`Server is running on port ${PORT}`);
 });
+
+export default createApp;
