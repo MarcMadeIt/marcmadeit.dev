@@ -38,11 +38,11 @@ export const connectToMongo = async () => {
     }
 };
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
+
+app.listen(8000, () => {
     connectToMongo();
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running`);
 });
 
-// Export the app instance as a function
+
 export default () => app;
