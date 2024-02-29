@@ -4,8 +4,8 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/controllers/(.*)", 
-      "destination": "/api/controllers/$1"
+      "source": "/api/blog/getBlogs",
+      "destination": "/api/blog.routes.js"
     },
     {
       "source": "/api/(.*)",
