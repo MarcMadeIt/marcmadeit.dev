@@ -1,12 +1,17 @@
+
 {
   "buildCommand": "cd client && npm install && ./node_modules/vite/bin/vite.js build",
   "outputDirectory": "client/dist",
   "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/api/blog/getBlogs",
-      "destination": "/api/blog.routes.js"
+  "functions": {
+    "api/controllers/*.js": {
+      "runtime": "nodejs14.x"
     },
+    "api/routes/*.js": {
+      "runtime": "nodejs14.x"
+    }
+  },
+  "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
