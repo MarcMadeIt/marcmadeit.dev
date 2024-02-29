@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import blogRoutes from "./routes/blog.routes.js";
+import app from "../client/src/App.jsx"
 
 dotenv.config();
 
