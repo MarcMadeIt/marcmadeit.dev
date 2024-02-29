@@ -146,6 +146,8 @@ export const getBlogs = async (req, res) => {
     }
 };
 
+module.exports = getBlogs;
+
 //Fremkald specefik blogpost
 
 export const getBlogById = async (req, res) => {
