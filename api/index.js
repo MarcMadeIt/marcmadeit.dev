@@ -3,9 +3,6 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-// import authRoutes from "./routes/auth.routes.js";
-// import userRoutes from "./routes/user.routes.js";
-// import blogRoutes from "./routes/blog.routes.js";
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import sharp from 'sharp';
@@ -35,10 +32,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
-// app.use("/api/auth", authRoutes);
-// app.use("/api/user", userRoutes);
-// app.use('/api/blog', blogRoutes);
-
 mongoose.set('strictQuery', true);
 
 const connectToMongo = async () => {
@@ -60,7 +53,6 @@ app.use(
     })
 );
 
-
 // S3 Configuration ---------------------- S3 Configuration
 
 const bucketName = process.env.BUCKET_NAME;
@@ -80,7 +72,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 
-// BLOG ---------------------- BLOG
+// BLOG -------------------------------------------------------------- BLOG
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
@@ -115,25 +107,20 @@ app.post("/api/blog/create", async (req, res) => {
     try {
         await connectToMongo();
         const { title, desc, content, tags } = req.body;
-
         const imageUrl = req.imageUrl;
-
         const tagsArray = tags ? tags.split(',') : [];
-
-        // Verify the token
         const { token } = req.cookies;
         jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
             try {
                 if (err) {
                     throw err;
                 }
-
                 const newBlog = new Blog({
                     title,
                     desc,
                     content,
                     tags: tagsArray,
-                    author: info.id, // Brug info.id som forfatter
+                    author: info.id,
                     imageinfo: imageUrl,
                 });
 
@@ -161,13 +148,12 @@ app.post("/api/blog/create", async (req, res) => {
         res.status(500).json({ error: 'Failed to create blog' });
     }
 });
-
-//Fremkald alle blogs til fremvisning
+//Fremkaldelse af alle blogs til fremvisning
 app.get("/api/blog/getlimit", async (req, res) => {
     try {
         await connectToMongo();
         const { page = 1, limit = 3 } = req.query;
-        console.log('Requested Page:', page); // Add this log
+        console.log('Requested Page:', page);
         const skip = (page - 1) * limit;
 
         const blogs = await Blog.find()
@@ -196,25 +182,18 @@ app.get("/api/blog/get", async (req, res) => {
     }
 });
 
-
-//Fremkald specefik blogpost
-
+//Fremkaldelse af specifik blogpost
 app.get("/api/blog/get", async (req, res) => {
     await connectToMongo();
-
-    const { id } = req.query; // Use req.query to get parameters from the query string
-
+    const { id } = req.query;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Invalid blog ID' });
         }
-
         const blogDoc = await Blog.findById(id).populate('author', ['username']);
-
         if (!blogDoc) {
             return res.status(404).json({ error: 'Blog not found' });
         }
-
         res.json(blogDoc);
     } catch (error) {
         console.error('Error fetching specific blog post:', error);
@@ -233,7 +212,6 @@ app.get("/api/blog/get/:id", async (req, res) => {
             if (err) {
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
-
             try {
                 const userBlogs = await Blog.find({ author: info.id }).sort({ createdAt: -1 }).populate('author', ['username']);
                 res.json(userBlogs);
@@ -242,7 +220,6 @@ app.get("/api/blog/get/:id", async (req, res) => {
             }
         });
     } catch (error) {
-        // Error in /blog route
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -250,8 +227,7 @@ app.get("/api/blog/get/:id", async (req, res) => {
 //Updating af blog
 app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
     try {
-        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
-
+        await connectToMongo();
         const { id } = req.params;
         const { token } = req.cookies;
 
@@ -272,14 +248,11 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                 if (!isAuthor) {
                     return res.status(400).json('You are not the author');
                 }
-
                 blogDoc.title = title;
                 blogDoc.desc = desc;
                 blogDoc.content = content;
                 blogDoc.tags = tags;
-
                 await blogDoc.save();
-
                 res.json(blogDoc);
             } catch (error) {
                 console.error('Error updating blog post:', error);
@@ -287,22 +260,17 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
             }
         });
     } catch (error) {
-        // Error in /blog route
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-//Fremkald blogposts tilknyttet til bestemt bruger
 
 app.get("/api/blog/getbyuser", async (req, res) => {
     try {
         await connectToMongo();
         const { token } = req.cookies;
-
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-
         try {
             const { id: userId } = jwt.verify(token, process.env.JWT_SECRET);
             const userBlogs = await Blog.find({ author: userId })
@@ -325,13 +293,11 @@ app.get("/api/blog/getbyuser", async (req, res) => {
 app.get("/api/blog/count", async (req, res) => {
 
     const { token } = req.cookies;
-
     jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
         if (err) {
             console.error('Error verifying token:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
-
         try {
             const blogCount = await Blog.countDocuments({ author: info.id });
             res.status(200).json({ blogCount });
@@ -344,7 +310,6 @@ app.get("/api/blog/count", async (req, res) => {
 
 app.get("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
-
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Invalid blog ID' });
@@ -363,7 +328,7 @@ app.get("/api/blog/get/:id", async (req, res) => {
     }
 });
 
-// AUTH -------------------------------------------- AUTH
+// AUTH ------------------------------------------------------- AUTH
 
 
 app.post("/api/auth/register", async (req, res) => {
@@ -377,18 +342,12 @@ app.post("/api/auth/register", async (req, res) => {
             return res.status(400).json({ message: 'Username already exists' });
         }
 
-        // Create a new user
         const userDoc = await User.create({ username, password: bcrypt.hashSync(password, salt) });
 
-        // Fetch blogs associated with the user
         const userBlogs = await Blog.find({ author: userDoc._id })
             .sort({ createdAt: -1 })
             .populate('author', 'username');
-
-        // Set session information
         req.session.user = { username, id: userDoc._id };
-
-        // Respond with user and blogs
         res.json({ user: userDoc, blogs: userBlogs });
     } catch (e) {
         console.error('Error during registration:', e);
@@ -414,20 +373,15 @@ app.post("/api/auth/login", async (req, res) => {
 
         if (passOk) {
             console.log('Password is OK');
-
-            // Log the user information before setting it in the session
             console.log('User information:', { id: userDoc._id, username });
 
             const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '1h' });
-
-            // Log the token before setting it in the cookie
             console.log('Token:', token);
 
             req.session.user = { username, id: userDoc._id };
             res.cookie('token', token, { httpOnly: true, secure: true }).json({
                 id: userDoc._id,
                 username,
-                // Include user information in the response
                 user: { id: userDoc._id, username },
             });
         } else {
@@ -453,8 +407,7 @@ app.post("/api/auth/logout", (req, res) => {
     });
 });
 
-// USER --------------------------------------------------- USER 
-
+// USER ----------------------------------------------------------- USER 
 
 app.get("/api/user/profile", (req, res) => {
     const { token } = req.cookies;
@@ -462,10 +415,9 @@ app.get("/api/user/profile", (req, res) => {
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-
     try {
         const { username } = jwt.verify(token, process.env.JWT_SECRET);
-        res.json({ username }); // Send the username directly in the response
+        res.json({ username });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -483,7 +435,6 @@ app.get("/api/user/getusername", async (req, res) => {
                 console.error('Error verifying token:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
-
             try {
                 const user = await User.findById(info.id);
 
@@ -507,7 +458,7 @@ app.get("/api/user/getusername", async (req, res) => {
 
 app.put("/api/user/updateusername/:id", async (req, res) => {
     try {
-        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
+        await connectToMongo();
 
         const { token } = req.cookies;
 
@@ -525,8 +476,6 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
                 if (!user) {
                     return res.status(404).json({ error: 'User not found' });
                 }
-
-                // Update only the username field
                 user.username = newUsername;
                 await user.save();
 
@@ -537,7 +486,6 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
             }
         });
     } catch (error) {
-        // Error in /user/updateusername route
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -553,7 +501,6 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
                 console.error('Error verifying token:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
             }
-
             const { newUsername } = req.body;
 
             try {
@@ -562,8 +509,6 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
                 if (!user) {
                     return res.status(404).json({ error: 'User not found' });
                 }
-
-                // Update only the username field
                 user.username = newUsername;
                 await user.save();
 
@@ -574,14 +519,10 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
             }
         });
     } catch (error) {
-        // Error in /user/updateusername route
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-
-
 app.listen(8000, () => {
-    connectToMongo(); // You can choose to keep this line if you want to connect explicitly here.
     console.log(`Server is running`);
 });
