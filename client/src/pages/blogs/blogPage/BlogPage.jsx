@@ -23,6 +23,7 @@ function BlogPage() {
 
       fetch(`${apiUrl}/blog/get/${id}`)
         .then((response) => {
+          console.log(response);
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
