@@ -2,7 +2,6 @@ import express from "express";
 import { createBlog, deleteBlog, getBlogById, getBlogCount, getBlogInfo, getBlogs, getBlogsByUser, getBlogsLimit, updateBlog, upload, uploadImage } from "../controllers/blog.control.js";
 
 
-
 const router = express.Router()
 
 router.post("/create", upload.single('file'), uploadImage, createBlog);

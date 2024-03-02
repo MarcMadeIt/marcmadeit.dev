@@ -3,10 +3,18 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import authRoutes from "./routes/auth.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import blogRoutes from "./routes/blog.routes.js";
-import app from "../client/src/App.jsx"
+// import authRoutes from "./routes/auth.routes.js";
+// import userRoutes from "./routes/user.routes.js";
+// import blogRoutes from "./routes/blog.routes.js";
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import sharp from 'sharp';
+import multer from 'multer';
+import jwt from 'jsonwebtoken';
+import User from "./modules/User.js"
+import Blog from "./modules/Blog.js"
+
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 dotenv.config();
 
@@ -23,9 +31,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use('/api/blog', blogRoutes);
+// app.use("/api/auth", authRoutes);
+// app.use("/api/user", userRoutes);
+// app.use('/api/blog', blogRoutes);
 
 mongoose.set('strictQuery', true);
 
@@ -40,10 +48,497 @@ export const connectToMongo = async () => {
 };
 
 
+dotenv.config();
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accesKey = process.env.ACCESS_KEY;
+const secretAccesskey = process.env.SECRET_ACCESS_KEY;
+
+const s3Client = new S3Client({
+    credentials: {
+        accessKeyId: accesKey,
+        secretAccessKey: secretAccesskey,
+    },
+    region: bucketRegion,
+});
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Backend: blogController.js
+app.post("/api/blog/create", upload.single('file'), async (req, res, next) => {
+    mongoose.connect(process.env.MONGO_URL);
+    try {
+        const imageKey = crypto.randomBytes(20).toString("hex");
+
+        const buffer = await sharp(req.file.buffer)
+            .resize({ height: 1000, width: 1920, fit: "cover" })
+            .toBuffer();
+
+        // Prepare parameters for uploading to S3
+        const uploadParams = {
+            Bucket: bucketName,
+            Key: imageKey,
+            Body: buffer,
+            ContentType: req.file.mimetype,
+        };
+
+        await s3Client.send(new PutObjectCommand(uploadParams));
+
+        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
+        req.imageUrl = imageUrl;
+        next();
+
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
+});
+
+//Oprettelse af Blogpost
+
+app.post("/api/blog/create", async (req, res) => {
+    try {
+        const { title, desc, content, tags } = req.body;
+
+        const imageUrl = req.imageUrl;
+
+        const tagsArray = tags ? tags.split(',') : [];
+
+        // Verify the token
+        const { token } = req.cookies;
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            try {
+                if (err) {
+                    throw err;
+                }
+
+                const newBlog = new Blog({
+                    title,
+                    desc,
+                    content,
+                    tags: tagsArray,
+                    author: info.id, // Brug info.id som forfatter
+                    imageinfo: imageUrl,
+                });
+
+                const savedBlog = await newBlog.save();
+                res.status(201).json({
+                    message: 'Blog created successfully',
+                    blog: savedBlog,
+                    tokenInfo: {
+                        id: info.id,
+                        username: info.username,
+                    },
+                });
+            } catch (error) {
+                console.error('Error creating blog:', error);
+
+                if (error.name === 'JsonWebTokenError') {
+                    return res.status(401).json({ error: 'Unauthorized' });
+                }
+
+                res.status(500).json({ error: 'Failed to create blog' });
+            }
+        });
+    } catch (error) {
+        console.error('Error creating blog:', error);
+        res.status(500).json({ error: 'Failed to create blog' });
+    }
+});
+
+//Fremkald alle blogs til fremvisning
+app.get("/api/blog/get", async (req, res) => {
+    try {
+        const { page = 1, limit = 3 } = req.query;
+        console.log('Requested Page:', page); // Add this log
+        const skip = (page - 1) * limit;
+
+        const blogs = await Blog.find()
+            .sort({ createdAt: -1 })
+            .populate('author', ['username'])
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const totalCount = await Blog.countDocuments();
+        res.status(200).json({ blogs, totalCount });
+    } catch (error) {
+        console.error('Error fetching blogs:', error);
+        res.status(500).json({ error: 'Failed to fetch blogs' });
+    }
+});
+
+app.get("/api/blog/get", async (req, res) => {
+    try {
+        const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
+        res.status(200).json(blogs);
+    } catch (error) {
+        console.error('Error fetching blogs:', error);
+        res.status(500).json({ error: `Failed to fetch blogs: ${error.message}` });
+
+    }
+});
+
+
+//Fremkald specefik blogpost
+
+app.get("/api/blog/getlimit", async (req, res) => {
+
+    const { id } = req.params;
+    const blogDoc = await Blog.findById(id).populate('author', ['username']);
+    if (!blogDoc) {
+        return res.status(404).json({ error: 'Blog post not found' });
+    }
+    res.json(blogDoc);
+});
+
+//Fremkald info og få brugernavn til blogpost
+app.get("/api/blog/get/:id", async (req, res) => {
+
+    try {
+        const { token } = req.cookies;
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if (err) {
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            try {
+                const userBlogs = await Blog.find({ author: info.id }).sort({ createdAt: -1 }).populate('author', ['username']);
+                res.json(userBlogs);
+            } catch (error) {
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    } catch (error) {
+        // Error in /blog route
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+//Updating af blog
+app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
+    const { id } = req.params;
+
+    const { token } = req.cookies;
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        if (err) throw err;
+
+        const { title, desc, content, tags } = req.body;
+
+        try {
+            const blogDoc = await Blog.findById(id);
+
+            if (!blogDoc) {
+                return res.status(404).json('Blog post not found');
+            }
+
+            const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
+
+            if (!isAuthor) {
+                return res.status(400).json('You are not the author');
+            }
+
+            blogDoc.title = title;
+            blogDoc.desc = desc;
+            blogDoc.content = content;
+            blogDoc.tags = tags;
+
+            await blogDoc.save();
+
+            res.json(blogDoc);
+        } catch (error) {
+            console.error('Error updating blog post:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+});
+
+//Fremkald blogposts tilknyttet til bestemt bruger
+
+app.get("/api/blog/getbyuser", async (req, res) => {
+    try {
+        const { token } = req.cookies;
+
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        try {
+            const { id: userId } = jwt.verify(token, process.env.JWT_SECRET);
+            const userBlogs = await Blog.find({ author: userId })
+                .sort({ createdAt: -1 })
+                .populate('author', ['username']);
+            if (!userBlogs || userBlogs.length === 0) {
+                return res.status(404).json({ error: 'No blogs found for the user' });
+            }
+            res.status(200).json(userBlogs);
+        } catch (error) {
+            console.error('Error fetching blogs:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    } catch (error) {
+        console.error('Error in /blog route:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get("/api/blog/count", async (req, res) => {
+
+    const { token } = req.cookies;
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        try {
+            const blogCount = await Blog.countDocuments({ author: info.id });
+            res.status(200).json({ blogCount });
+        } catch (error) {
+            console.error('Error fetching blog count:', error);
+            res.status(500).json({ error: 'Failed to fetch blog count' });
+        }
+    });
+});
+
+app.get("/api/blog/get/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid blog ID' });
+        }
+
+        const deletedBlog = await Blog.findByIdAndDelete(id);
+
+        if (!deletedBlog) {
+            return res.status(404).json({ error: 'Blog not found' });
+        }
+
+        res.json({ message: 'Blog deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting blog:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// AUTH -------------------------------------------- AUTH
+const secret = process.env.SESSION_SECRET || 'klmslkfmo3i2923fmo23fo23fkk32e2';
+const salt = bcrypt.genSaltSync(10);
+
+app.post("/api/auth/register", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const existingUser = await User.findOne({ username });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        // Create a new user
+        const userDoc = await User.create({ username, password: bcrypt.hashSync(password, salt) });
+
+        // Fetch blogs associated with the user
+        const userBlogs = await Blog.find({ author: userDoc._id })
+            .sort({ createdAt: -1 })
+            .populate('author', 'username');
+
+        // Set session information
+        req.session.user = { username, id: userDoc._id };
+
+        // Respond with user and blogs
+        res.json({ user: userDoc, blogs: userBlogs });
+    } catch (e) {
+        console.error('Error during registration:', e);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
+app.post("/api/auth/login", async (req, res) => {
+    try {
+        console.log('Before login process');
+        const { username, password } = req.body;
+        const userDoc = await User.findOne({ username });
+        console.log('After login process');
+
+        if (!userDoc) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        const passOk = bcrypt.compareSync(password, userDoc.password);
+
+        if (passOk) {
+            console.log('Password is OK');
+
+            // Log the user information before setting it in the session
+            console.log('User information:', { id: userDoc._id, username });
+
+            const token = jwt.sign({ username, id: userDoc._id }, secret, { expiresIn: '1h' });
+
+            // Log the token before setting it in the cookie
+            console.log('Token:', token);
+
+            req.session.user = { username, id: userDoc._id };
+            res.cookie('token', token, { httpOnly: true, secure: true }).json({
+                id: userDoc._id,
+                username,
+                // Include user information in the response
+                user: { id: userDoc._id, username },
+            });
+        } else {
+            console.log('Wrong credentials');
+            res.status(400).json({ error: 'Wrong credentials' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post("/api/auth/logout", (req, res) => {
+    console.log('User attempting logout:', req.session.user);
+    req.session.destroy((err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        console.log('User successfully logged out.');
+        res.clearCookie('connect.sid');
+        res.json({ message: 'Logout successful' });
+    });
+});
+
+// USER --------------------------------------------------- USER 
+
+
+app.get("/api/user/profile", (req, res) => {
+    const { token } = req.cookies;
+
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        const { username } = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({ username }); // Send the username directly in the response
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get("/api/user/getusername", async (req, res) => {
+    try {
+        const { token } = req.cookies;
+
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            try {
+                const user = await User.findById(info.id);
+
+                if (!user) {
+                    return res.status(404).json({ error: 'User not found' });
+                }
+
+                const { username } = user;
+                res.json({ _id: info.id, username });
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.put("/api/user/updateusername/:id", async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        const { newUsername } = req.body;
+
+        try {
+            const user = await User.findById(info.id);
+
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            // Update only the username field
+            user.username = newUsername;
+            await user.save();
+
+            res.json({ success: true, message: 'Username updated successfully' });
+        } catch (error) {
+            console.error('Error updating username:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+});
+
+
+app.put("/api/user/updatepassword/:id", async (req, res) => {
+    const { id } = req.params;
+    const { token } = req.cookies;
+
+    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        const { newPassword, currentPassword } = req.body;
+
+        try {
+            const user = await User.findById(info.id);
+
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            const passwordMatch = bcrypt.compareSync(currentPassword, user.password);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ error: 'Incorrect current password' });
+            }
+
+            // Update only the password field
+            user.password = bcrypt.hashSync(newPassword, 10);
+            await user.save();
+
+            res.json({ success: true, message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Error updating password:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+});
+
+
+
+
 app.listen(8000, () => {
     connectToMongo();
     console.log(`Server is running`);
 });
 
-
-export default () => app;
