@@ -13,6 +13,7 @@ import multer from 'multer';
 import jwt from 'jsonwebtoken';
 import User from "./modules/User.js"
 import Blog from "./modules/Blog.js"
+import session from 'express-session';
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
@@ -20,9 +21,12 @@ dotenv.config();
 
 const app = express();
 
+const secret = process.env.SESSION_SECRET;
+const salt = bcrypt.genSaltSync(10);
+
 const corsOptions = {
     credentials: true,
-    origin: ["http://localhost:5173", "https://marcmadeit.vercel.app"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -37,7 +41,7 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 mongoose.set('strictQuery', true);
 
-export const connectToMongo = async () => {
+const connectToMongo = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL);
         console.log('Connected to MongoDB');
@@ -47,8 +51,16 @@ export const connectToMongo = async () => {
     }
 };
 
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 
-dotenv.config();
+
+// S3 Configuration ---------------------- S3 Configuration
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -66,17 +78,18 @@ const s3Client = new S3Client({
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Backend: blogController.js
-app.post("/api/blog/create", upload.single('file'), async (req, res, next) => {
-    mongoose.connect(process.env.MONGO_URL);
+
+// BLOG ---------------------- BLOG
+
+app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
+        await connectToMongo();
         const imageKey = crypto.randomBytes(20).toString("hex");
 
         const buffer = await sharp(req.file.buffer)
             .resize({ height: 1000, width: 1920, fit: "cover" })
             .toBuffer();
 
-        // Prepare parameters for uploading to S3
         const uploadParams = {
             Bucket: bucketName,
             Key: imageKey,
@@ -88,7 +101,6 @@ app.post("/api/blog/create", upload.single('file'), async (req, res, next) => {
 
         const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
         req.imageUrl = imageUrl;
-        next();
 
     } catch (error) {
         console.error('Error uploading image:', error);
@@ -100,6 +112,7 @@ app.post("/api/blog/create", upload.single('file'), async (req, res, next) => {
 
 app.post("/api/blog/create", async (req, res) => {
     try {
+        await connectToMongo();
         const { title, desc, content, tags } = req.body;
 
         const imageUrl = req.imageUrl;
@@ -149,8 +162,9 @@ app.post("/api/blog/create", async (req, res) => {
 });
 
 //Fremkald alle blogs til fremvisning
-app.get("/api/blog/get", async (req, res) => {
+app.get("/api/blog/getlimit", async (req, res) => {
     try {
+        await connectToMongo();
         const { page = 1, limit = 3 } = req.query;
         console.log('Requested Page:', page); // Add this log
         const skip = (page - 1) * limit;
@@ -171,6 +185,7 @@ app.get("/api/blog/get", async (req, res) => {
 
 app.get("/api/blog/get", async (req, res) => {
     try {
+        await connectToMongo();
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
         res.status(200).json(blogs);
     } catch (error) {
@@ -183,20 +198,35 @@ app.get("/api/blog/get", async (req, res) => {
 
 //Fremkald specefik blogpost
 
-app.get("/api/blog/getlimit", async (req, res) => {
+app.get("/api/blog/get", async (req, res) => {
+    await connectToMongo();
 
-    const { id } = req.params;
-    const blogDoc = await Blog.findById(id).populate('author', ['username']);
-    if (!blogDoc) {
-        return res.status(404).json({ error: 'Blog post not found' });
+    const { id } = req.query; // Use req.query to get parameters from the query string
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid blog ID' });
+        }
+
+        const blogDoc = await Blog.findById(id).populate('author', ['username']);
+
+        if (!blogDoc) {
+            return res.status(404).json({ error: 'Blog not found' });
+        }
+
+        res.json(blogDoc);
+    } catch (error) {
+        console.error('Error fetching specific blog post:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-    res.json(blogDoc);
 });
 
 //Fremkald info og få brugernavn til blogpost
 app.get("/api/blog/get/:id", async (req, res) => {
 
     try {
+        await connectToMongo();
+
         const { token } = req.cookies;
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
@@ -218,47 +248,54 @@ app.get("/api/blog/get/:id", async (req, res) => {
 
 //Updating af blog
 app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
-    const { id } = req.params;
+    try {
+        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
 
-    const { token } = req.cookies;
+        const { id } = req.params;
+        const { token } = req.cookies;
 
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-        if (err) throw err;
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            if (err) throw err;
 
-        const { title, desc, content, tags } = req.body;
+            const { title, desc, content, tags } = req.body;
 
-        try {
-            const blogDoc = await Blog.findById(id);
+            try {
+                const blogDoc = await Blog.findById(id);
 
-            if (!blogDoc) {
-                return res.status(404).json('Blog post not found');
+                if (!blogDoc) {
+                    return res.status(404).json('Blog post not found');
+                }
+
+                const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
+
+                if (!isAuthor) {
+                    return res.status(400).json('You are not the author');
+                }
+
+                blogDoc.title = title;
+                blogDoc.desc = desc;
+                blogDoc.content = content;
+                blogDoc.tags = tags;
+
+                await blogDoc.save();
+
+                res.json(blogDoc);
+            } catch (error) {
+                console.error('Error updating blog post:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
             }
-
-            const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
-
-            if (!isAuthor) {
-                return res.status(400).json('You are not the author');
-            }
-
-            blogDoc.title = title;
-            blogDoc.desc = desc;
-            blogDoc.content = content;
-            blogDoc.tags = tags;
-
-            await blogDoc.save();
-
-            res.json(blogDoc);
-        } catch (error) {
-            console.error('Error updating blog post:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    });
+        });
+    } catch (error) {
+        // Error in /blog route
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 //Fremkald blogposts tilknyttet til bestemt bruger
 
 app.get("/api/blog/getbyuser", async (req, res) => {
     try {
+        await connectToMongo();
         const { token } = req.cookies;
 
         if (!token) {
@@ -326,13 +363,13 @@ app.get("/api/blog/get/:id", async (req, res) => {
 });
 
 // AUTH -------------------------------------------- AUTH
-const secret = process.env.SESSION_SECRET || 'klmslkfmo3i2923fmo23fo23fkk32e2';
-const salt = bcrypt.genSaltSync(10);
+
 
 app.post("/api/auth/register", async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        await connectToMongo();
         const existingUser = await User.findOne({ username });
 
         if (existingUser) {
@@ -362,6 +399,7 @@ app.post("/api/auth/register", async (req, res) => {
 
 app.post("/api/auth/login", async (req, res) => {
     try {
+        await connectToMongo();
         console.log('Before login process');
         const { username, password } = req.body;
         const userDoc = await User.findOne({ username });
@@ -436,6 +474,7 @@ app.get("/api/user/profile", (req, res) => {
 
 app.get("/api/user/getusername", async (req, res) => {
     try {
+        await connectToMongo();
         const { token } = req.cookies;
 
         jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
@@ -466,79 +505,83 @@ app.get("/api/user/getusername", async (req, res) => {
 
 
 app.put("/api/user/updateusername/:id", async (req, res) => {
-    const { id } = req.params;
-    const { token } = req.cookies;
+    try {
+        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
 
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-        if (err) {
-            console.error('Error verifying token:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
+        const { token } = req.cookies;
 
-        const { newUsername } = req.body;
-
-        try {
-            const user = await User.findById(info.id);
-
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
             }
 
-            // Update only the username field
-            user.username = newUsername;
-            await user.save();
+            const { newUsername } = req.body;
 
-            res.json({ success: true, message: 'Username updated successfully' });
-        } catch (error) {
-            console.error('Error updating username:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    });
+            try {
+                const user = await User.findById(info.id);
+
+                if (!user) {
+                    return res.status(404).json({ error: 'User not found' });
+                }
+
+                // Update only the username field
+                user.username = newUsername;
+                await user.save();
+
+                res.json({ success: true, message: 'Username updated successfully' });
+            } catch (error) {
+                console.error('Error updating username:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    } catch (error) {
+        // Error in /user/updateusername route
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 
-app.put("/api/user/updatepassword/:id", async (req, res) => {
-    const { id } = req.params;
-    const { token } = req.cookies;
+app.put("/api/user/updateusername/:id", async (req, res) => {
+    try {
+        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
 
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-        if (err) {
-            console.error('Error verifying token:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
+        const { token } = req.cookies;
 
-        const { newPassword, currentPassword } = req.body;
-
-        try {
-            const user = await User.findById(info.id);
-
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
             }
 
-            const passwordMatch = bcrypt.compareSync(currentPassword, user.password);
+            const { newUsername } = req.body;
 
-            if (!passwordMatch) {
-                return res.status(401).json({ error: 'Incorrect current password' });
+            try {
+                const user = await User.findById(info.id);
+
+                if (!user) {
+                    return res.status(404).json({ error: 'User not found' });
+                }
+
+                // Update only the username field
+                user.username = newUsername;
+                await user.save();
+
+                res.json({ success: true, message: 'Username updated successfully' });
+            } catch (error) {
+                console.error('Error updating username:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
             }
-
-            // Update only the password field
-            user.password = bcrypt.hashSync(newPassword, 10);
-            await user.save();
-
-            res.json({ success: true, message: 'Password updated successfully' });
-        } catch (error) {
-            console.error('Error updating password:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    });
+        });
+    } catch (error) {
+        // Error in /user/updateusername route
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
-
 
 
 
 app.listen(8000, () => {
-    connectToMongo();
+    connectToMongo(); // You can choose to keep this line if you want to connect explicitly here.
     console.log(`Server is running`);
 });
-
