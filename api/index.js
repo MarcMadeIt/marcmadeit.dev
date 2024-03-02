@@ -188,6 +188,7 @@ app.get("/api/blog/get", async (req, res) => {
     try {
         await connectToMongo();
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Error fetching blogs:', error);
