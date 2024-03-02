@@ -163,6 +163,7 @@ app.get("/api/blog/getlimit", async (req, res) => {
             .limit(parseInt(limit));
 
         const totalCount = await Blog.countDocuments();
+        res.setHeader('Cache-Control', 'public, max-age=3600');
         res.status(200).json({ blogs, totalCount });
     } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -214,6 +215,7 @@ app.get("/api/blog/get/:id", async (req, res) => {
             }
             try {
                 const userBlogs = await Blog.find({ author: info.id }).sort({ createdAt: -1 }).populate('author', ['username']);
+                res.setHeader('Cache-Control', 'public, max-age=3600');
                 res.json(userBlogs);
             } catch (error) {
                 res.status(500).json({ error: 'Internal Server Error' });
