@@ -83,7 +83,7 @@ const upload = multer({ storage: storage });
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
-        await connectToMongo();
+        mongoose.connect(process.env.MONGO_URL)
         const imageKey = crypto.randomBytes(20).toString("hex");
 
         const buffer = await sharp(req.file.buffer)
@@ -179,7 +179,7 @@ app.get("/api/blog/getlimit", async (req, res) => {
         res.status(200).json({ blogs, totalCount });
     } catch (error) {
         console.error('Error fetching blogs:', error);
-        res.status(500).json({ error: 'Failed to fetch blogs' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -190,8 +190,7 @@ app.get("/api/blog/get", async (req, res) => {
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Error fetching blogs:', error);
-        res.status(500).json({ error: `Failed to fetch blogs: ${error.message}` });
-
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -544,8 +543,7 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
 
 app.put("/api/user/updateusername/:id", async (req, res) => {
     try {
-        await connectToMongo(); // Establish MongoDB connection at the beginning of the route handler
-
+        await connectToMongo();
         const { token } = req.cookies;
 
         jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
