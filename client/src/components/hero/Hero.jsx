@@ -19,7 +19,7 @@ function Hero() {
             </Link>
             <li>Socials</li>
             <a className="link" href="#contact">
-              <li>Contact</li>
+              <li>About</li>
             </a>
           </ul>
         </div>

@@ -51,11 +51,11 @@
 
             h2 {
                 font-size: 17px;
-                text-decoration: underline 3px;
+                text-decoration: underline 2px;
                 text-underline-offset: 10px;
                 color: $primary;
                 letter-spacing: 0.5px;
-                font-weight: 700;
+                font-weight: 500;
 
                 @include mini-tablet {
                     font-size: 25px;
@@ -90,6 +90,7 @@
                 transition: 400ms;
                 font-size: 15px;
                 font-weight: 600;
+                box-shadow: 0 0 4px;
 
                 @include desktop {
                     &:hover {
