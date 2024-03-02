@@ -47,6 +47,7 @@ function Blogs() {
       <div className="blogs">
         <Header />
         <div className="blogs-content">
+          <h2>All Blogs</h2>
           {blogs.map((blog) => (
             <Blog
               key={blog._id}

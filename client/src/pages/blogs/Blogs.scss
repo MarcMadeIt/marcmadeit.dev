@@ -22,6 +22,11 @@
         @include mini-tablet {
             max-width: 900px;
           }
+
+
+        h2 {
+            color: $primary;
+        }  
     }
 
     .blog-pagination {
