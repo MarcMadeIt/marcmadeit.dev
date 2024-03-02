@@ -184,17 +184,23 @@ app.get("/api/blog/get", async (req, res) => {
 });
 
 //Fremkaldelse af specifik blogpost
-app.get("/api/blog/get", async (req, res) => {
-    await connectToMongo();
-    const { id } = req.query;
+app.get("/api/blog/get/:id", async (req, res) => {
+    const { id } = req.params;
+
     try {
+        await connectToMongo();
+
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Invalid blog ID' });
         }
+
         const blogDoc = await Blog.findById(id).populate('author', ['username']);
+
         if (!blogDoc) {
             return res.status(404).json({ error: 'Blog not found' });
         }
+
         res.json(blogDoc);
     } catch (error) {
         console.error('Error fetching specific blog post:', error);
@@ -310,7 +316,7 @@ app.get("/api/blog/count", async (req, res) => {
     });
 });
 
-app.get("/api/blog/get/:id", async (req, res) => {
+app.delete("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
