@@ -111,7 +111,7 @@ app.post("/api/blog/create", async (req, res) => {
         const imageUrl = req.imageUrl;
         const tagsArray = tags ? tags.split(',') : [];
         const { token } = req.cookies;
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        jwt.verify(token, secret, {}, async (err, info) => {
             try {
                 if (err) {
                     throw err;
@@ -237,7 +237,7 @@ app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
 
 
 
-app.get("/api/blog/getbyuser", async (req, res) => {
+app.get("/api/blog/getbyuser", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
         const { token } = req.cookies;
@@ -310,7 +310,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         const { id } = req.params;
         const { token } = req.cookies;
 
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        jwt.verify(token, secret, {}, async (err, info) => {
             if (err) throw err;
 
             const { title, desc, content, tags } = req.body;
