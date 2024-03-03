@@ -25,15 +25,17 @@
         }
 
         .logo {
-            width: 100%;
+            width: 150px;
             height: 150px;
 
             img {
                 width: 100%;
                 height: 100%;
+                object-fit: contain;
             }
 
             @include tablet {
+                width: 180px;
                 height: 200px;
             }
         }
