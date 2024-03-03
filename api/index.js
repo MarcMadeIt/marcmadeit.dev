@@ -369,7 +369,7 @@ app.post("/api/auth/register", async (req, res) => {
 
 
 
-app.post("/api/auth/login", async (req, res) => {
+app.post("/api/auth/login", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
         console.log('Before login process');
