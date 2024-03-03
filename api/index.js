@@ -173,6 +173,7 @@ app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
     }
 });
 
+
 app.get("/api/blog/get", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
@@ -262,10 +263,12 @@ app.get("/api/blog/getbyuser", async (req, res) => {
     }
 });
 
+
+//Preview counting the blog for a specific user
 app.get("/api/blog/count", async (req, res) => {
 
     const { token } = req.cookies;
-    jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+    jwt.verify(token, secret, {}, async (err, info) => {
         if (err) {
             console.error('Error verifying token:', err);
             return res.status(500).json({ error: 'Internal Server Error' });
