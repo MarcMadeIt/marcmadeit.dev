@@ -149,7 +149,8 @@ app.post("/api/blog/create", async (req, res) => {
         res.status(500).json({ error: 'Failed to create blog' });
     }
 });
-//Fremkaldelse af alle blogs til fremvisning
+
+//Fremkaldelse af alle blogs til fremvisning, men sideopdelt
 app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
@@ -233,45 +234,7 @@ app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
     }
 });
 
-//Updating af blog
-app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
-    try {
-        await connectToMongo();
-        const { id } = req.params;
-        const { token } = req.cookies;
 
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-            if (err) throw err;
-
-            const { title, desc, content, tags } = req.body;
-
-            try {
-                const blogDoc = await Blog.findById(id);
-
-                if (!blogDoc) {
-                    return res.status(404).json('Blog post not found');
-                }
-
-                const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
-
-                if (!isAuthor) {
-                    return res.status(400).json('You are not the author');
-                }
-                blogDoc.title = title;
-                blogDoc.desc = desc;
-                blogDoc.content = content;
-                blogDoc.tags = tags;
-                await blogDoc.save();
-                res.json(blogDoc);
-            } catch (error) {
-                console.error('Error updating blog post:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
 
 app.get("/api/blog/getbyuser", async (req, res) => {
     try {
@@ -294,7 +257,7 @@ app.get("/api/blog/getbyuser", async (req, res) => {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     } catch (error) {
-        console.error('Error in /blog route:', error);
+        console.error('Error in /api/blog/getbyuser route:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -333,6 +296,46 @@ app.delete("/api/blog/get/:id", async (req, res) => {
         res.json({ message: 'Blog deleted successfully' });
     } catch (error) {
         console.error('Error deleting blog:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+//Updating af blog
+app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
+    try {
+        await connectToMongo();
+        const { id } = req.params;
+        const { token } = req.cookies;
+
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+            if (err) throw err;
+
+            const { title, desc, content, tags } = req.body;
+
+            try {
+                const blogDoc = await Blog.findById(id);
+
+                if (!blogDoc) {
+                    return res.status(404).json('Blog post not found');
+                }
+
+                const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
+
+                if (!isAuthor) {
+                    return res.status(400).json('You are not the author');
+                }
+                blogDoc.title = title;
+                blogDoc.desc = desc;
+                blogDoc.content = content;
+                blogDoc.tags = tags;
+                await blogDoc.save();
+                res.json(blogDoc);
+            } catch (error) {
+                console.error('Error updating blog post:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
