@@ -244,7 +244,7 @@ app.get("/api/blog/getbyuser", async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
         try {
-            const { id: userId } = jwt.verify(token, process.env.JWT_SECRET);
+            const { id: userId } = jwt.verify(token, secret);
             const userBlogs = await Blog.find({ author: userId })
                 .sort({ createdAt: -1 })
                 .populate('author', ['username']);
