@@ -11,6 +11,7 @@ import jwt from 'jsonwebtoken';
 import User from "./modules/User.js"
 import Blog from "./modules/Blog.js"
 import session from 'express-session';
+import apicache from "apicache"
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
@@ -20,14 +21,15 @@ const app = express();
 
 const secret = process.env.SESSION_SECRET;
 const salt = bcrypt.genSaltSync(10);
+const cache = apicache.middleware;
+
 
 const corsOptions = {
     credentials: true,
     origin: ["http://localhost:5173", "httos://marcmadeit.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-};
-
+}
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
@@ -148,7 +150,7 @@ app.post("/api/blog/create", async (req, res) => {
     }
 });
 //Fremkaldelse af alle blogs til fremvisning
-app.get("/api/blog/getlimit", async (req, res) => {
+app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
         const { page = 1, limit = 3 } = req.query;
@@ -170,7 +172,7 @@ app.get("/api/blog/getlimit", async (req, res) => {
     }
 });
 
-app.get("/api/blog/get", async (req, res) => {
+app.get("/api/blog/get", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
         const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']);
@@ -183,7 +185,7 @@ app.get("/api/blog/get", async (req, res) => {
 });
 
 //Fremkaldelse af specifik blogpost
-app.get("/api/blog/get/:id", async (req, res) => {
+app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -208,7 +210,7 @@ app.get("/api/blog/get/:id", async (req, res) => {
 });
 
 //Fremkald info og få brugernavn til blogpost
-app.get("/api/blog/get/:id", async (req, res) => {
+app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
 
     try {
         await connectToMongo();
