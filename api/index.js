@@ -300,7 +300,15 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         const { token } = req.cookies;
 
         jwt.verify(token, secret, {}, async (err, info) => {
-            if (err) throw err;
+            if (err) {
+                console.error('Error verifying token:', err);
+
+                if (err.name === 'TokenExpiredError') {
+                    return res.status(401).json({ error: 'Token expired' });
+                }
+
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
 
             const { title, desc, content, tags } = req.body;
 
@@ -466,7 +474,7 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
 
         const { token } = req.cookies;
 
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
@@ -496,35 +504,40 @@ app.put("/api/user/updateusername/:id", async (req, res) => {
 
 
 app.put("/api/user/updateusername/:id", async (req, res) => {
-    try {
-        await connectToMongo();
-        const { token } = req.cookies;
+    const { token } = req.cookies;
 
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
-            if (err) {
-                console.error('Error verifying token:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        const { newPassword, currentPassword } = req.body;
+
+        try {
+            await connectToMongo();
+            const user = await User.findById(info.id);
+
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
             }
-            const { newUsername } = req.body;
 
-            try {
-                const user = await User.findById(info.id);
+            const passwordMatch = bcrypt.compareSync(currentPassword, user.password);
 
-                if (!user) {
-                    return res.status(404).json({ error: 'User not found' });
-                }
-                user.username = newUsername;
-                await user.save();
-
-                res.json({ success: true, message: 'Username updated successfully' });
-            } catch (error) {
-                console.error('Error updating username:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
+            if (!passwordMatch) {
+                return res.status(401).json({ error: 'Incorrect current password' });
             }
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+
+            // Update only the password field
+            user.password = bcrypt.hashSync(newPassword, 10);
+            await user.save();
+
+            res.json({ success: true, message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Error updating password:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
 });
 
 
