@@ -226,7 +226,7 @@ app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
 
 
 
-app.get("/api/blog/getbyuser", cache('20 minutes'), async (req, res) => {
+app.get("/api/blog/getbyuser", async (req, res) => {
     try {
         await connectToMongo();
         const { token } = req.cookies;
