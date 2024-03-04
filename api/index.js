@@ -434,7 +434,7 @@ app.get("/api/user/getusername", async (req, res) => {
         await connectToMongo();
         const { token } = req.cookies;
 
-        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+        jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
                 return res.status(500).json({ error: 'Internal Server Error' });
