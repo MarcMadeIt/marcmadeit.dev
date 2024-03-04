@@ -86,6 +86,10 @@
                     letter-spacing: 1px;
 
                     @include large-mobile {
+                        font-size: 15px;
+                    }
+
+                    @include mini-tablet{
                         font-size: 16px;
                     }
                 }

@@ -2,8 +2,8 @@ import "./Header.scss";
 import logoImageName from "../../assets/img/logo/LOGO-name.png";
 import logoImage from "../../assets/img/logo/logo-mmi-single.png";
 import { Link, useLocation } from "react-router-dom";
-import { SlMenu } from "react-icons/sl";
 import { MdArrowBackIosNew } from "react-icons/md";
+import Sidebar from "../sidebar/Sidebar.jsx";
 
 function Header() {
   const location = useLocation();
@@ -30,9 +30,9 @@ function Header() {
         <img className="header-logo-name" src={logoImageName} alt="" />
         <img className="header-logo" src={logoImage} alt="" />
       </Link>
-      <span>
-        <SlMenu fontSize={30} />
-      </span>
+      <div className="navbar-sidebar">
+        <Sidebar />
+      </div>
     </div>
   );
 }

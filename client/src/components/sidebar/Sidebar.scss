@@ -1,0 +1,70 @@
+@import "../../App.scss";
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%; 
+    width: 65%;
+    height: 100%;
+    background-color: $background;
+    transition: right 300ms ease-in-out;
+    z-index: 21;
+    display: flex;
+    flex-direction: column;
+
+    @include tablet {
+        width: 20%;
+    }
+
+    span {
+        position: absolute;
+        right: 20px;
+        top: 35px; 
+    }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            z-index: 22;
+            position: relative; 
+            margin-top: 100px;
+            
+
+            a {
+                display: flex;
+                justify-content: center;
+
+                li {
+                    text-decoration: none;
+                    color: $primary;
+                    display: block; 
+                    font-size: $fs-small;
+                    
+                    
+                }
+                &:hover {
+                    background-color: $shadow;
+                }
+            }
+        }
+    
+  
+    .overlay-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); 
+      z-index: 20; 
+      opacity: 1;
+      transition: opacity 3s ease-in-out; 
+    }
+  
+    &.active {
+      right: 0;
+
+
+    }
+  }
