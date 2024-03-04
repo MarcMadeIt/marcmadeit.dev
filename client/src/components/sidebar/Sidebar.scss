@@ -2,25 +2,22 @@
 
 .sidebar {
     position: fixed;
-    top: 0;
-    right: -100%; 
-    width: 65%;
+    top: 100px;
+    right: 0; 
+    opacity: 0;
+    width: 100%;
     height: 100%;
     background-color: $background;
     transition: right 300ms ease-in-out;
     z-index: 21;
     display: flex;
     flex-direction: column;
+    gap: 150px;
 
     @include tablet {
-        width: 20%;
+        width: 100%;
     }
 
-    span {
-        position: absolute;
-        right: 20px;
-        top: 35px; 
-    }
 
         ul {
             display: flex;
@@ -48,6 +45,28 @@
                 }
             }
         }
+
+        .navbar-socials {
+            color: $primary;
+            display: flex;
+            align-items: center;
+            flex-direction: column-reverse;
+            justify-content: center;
+            gap: 20px;
+
+
+            .item-socials {
+                display: flex;
+                flex-direction: column;
+                
+
+                p {
+                    font-size: 10px;
+                }
+
+                
+            }
+        }
     
   
     .overlay-sidebar {
@@ -55,15 +74,14 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); 
+      height: 100%; 
       z-index: 20; 
       opacity: 1;
       transition: opacity 3s ease-in-out; 
     }
   
     &.active {
-      right: 0;
+      opacity: 1;
 
 
     }
