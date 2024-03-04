@@ -77,9 +77,8 @@ const upload = multer({ storage: storage });
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
-        mongoose.connect(process.env.MONGO_URL)
+        // Image upload logic
         const imageKey = crypto.randomBytes(20).toString("hex");
-
         const buffer = await sharp(req.file.buffer)
             .resize({ height: 1000, width: 1920, fit: "cover" })
             .toBuffer();
@@ -94,28 +93,19 @@ app.post("/api/blog/create", upload.single('file'), async (req, res) => {
         await s3Client.send(new PutObjectCommand(uploadParams));
 
         const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
-        req.imageUrl = imageUrl;
 
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        res.status(500).json({ error: 'Failed to upload image' });
-    }
-});
-
-//Oprettelse af Blogpost
-
-app.post("/api/blog/create", async (req, res) => {
-    try {
+        // Blog creation logic
         await connectToMongo();
         const { title, desc, content, tags } = req.body;
-        const imageUrl = req.imageUrl;
         const tagsArray = tags ? tags.split(',') : [];
         const { token } = req.cookies;
+
         jwt.verify(token, secret, {}, async (err, info) => {
             try {
                 if (err) {
                     throw err;
                 }
+
                 const newBlog = new Blog({
                     title,
                     desc,
@@ -126,6 +116,7 @@ app.post("/api/blog/create", async (req, res) => {
                 });
 
                 const savedBlog = await newBlog.save();
+
                 res.status(201).json({
                     message: 'Blog created successfully',
                     blog: savedBlog,
@@ -145,10 +136,11 @@ app.post("/api/blog/create", async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error creating blog:', error);
-        res.status(500).json({ error: 'Failed to create blog' });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 //Fremkaldelse af alle blogs til fremvisning, men sideopdelt
 app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
