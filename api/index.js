@@ -149,7 +149,7 @@ app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
 
         const blogs = await Blog.find()
             .sort({ createdAt: -1 })
-            .populate('author', ['username'])
+            .populate('author', ['username']).select('-content')
             .skip(skip)
             .limit(parseInt(limit));
 
@@ -167,8 +167,8 @@ app.get("/api/blog/get", cache('20 minutes'), async (req, res) => {
     try {
         await connectToMongo();
 
-        // Exclude the "content" field from the query result
-        const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author', ['username']).select('-content');
+        // Fetch only the latest two blog posts, excluding the "content" field
+        const blogs = await Blog.find().sort({ createdAt: -1 }).limit(2).populate('author', ['username']).select('-content');
 
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.status(200).json(blogs);
