@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SlMenu } from "react-icons/sl";
-import { FaGithub, FaInstagram, FaTimes, FaYoutube } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaYoutube } from "react-icons/fa";
+import { CgClose } from "react-icons/cg";
 import "./Sidebar.scss";
 
 function Sidebar() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -14,20 +16,38 @@ function Sidebar() {
   return (
     <>
       <span className="menu-icon" onClick={toggleSidebar}>
-        {sidebarVisible ? <FaTimes fontSize={30} /> : <SlMenu fontSize={30} />}
+        {sidebarVisible ? <CgClose fontSize={30} /> : <SlMenu fontSize={30} />}
       </span>
       <div className={`sidebar ${sidebarVisible ? "active" : ""}`}>
         <ul>
-          <Link className="link" to="/blogs">
+          <Link
+            className={`link ${location.pathname === "/blogs" ? "active" : ""}`}
+            to="/blogs"
+          >
             <li>Blogs</li>
           </Link>
-          <Link className="link" to="/library">
+          <Link
+            className={`link ${
+              location.pathname === "/library" ? "active" : ""
+            }`}
+            to="/library"
+          >
             <li>Library</li>
           </Link>
-          <Link className="link" to="/socials">
+          <Link
+            className={`link ${
+              location.pathname === "/socials" ? "active" : ""
+            }`}
+            to="/socials"
+          >
             <li>Socials</li>
           </Link>
-          <Link className="link" to="/#contact">
+          <Link
+            className={`link ${
+              location.pathname === "/#contact" ? "active" : ""
+            }`}
+            to="/#contact"
+          >
             <li>About</li>
           </Link>
         </ul>
@@ -38,14 +58,14 @@ function Sidebar() {
               href="https://www.instagram.com/marc.made.it/"
             >
               <span>
-                <FaInstagram style={{ fontSize: "30px" }} />
+                <FaInstagram />
               </span>
               <p>@Marc.Made.It</p>
             </a>
 
             <a className="item-socials link" href="#">
               <span>
-                <FaYoutube style={{ fontSize: "30px" }} />
+                <FaYoutube />
               </span>
               <p>@MarcMadeIt</p>
             </a>
@@ -54,7 +74,7 @@ function Sidebar() {
               href="https://github.com/MarcMadeIt"
             >
               <span>
-                <FaGithub style={{ fontSize: "28px" }} />
+                <FaGithub />
               </span>
               <p>@MarcMadeIt</p>
             </a>
