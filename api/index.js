@@ -56,18 +56,6 @@ app.use(
 
 // S3 Configuration ---------------------- S3 Configuration
 
-const bucketName = process.env.BUCKET_NAME;
-const bucketRegion = process.env.BUCKET_REGION;
-const accesKey = process.env.ACCESS_KEY;
-const secretAccesskey = process.env.SECRET_ACCESS_KEY;
-
-const s3Client = new S3Client({
-    credentials: {
-        accessKeyId: accesKey,
-        secretAccessKey: secretAccesskey,
-    },
-    region: bucketRegion,
-});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -77,6 +65,15 @@ const upload = multer({ storage: storage });
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
+        // S3 client configuration
+        const s3Client = new S3Client({
+            credentials: {
+                accessKeyId: process.env.ACCESS_KEY,
+                secretAccessKey: process.env.SECRET_ACCESS_KEY,
+            },
+            region: process.env.BUCKET_REGION,
+        });
+
         // Image upload logic
         const imageKey = crypto.randomBytes(20).toString("hex");
         const buffer = await sharp(req.file.buffer)
@@ -84,7 +81,7 @@ app.post("/api/blog/create", upload.single('file'), async (req, res) => {
             .toBuffer();
 
         const uploadParams = {
-            Bucket: bucketName,
+            Bucket: process.env.BUCKET_NAME,
             Key: imageKey,
             Body: buffer,
             ContentType: req.file.mimetype,
@@ -92,7 +89,7 @@ app.post("/api/blog/create", upload.single('file'), async (req, res) => {
 
         await s3Client.send(new PutObjectCommand(uploadParams));
 
-        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
+        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${imageKey}`;
 
         // Blog creation logic
         await connectToMongo();
