@@ -50,7 +50,7 @@ function App() {
         {/* Other Public Routes */}
         <Route path="/blogs/blog/:id" element={<BlogPage />} />
 
-        {/*<Route path="*" element={<Navigate to="/" replace />} />*/}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </UserContextProvider>
   );
