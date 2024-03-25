@@ -16,9 +16,9 @@
   .blogpage-blog {
     display: flex;
     flex-direction: column;
-    gap: 35px;
+    gap: 30px;
     width: 100%;
-    padding: 150px 20px 0 20px;
+    padding: 120px 20px 0 20px;
 
     @include large-mobile {
       padding: 150px 40px 0 40px;
@@ -70,11 +70,8 @@
 
       h3 {
           color: $text;
-          font-size: 20px;
-
-        @include large-mobile {
           font-size: 25px;
-        }
+
 
         @include mini-tablet {
           font-size: 30px;
