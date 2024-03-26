@@ -19,7 +19,7 @@ function Blog({ _id, title, desc, tags = [], imageinfo, createdAt, author }) {
 
   return (
     <Link className="link" to={`/blogs/blog/${_id}`}>
-      <div className="card post">
+      <div className="blog post">
         <div className="blog-image">
           <ImageBlog src={imageinfo} />
         </div>
