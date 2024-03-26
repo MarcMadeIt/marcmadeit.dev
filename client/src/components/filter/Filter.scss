@@ -65,10 +65,10 @@
             display: flex;
             gap: 5px;
             align-items: center;
-            border: 2px solid $placeholder;
+            border: 1px solid $placeholder;
             border-radius: $borderradius;
             padding: 5px;
-            width: 200px;
+            width: 220px;
 
 
             input {
@@ -77,6 +77,7 @@
                 border: none;
                 outline: none;
                 font-size: 16px;
+                padding: 2px;
 
 
                 &::placeholder {
