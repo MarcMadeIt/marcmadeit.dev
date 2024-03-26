@@ -2,9 +2,13 @@
 
 .filter {
     display: flex; 
-    gap: 30px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
+
+    @include mini-tablet {
+        gap: 30px;
+    }
 
 
     .dropdown {
