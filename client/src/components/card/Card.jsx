@@ -12,6 +12,7 @@ function Card() {
       <div className="card-content">
         <div className="card-title">
           <h3>Form - With Validation</h3>
+          <span>TAG</span>
         </div>
         <div className="card-tags"></div>
         <div className="card-info">

@@ -43,7 +43,7 @@
         padding: 15px;
         z-index: 2;
         background: rgb(3,30,30);
-background: linear-gradient(0deg, rgba(3,30,30,1) 25%, rgba(3,30,30,0.5) 50%, rgba(0,0,0,0) 100%);
+        background: linear-gradient(0deg, rgba(3,30,30,1) 25%, rgba(3,30,30,0.5) 50%, rgba(0,0,0,0) 100%);
 
 
         .card-title {
@@ -56,24 +56,23 @@ background: linear-gradient(0deg, rgba(3,30,30,1) 25%, rgba(3,30,30,0.5) 50%, rg
         }
 
         .card-info {
- display: flex; 
- justify-content: space-between;
- align-items: center;
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
 
             button {
                 font-size: 13px;
                 color: $primary;
                 letter-spacing: 0.5px;
-                font-weight: 600;
                 padding: 5px 10px;
                 border-radius: $borderradius;
-                border: 1px solid $primary;
+                border: 1px solid $placeholder;
                 background-color: transparent;
-                transition: 0.8s;
+                transition: 500ms;
                 cursor: pointer;
 
                 &:hover {
-                    transition: 0.8s;
+                    transition: 500ms;
                     background-color: $primary;
                     color: $background;
                 }
