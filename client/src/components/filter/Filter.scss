@@ -2,8 +2,9 @@
 
 .filter {
     display: flex; 
-    gap: 20px;
-    justify-content: space-evenly;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
 
 
     .dropdown {
@@ -11,6 +12,9 @@
 
 
         .fil-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
             padding: 5px;
             border: none;
             outline: none;
@@ -67,6 +71,7 @@
                 background-color: transparent;
                 border: none;
                 outline: none;
+                font-size: 16px;
 
 
                 &::placeholder {

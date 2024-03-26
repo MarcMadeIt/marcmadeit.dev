@@ -18,6 +18,10 @@
         color: $primary;
       }
 
+      .library-filter {
+        width: 100%;
+      }
+
       .library-content {
         display: flex;
         flex-wrap: wrap;
@@ -28,6 +32,8 @@
           max-width: 900px;
         }
       }
+
+
 
       
 

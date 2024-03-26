@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "./Filter.scss";
 import { FaSearch } from "react-icons/fa";
+import { FaArrowDownShortWide, FaArrowDownWideShort } from "react-icons/fa6";
 
 function Filter() {
   useEffect(() => {
@@ -105,7 +106,7 @@ function Filter() {
       </div>
       <div className="dropdown">
         <button className="fil-dropdown-btn" id="fil-dropdown-btn">
-          Filters
+          <FaArrowDownWideShort /> Filters
         </button>
         <ul
           className="fil-dropdown-menu"
