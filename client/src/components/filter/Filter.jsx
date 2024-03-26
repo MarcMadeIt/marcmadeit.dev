@@ -93,7 +93,7 @@ function Filter() {
   return (
     <div className="filter">
       <div className="search-content">
-        <form action="">
+        <label>
           <FaSearch size={14} />
           <input
             className="form-control"
@@ -102,7 +102,7 @@ function Filter() {
             onKeyUp={search}
             id="search-item"
           />
-        </form>
+        </label>
       </div>
       <div className="dropdown">
         <button className="fil-dropdown-btn" id="fil-dropdown-btn">
