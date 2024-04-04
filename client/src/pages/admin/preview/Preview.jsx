@@ -28,7 +28,6 @@ function Preview() {
     }
   };
 
-  // Make sure to call the function
   fetchBlogCount();
 
   return (

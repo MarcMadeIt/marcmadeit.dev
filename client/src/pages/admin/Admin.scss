@@ -64,17 +64,74 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 30px 0;
+            margin: 20px 0;
 
-            button {
-                outline: 0;
-                background-color: $primary;
-                color: $background;
-               border: 1px $placeholder solid;
-                cursor: pointer;
-                font-weight: 800;
-                padding: 5px 5px;
+
+            .react-select-container {
+                width: auto;
+                font-size: $fs-small;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                
+                .react-select__placeholder {
+                    color: $text;
+                }
+               
+                .react-select__indicator-separator {
+                    background-color: $primary;
+                }
+                
+                .react-select__control--is-focused {
+                     border: none;  
+                }
+
+                .css-t3ipsp-control{
+                    box-shadow: 0 0 5px 1px $primary;
+                }
+
+                .react-select__control {
+                    background-color: transparent;
+                    border: 1.5px solid $primary;
+                    border-radius: 6px;
+                   
+                    .react-select__multi-value {
+                    background-color: $primary;
+
+
+                    svg path {
+                        fill: $background;
+                    }
+                    }
+
+                }
+                
+                .react-select__menu {
+                    background-color: $background;
+                    color: $primary;
+                    border-radius: 6px;
+                    border: 1px solid $text-low ;
+                    
+                    .react-select__menu-list {
+                        border-radius: 6px;
+                        
+                        
+                        
+                        .react-select__option {
+                            background-color: $background;
+                            color: $primary;
+                            border-radius: 6px;
+                            
+                        }  
+                    }
+                }
+                    
             }
+
+
+
+
+          
         }
     }
 }

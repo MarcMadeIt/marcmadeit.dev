@@ -6,6 +6,7 @@ import Settings from "./settings/Settings.jsx";
 import Preview from "./preview/Preview.jsx";
 import { Link } from "react-router-dom";
 import { FaHouse } from "react-icons/fa6";
+import Select from "react-select";
 
 function Admin() {
   const [currentLayout, setCurrentLayout] = useState("preview");
@@ -15,8 +16,8 @@ function Admin() {
     setCurrentLayout(layout);
   };
 
-  const selectCreate = (createType) => {
-    setSelectedCreate(createType);
+  const selectCreate = (selectedOption) => {
+    setSelectedCreate(selectedOption ? selectedOption.value : null);
   };
 
   const renderCreateForm = () => {
@@ -25,11 +26,15 @@ function Admin() {
         return <CreateBlog />;
       case "project":
         return <CreateProject />;
-      // Add more cases for additional create types if needed
       default:
         return null;
     }
   };
+
+  const options = [
+    { value: "blog", label: "New Blog" },
+    { value: "project", label: "New Project" },
+  ];
 
   return (
     <div className="admin">
@@ -79,11 +84,13 @@ function Admin() {
         {currentLayout === "create" && (
           <div>
             <div className="create-options">
-              <button onClick={() => selectCreate("blog")}>Create Blog</button>
-              <button onClick={() => selectCreate("project")}>
-                Create Project
-              </button>
-              {/* Add more buttons for additional create types if needed */}
+              <Select
+                options={options}
+                onChange={selectCreate}
+                className="react-select-container"
+                classNamePrefix="react-select"
+                placeholder="Select type..."
+              />
             </div>
             {selectedCreate && renderCreateForm()}
           </div>

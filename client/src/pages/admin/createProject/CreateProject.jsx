@@ -23,11 +23,8 @@ function CreateProject() {
 
   const createNewBlog = async (ev) => {
     ev.preventDefault();
-
     setLoading(true);
-
     const token = localStorage.getItem("token");
-
     try {
       const formData = new FormData();
       formData.append("title", title);
