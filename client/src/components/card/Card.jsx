@@ -1,7 +1,7 @@
 import React from "react";
 import "./Card.scss";
 
-import image from "../../assets/img/content/cat.png";
+import image from "../../assets/img/content/post.png";
 
 function Card() {
   return (

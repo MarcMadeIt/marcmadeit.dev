@@ -12,7 +12,7 @@
     cursor: pointer;
 
 
-    @include mini-tablet {
+    @include large-mobile {
         width: 320px;
         height: 320px;
     }  
