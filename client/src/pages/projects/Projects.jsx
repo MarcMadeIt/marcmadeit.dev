@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../components/header/Header";
 import "./Projects.scss";
-import Card from "../../components/card/Card";
+import Project from "../../components/project/Project.jsx";
 
 function Projects() {
   return (
@@ -11,7 +11,12 @@ function Projects() {
       <div className="projects-title">
         <h2>Projects</h2>
       </div>
-      <div className="projects-content"></div>
+      <div className="projects-content">
+        <Project />
+        <Project />
+        <Project />
+        <Project />
+      </div>
     </div>
   );
 }

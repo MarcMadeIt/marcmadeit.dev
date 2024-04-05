@@ -1,9 +1,7 @@
 import React from "react";
-import "./Blog.scss";
+import "./Project.scss";
 import { format } from "date-fns";
-import ProfilePic from "../../assets/img/profile/profile-small.png";
-import ImageBlog from "../image/ImageBlog";
-import { Link } from "react-router-dom";
+import Image from "../../assets/img/content/tiger.jpg";
 
 function truncateText(text, limit) {
   if (typeof text !== "string") {
@@ -26,38 +24,24 @@ function Project({
   const truncatedDesc = truncateText(desc, 17);
 
   return (
-    <Link className="link" to={`/projects/project/${_id}`}>
-      <div className="project post">
-        <div className="project-image">
-          <ImageBlog src={imageinfo} />
+    //<Link className="link" to={`/projects/project/${_id}`}>
+    <div className="project">
+      <div className="project-image">
+        <img src={Image} alt="" />
+      </div>
+      <div className="project-content">
+        <div className="project-title">
+          <h3>Dashboard</h3>
+          <span>TAG</span>
         </div>
-        <div className="project-content">
-          <div className="project-tags">
-            {tags.map((tag, index) => (
-              <span key={`${_id}-${index}-${tag}`}>{`#${tag}`}</span>
-            ))}
-          </div>
-          <div className="project-title">{title}</div>
-          <div className="project-desc">
-            <p>{truncatedDesc}</p>
-          </div>
-          <div className="project-details">
-            <div className="by-author">
-              <>
-                <span>
-                  <img src={ProfilePic} alt="alt" />
-                </span>
-                <span> Made by</span>
-                {author && <span>{author.username}</span>}
-              </>
-            </div>
-            <div className="project-time">
-              <span>{format(new Date(createdAt), "dd. MMM yyyy")}</span>
-            </div>
-          </div>
+        <div className="project-tags"></div>
+        <div className="project-info">
+          <button>View Project</button>
+          <span>20 feb 2024</span>
         </div>
       </div>
-    </Link>
+    </div>
+    //</Link>
   );
 }
 
