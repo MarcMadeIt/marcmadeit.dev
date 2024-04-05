@@ -8,6 +8,11 @@ const ProjectSchema = new Schema({
     content: { type: String },
     tags: [String],
     imageinfo: String,
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
 }, {
     timestamps: true,
 });

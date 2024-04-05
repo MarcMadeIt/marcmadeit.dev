@@ -11,12 +11,7 @@ function Projects() {
       <div className="projects-title">
         <h2>Projects</h2>
       </div>
-      <div className="projects-content">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-      </div>
+      <div className="projects-content"></div>
     </div>
   );
 }
