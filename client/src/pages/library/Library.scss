@@ -26,10 +26,11 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 30px;
+        gap: 15px;
 
         @include mini-tablet {
           max-width: 900px;
+          gap: 30px;
         }
       }
 

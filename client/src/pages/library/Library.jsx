@@ -20,6 +20,10 @@ function Library() {
         <Card />
         <Card />
         <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
       </div>
       <Footer />
     </div>

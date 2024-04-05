@@ -17,7 +17,6 @@ function Card() {
         <div className="card-tags"></div>
         <div className="card-info">
           <button>Get Source</button>
-          <span>20 feb 2024</span>
         </div>
       </div>
     </div>
