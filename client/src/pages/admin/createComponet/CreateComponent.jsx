@@ -1,21 +1,16 @@
 import Select from "react-select";
-import "./CreateProject.scss";
+import "./CreateComponent.scss";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Editor from "../../../components/editor/Editor";
 
-function CreateProject() {
+function CreateComponent() {
   const options = [
     { value: "HTML", label: "HTML" },
     { value: "CSS", label: "CSS" },
     { value: "JS", label: "JavaScript" },
     { value: "ReactJS", label: "ReactJS" },
     { value: "NodeJS", label: "NodeJS" },
-    { value: "NextJS", label: "NextJS" },
-    { value: "ExpressJS", label: "ExpressJS" },
-    { value: "MongoDB", label: "MongoDB" },
-    { value: "MySQL", label: "MySQL" },
-    { value: "PostgreSQL", label: "PostgreSQL" },
   ];
 
   const [tags, setTags] = useState([]);
@@ -27,7 +22,7 @@ function CreateProject() {
   const [loading, setLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-  const createNewProject = async (ev) => {
+  const createNewComponent = async (ev) => {
     ev.preventDefault();
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -39,7 +34,7 @@ function CreateProject() {
       formData.append("tags", tags.map((tag) => tag.value).join(","));
       formData.append("file", file[0]);
 
-      const response = await fetch(`${apiUrl}/project/create`, {
+      const response = await fetch(`${apiUrl}/blog/create`, {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -49,12 +44,12 @@ function CreateProject() {
       });
 
       if (response.ok) {
-        const createdProject = await response.json();
-        console.log("Created project:", createdProject);
+        const createdBlog = await response.json();
+        console.log("Created Blog:", createdBlog);
         setRedirect(true);
       } else {
         const errorMessage = await response.text();
-        console.error("Failed to create project:", errorMessage);
+        console.error("Failed to create blog:", errorMessage);
         // Display an error message to the user
       }
     } catch (error) {
@@ -70,7 +65,7 @@ function CreateProject() {
   return (
     <div className="create-project">
       <div className="form-create">
-        <form onSubmit={createNewProject} encType="multipart/form-data">
+        <form onSubmit={createNewBlog} encType="multipart/form-data">
           <Select
             isMulti
             name="tags"
@@ -82,7 +77,7 @@ function CreateProject() {
             onChange={(selectedOptions) => setTags(selectedOptions)}
           />
           <input
-            className="title-project"
+            className="title-blog"
             name="title"
             type="title"
             placeholder="Title on project..."
@@ -90,7 +85,7 @@ function CreateProject() {
             onChange={(ev) => setTitle(ev.target.value)}
           />
           <textarea
-            className="desc-project"
+            className="desc-blog"
             placeholder="Description of the project.."
             name="desc"
             id=""
@@ -114,7 +109,7 @@ function CreateProject() {
             {file.length > 0 ? file[0].name : "No file selected"}
           </span>
           <button className="submit-button" type="submit">
-            Create Project
+            Create Blog
           </button>
         </form>
       </div>
@@ -122,4 +117,4 @@ function CreateProject() {
   );
 }
 
-export default CreateProject;
+export default CreateComponent;

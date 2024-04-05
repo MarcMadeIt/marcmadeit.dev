@@ -1,0 +1,40 @@
+@import "../../App.scss";
+
+.projects {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+    padding: 130px 15px 0 15px;
+
+
+
+    @include mini-tablet {
+         padding: 200px 15px 0 15px;
+        gap: 50px;
+      }
+
+      .projects-title {
+        color: $primary;
+      }
+
+      .projects-filter {
+        width: 100%;
+      }
+
+      .projects-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+
+        @include mini-tablet {
+          max-width: 900px;
+        }
+      }
+
+
+
+      
+
+}

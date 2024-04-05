@@ -6,6 +6,7 @@ import Settings from "./settings/Settings.jsx";
 import Preview from "./preview/Preview.jsx";
 import { Link } from "react-router-dom";
 import { FaHouse } from "react-icons/fa6";
+import CreateComponent from "./createComponet/CreateComponent.jsx";
 
 function RadioButton({ value, label, isSelected, onSelect }) {
   return (
@@ -39,6 +40,8 @@ function Admin() {
         return <CreateBlog />;
       case "project":
         return <CreateProject />;
+      case "component":
+        return <CreateComponent />;
       default:
         return null;
     }
@@ -74,7 +77,7 @@ function Admin() {
           }
           onClick={() => switchLayout("create")}
         >
-          Create
+          Create New
         </button>
         <button
           style={
@@ -94,14 +97,20 @@ function Admin() {
             <div className="create-options">
               <RadioButton
                 value="blog"
-                label="New Blog"
+                label="Blog"
                 isSelected={selectedCreate === "blog"}
                 onSelect={selectCreate}
               />
               <RadioButton
                 value="project"
-                label="New Project"
+                label="Project"
                 isSelected={selectedCreate === "project"}
+                onSelect={selectCreate}
+              />
+              <RadioButton
+                value="component"
+                label="Component"
+                isSelected={selectedCreate === "component"}
                 onSelect={selectCreate}
               />
             </div>

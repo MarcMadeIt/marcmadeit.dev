@@ -14,6 +14,7 @@ import session from 'express-session';
 import apicache from "apicache"
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import ProjectModel from './modules/Project.js';
 
 dotenv.config();
 
@@ -56,40 +57,41 @@ app.use(
 
 // S3 Configuration ---------------------- S3 Configuration
 
+const s3Client = new S3Client({
+    credentials: {
+        accessKeyId: process.env.ACCESS_KEY,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    },
+    region: process.env.BUCKET_REGION,
+});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// Function to generate upload parameters for S3
+const generateUploadParams = async (fileBuffer, mimetype) => {
+    const imageKey = crypto.randomBytes(20).toString("hex");
+    const buffer = await sharp(fileBuffer)
+        .resize({ height: 1000, width: 1920, fit: "cover" })
+        .toBuffer();
+
+    return {
+        Bucket: process.env.BUCKET_NAME,
+        Key: imageKey,
+        Body: buffer,
+        ContentType: mimetype,
+    };
+};
 
 // BLOG -------------------------------------------------------------- BLOG
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
-        // S3 client configuration
-        const s3Client = new S3Client({
-            credentials: {
-                accessKeyId: process.env.ACCESS_KEY,
-                secretAccessKey: process.env.SECRET_ACCESS_KEY,
-            },
-            region: process.env.BUCKET_REGION,
-        });
-
-        // Image upload logic
-        const imageKey = crypto.randomBytes(20).toString("hex");
-        const buffer = await sharp(req.file.buffer)
-            .resize({ height: 1000, width: 1920, fit: "cover" })
-            .toBuffer();
-
-        const uploadParams = {
-            Bucket: process.env.BUCKET_NAME,
-            Key: imageKey,
-            Body: buffer,
-            ContentType: req.file.mimetype,
-        };
-
+        // Use the existing S3 client to send the object to S3
+        const uploadParams = generateUploadParams(req.file.buffer, req.file.mimetype);
         await s3Client.send(new PutObjectCommand(uploadParams));
 
-        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${imageKey}`;
+        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`;
 
         // Blog creation logic
         await connectToMongo();
@@ -140,7 +142,7 @@ app.post("/api/blog/create", upload.single('file'), async (req, res) => {
 
 
 //Fremkaldelse af alle blogs til fremvisning, men sideopdelt
-app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
+app.get("/api/blog/getlimit", async (req, res) => {
     try {
         await connectToMongo();
         const { page = 1, limit = 3 } = req.query;
@@ -163,7 +165,7 @@ app.get("/api/blog/getlimit", cache('20 minutes'), async (req, res) => {
 });
 
 
-app.get("/api/blog/get", cache('20 minutes'), async (req, res) => {
+app.get("/api/blog/get", async (req, res) => {
     try {
         await connectToMongo();
 
@@ -179,7 +181,7 @@ app.get("/api/blog/get", cache('20 minutes'), async (req, res) => {
 });
 
 //Fremkaldelse af specifik blogpost
-app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
+app.get("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -339,6 +341,79 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
             }
         });
     } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// PROJECT ---------------------------------------------------------- PROJECT
+
+app.post("/api/project/create", upload.single('file'), async (req, res) => {
+    try {
+        // Use the existing S3 client to send the object to S3
+        const uploadParams = generateUploadParams(req.file.buffer, req.file.mimetype);
+        await s3Client.send(new PutObjectCommand(uploadParams));
+
+        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`;
+
+        // Project creation logic
+        await connectToMongo();
+        const { title, description, technologies } = req.body;
+        const technologiesArray = technologies ? technologies.split(',') : [];
+        const { token } = req.cookies;
+
+        jwt.verify(token, secret, {}, async (err, info) => {
+            try {
+                if (err) {
+                    throw err;
+                }
+
+                const newProject = new Project({
+                    title,
+                    description,
+                    technologies: technologiesArray,
+                    author: info.id,
+                    imageinfo: imageUrl,
+                });
+
+                const savedProject = await newProject.save();
+
+                res.status(201).json({
+                    message: 'Project created successfully',
+                    project: savedProject,
+                    tokenInfo: {
+                        id: info.id,
+                        username: info.username,
+                    },
+                });
+            } catch (error) {
+                console.error('Error creating project:', error);
+
+                if (error.name === 'JsonWebTokenError') {
+                    return res.status(401).json({ error: 'Unauthorized' });
+                }
+
+                res.status(500).json({ error: 'Failed to create project' });
+            }
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get("/api/project/get", async (req, res) => {
+    try {
+        await connectToMongo();
+
+        // Fetch only the latest two blog posts, excluding the "content" field
+        const projects = await ProjectModel.find().sort({ createdAt: -1 }).limit(2).populate('author', ['username']).select('-content');
+
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        res.status(200).json(projects);
+    } catch (error) {
+        console.error('Error fetching blogs:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
