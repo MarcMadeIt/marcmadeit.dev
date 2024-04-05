@@ -8,8 +8,14 @@ function CreateProject() {
   const options = [
     { value: "HTML", label: "HTML" },
     { value: "CSS", label: "CSS" },
-    { value: "JS", label: "JS" },
+    { value: "JS", label: "JavaScript" },
     { value: "ReactJS", label: "ReactJS" },
+    { value: "NodeJS", label: "NodeJS" },
+    { value: "NextJS", label: "NextJS" },
+    { value: "ExpressJS", label: "ExpressJS" },
+    { value: "MongoDB", label: "MongoDB" },
+    { value: "MySQL", label: "MySQL" },
+    { value: "PostgreSQL", label: "PostgreSQL" },
   ];
 
   const [tags, setTags] = useState([]);
@@ -62,8 +68,7 @@ function CreateProject() {
   }
 
   return (
-    <div className="create-blog">
-      <h3>Create new Project</h3>
+    <div className="create-project">
       <div className="form-create">
         <form onSubmit={createNewBlog} encType="multipart/form-data">
           <Select
@@ -80,13 +85,13 @@ function CreateProject() {
             className="title-blog"
             name="title"
             type="title"
-            placeholder="Title on the new blog..."
+            placeholder="Title on project..."
             value={title}
             onChange={(ev) => setTitle(ev.target.value)}
           />
           <textarea
             className="desc-blog"
-            placeholder="Description/summary to the new blog..."
+            placeholder="Description of the project.."
             name="desc"
             id=""
             value={desc}

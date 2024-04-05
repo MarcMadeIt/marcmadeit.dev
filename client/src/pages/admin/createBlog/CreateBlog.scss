@@ -138,6 +138,12 @@
                         box-shadow: 0 0 5px 1px $primary;
                     }
 
+                    .react-select__indicator {
+                        svg {
+                            fill: $primary;
+                        }
+                    }
+
                     .react-select__control {
                         background-color: transparent;
                         border: 1.5px solid $primary;

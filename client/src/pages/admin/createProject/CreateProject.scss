@@ -1,6 +1,6 @@
 @import "../../../App.scss";
 
-.create-blog {
+.create-project {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -136,6 +136,11 @@
 
                     .css-t3ipsp-control{
                         box-shadow: 0 0 5px 1px $primary;
+                    }
+                    .react-select__indicator {
+                        svg {
+                            fill: $primary;
+                        }
                     }
 
                     .react-select__control {

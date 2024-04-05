@@ -1,5 +1,7 @@
 @import "../../App.scss";
 
+
+
 .admin {
     display: flex;
     flex-direction: column;
@@ -65,72 +67,33 @@
             align-items: center;
             justify-content: center;
             margin: 20px 0;
+            gap: 20px;
 
-
-            .react-select-container {
-                width: auto;
-                font-size: $fs-small;
+            .radio {
+                color: $primary;
+                padding: 5px 10px;
                 display: flex;
-                align-items: center;
-                justify-content: center;
+                gap: 10px;
+                align-items: center; 
+                border: 1px solid $primary;
+                border-radius: $borderradius;
                 
-                .react-select__placeholder {
-                    color: $text;
+                input[type="radio"] {
+          
+                  appearance: none;
+                  -webkit-appearance: none;
+                  -moz-appearance: none;
+                  width: 20px; 
+                  height: 20px; 
+                  border: 2px solid $primary; 
+                  border-radius: 50%;
+                  outline: none; 
                 }
-               
-                .react-select__indicator-separator {
-                    background-color: $primary;
+            
+                input[type="radio"]:checked {
+                  background-color: $primary; 
                 }
-                
-                .react-select__control--is-focused {
-                     border: none;  
-                }
-
-                .css-t3ipsp-control{
-                    box-shadow: 0 0 5px 1px $primary;
-                }
-
-                .react-select__control {
-                    background-color: transparent;
-                    border: 1.5px solid $primary;
-                    border-radius: 6px;
-                   
-                    .react-select__multi-value {
-                    background-color: $primary;
-
-
-                    svg path {
-                        fill: $background;
-                    }
-                    }
-
-                }
-                
-                .react-select__menu {
-                    background-color: $background;
-                    color: $primary;
-                    border-radius: 6px;
-                    border: 1px solid $text-low ;
-                    
-                    .react-select__menu-list {
-                        border-radius: 6px;
-                        
-                        
-                        
-                        .react-select__option {
-                            background-color: $background;
-                            color: $primary;
-                            border-radius: 6px;
-                            
-                        }  
-                    }
-                }
-                    
-            }
-
-
-
-
+              }
           
         }
     }

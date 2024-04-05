@@ -6,7 +6,7 @@ import Editor from "../../../components/editor/Editor";
 
 function CreateBlog() {
   const options = [
-    { value: "HTML", label: "HTML" },
+    { value: "tips", label: "Tips & Tricks" },
     { value: "CSS", label: "CSS" },
     { value: "JS", label: "JS" },
     { value: "ReactJS", label: "ReactJS" },
@@ -66,7 +66,6 @@ function CreateBlog() {
 
   return (
     <div className="create-blog">
-      <h3>Create new Blog</h3>
       <div className="form-create">
         <form onSubmit={createNewBlog} encType="multipart/form-data">
           <Select

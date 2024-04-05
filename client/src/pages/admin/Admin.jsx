@@ -6,18 +6,31 @@ import Settings from "./settings/Settings.jsx";
 import Preview from "./preview/Preview.jsx";
 import { Link } from "react-router-dom";
 import { FaHouse } from "react-icons/fa6";
-import Select from "react-select";
+
+function RadioButton({ value, label, isSelected, onSelect }) {
+  return (
+    <label className="radio">
+      <input
+        type="radio"
+        value={value}
+        checked={isSelected}
+        onChange={() => onSelect(value)}
+      />
+      {label}
+    </label>
+  );
+}
 
 function Admin() {
   const [currentLayout, setCurrentLayout] = useState("preview");
-  const [selectedCreate, setSelectedCreate] = useState(null); // State variable to track the selected create type
+  const [selectedCreate, setSelectedCreate] = useState(null);
 
   const switchLayout = (layout) => {
     setCurrentLayout(layout);
   };
 
-  const selectCreate = (selectedOption) => {
-    setSelectedCreate(selectedOption ? selectedOption.value : null);
+  const selectCreate = (value) => {
+    setSelectedCreate(value);
   };
 
   const renderCreateForm = () => {
@@ -30,11 +43,6 @@ function Admin() {
         return null;
     }
   };
-
-  const options = [
-    { value: "blog", label: "New Blog" },
-    { value: "project", label: "New Project" },
-  ];
 
   return (
     <div className="admin">
@@ -84,12 +92,17 @@ function Admin() {
         {currentLayout === "create" && (
           <div>
             <div className="create-options">
-              <Select
-                options={options}
-                onChange={selectCreate}
-                className="react-select-container"
-                classNamePrefix="react-select"
-                placeholder="Select type..."
+              <RadioButton
+                value="blog"
+                label="New Blog"
+                isSelected={selectedCreate === "blog"}
+                onSelect={selectCreate}
+              />
+              <RadioButton
+                value="project"
+                label="New Project"
+                isSelected={selectedCreate === "project"}
+                onSelect={selectCreate}
               />
             </div>
             {selectedCreate && renderCreateForm()}
