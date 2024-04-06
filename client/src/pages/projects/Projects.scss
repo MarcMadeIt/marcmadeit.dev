@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 50px;
+    gap: 30px;
     padding: 130px 15px 0 15px;
 
 
@@ -26,10 +26,11 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 30px;
+        gap: 50px;
 
         @include mini-tablet {
           max-width: 900px;
+          gap: 100px;
         }
       }
 

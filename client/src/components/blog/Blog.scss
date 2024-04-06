@@ -75,14 +75,15 @@
                     span {
                         box-shadow: $primary 0 0 5px 1px;
                         letter-spacing: .8px;
-                        padding: 3px 6px;
+                        padding: 2px 4px;
                         border-radius: 4px;
-                        font-size: 10px;
+                        font-size: 9px;
                         font-weight: 600;
 
 
                         @include large-mobile {
                             font-size: 13px;
+                            padding: 3px 6px;
                         }
                     }
                     
@@ -147,7 +148,7 @@
 
                         span {
                             display: flex;
-                            font-size: 10px;
+                            font-size: 9px;
                             color: $placeholder;
                             letter-spacing: .7px;
                             font-weight: 500;

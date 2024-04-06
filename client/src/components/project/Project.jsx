@@ -32,12 +32,18 @@ function Project({
       <div className="project-content">
         <div className="project-title">
           <h3>Dashboard</h3>
-          <span>TAG</span>
         </div>
         <div className="project-tags"></div>
         <div className="project-info">
-          <button>View Project</button>
-          <span>20 feb 2024</span>
+          <div className="project-btn">
+            <button>View Project</button>
+          </div>
+          <div className="project-tags">
+            <span>NextJS</span>
+            <span>NodeJS</span>
+            <span>Express</span>
+            <span>MongoDB</span>
+          </div>
         </div>
       </div>
     </div>

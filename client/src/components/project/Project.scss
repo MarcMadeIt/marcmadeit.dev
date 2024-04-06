@@ -54,9 +54,7 @@
             font-size: 13px;
         }
 
-        .project-desc {
-            font-size: 13px;
-        }
+        
 
         .project-info {
             display: flex; 
@@ -69,7 +67,8 @@
                 letter-spacing: 0.5px;
                 padding: 5px 10px;
                 border-radius: $borderradius;
-                border: 1px solid $placeholder;
+                border: none;
+                border-bottom: 1px solid $primary;
                 background-color: transparent;
                 transition: 500ms;
                 cursor: pointer;
@@ -83,6 +82,24 @@
 
             span {
                 font-size: 10px;
+            }
+
+
+            .project-tags {
+                display: flex;
+                gap: 10px;
+    
+                span {
+                    padding: 1px 3px;
+                    border-radius: $borderradius;
+                    background-color: $background;
+                    color: $primary;
+                    border: 1px solid $primary;
+                    font-size: 12px;
+                    font-weight: 500;
+    
+                }
+    
             }
         }
 
