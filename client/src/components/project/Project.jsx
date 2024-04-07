@@ -39,33 +39,33 @@ function Project() {
   };
 
   return (
-    <a className="link" href="/">
-      <div className="project">
-        <div className="project-image">
-          <img src={Image} alt="" />
+    <div className="project">
+      <div className="project-image">
+        <img src={Image} alt="" />
+      </div>
+      <div className="project-content">
+        <div className="project-title">
+          <h2>Dashboard</h2>
         </div>
-        <div className="project-content">
-          <div className="project-title">
-            <h2>Dashboard</h2>
-          </div>
-          <div className="project-desc">
-            <span>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim
-              quisquam nihil voluptatibus illum recusandae fugiat voluptates
-              dolorum ducimus minus consectetur?
-            </span>
-          </div>
-          <div className="project-info">
-            <div className="project-btn">
+        <div className="project-desc">
+          <span>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim
+            quisquam nihil voluptatibus illum recusandae fugiat voluptates
+            dolorum ducimus minus consectetur?
+          </span>
+        </div>
+        <div className="project-info">
+          <div className="project-tags">{renderTags()}</div>
+          <div className="project-btn">
+            <a className="link" href="/">
               <button>
                 View Project <FaArrowRight />
               </button>
-            </div>
-            <div className="project-tags">{renderTags()}</div>
+            </a>
           </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
 
