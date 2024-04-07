@@ -1,28 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Project.scss";
-import { format } from "date-fns";
 import Image from "../../assets/img/content/dashboard.png";
 import { FaArrowRight } from "react-icons/fa6";
 
-function truncateText(text, limit) {
-  if (typeof text !== "string") {
-    return "";
-  }
+function Project() {
+  const [isMobile, setIsMobile] = useState(false);
 
-  const words = text.split(" ");
-  return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
-}
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 568); // Change 768 to your desired breakpoint
+    };
+    handleResize(); // Call once to set initial state
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-function Project({
-  _id,
-  title,
-  desc,
-  tags = [],
-  imageinfo,
-  createdAt,
-  author,
-}) {
-  const truncatedDesc = truncateText(desc, 17);
+  const renderTags = () => {
+    if (isMobile) {
+      // Render only the first two tags in mobile view
+      return (
+        <>
+          <span>NextJS</span>
+          <span>MongoDB</span>
+        </>
+      );
+    } else {
+      // Render all tags
+      return (
+        <>
+          <span>NextJS</span>
+          <span>MongoDB</span>
+          <span>NodeJS</span>
+        </>
+      );
+    }
+  };
 
   return (
     <a className="link" href="/">
@@ -47,11 +61,7 @@ function Project({
                 View Project <FaArrowRight />
               </button>
             </div>
-            <div className="project-tags">
-              <span>NextJS</span>
-              <span>MongoDB</span>
-              <span>NodeJS</span>
-            </div>
+            <div className="project-tags">{renderTags()}</div>
           </div>
         </div>
       </div>
