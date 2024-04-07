@@ -25,7 +25,6 @@ const secret = process.env.SESSION_SECRET;
 const salt = bcrypt.genSaltSync(10);
 const cache = apicache.middleware;
 
-
 const corsOptions = {
     credentials: true,
     origin: ["http://localhost:5173", "httos://marcmadeit.vercel.app"],
@@ -416,10 +415,57 @@ app.get("/api/project/get", async (req, res) => {
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.status(200).json(projects);
     } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error('Error fetching projects:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.get("/api/project/getbyuser", async (req, res) => {
+    try {
+        await connectToMongo();
+        const { token } = req.cookies;
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        try {
+            const { id: userId } = jwt.verify(token, secret);
+            const userProjects = await Project.find({ author: userId })
+                .sort({ createdAt: -1 })
+                .populate('author', ['username']);
+            if (!userProjects || userProjects.length === 0) {
+                return res.status(404).json({ error: 'No Projects found for the user' });
+            }
+            res.status(200).json(userProjects);
+        } catch (error) {
+            console.error('Error fetching Project:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    } catch (error) {
+        console.error('Error in /api/project/getbyuser route:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.delete("/api/project/get/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid blog ID' });
+        }
+
+        const deletedProject = await Project.findByIdAndDelete(id);
+
+        if (!deletedProject) {
+            return res.status(404).json({ error: 'Blog not found' });
+        }
+
+        res.json({ message: 'Project deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting Project:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 // AUTH ------------------------------------------------------- AUTH
 

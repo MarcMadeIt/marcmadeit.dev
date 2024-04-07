@@ -6,7 +6,8 @@ import Editor from "../../../components/editor/Editor";
 
 function CreateBlog() {
   const options = [
-    { value: "tips", label: "Tips & Tricks" },
+    { value: "Tips & Tricks", label: "Tips & Tricks" },
+    { value: "Inspiration", label: "Inspiration" },
     { value: "CSS", label: "CSS" },
     { value: "JS", label: "JS" },
     { value: "ReactJS", label: "ReactJS" },

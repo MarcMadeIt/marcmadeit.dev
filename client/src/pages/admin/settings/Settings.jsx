@@ -4,7 +4,8 @@ import {
   IoChevronBack,
   IoChevronForward,
   IoDocumentAttachOutline,
-  IoPaperPlaneOutline,
+  IoEaselOutline,
+  IoFileTrayFullOutline,
   IoPersonOutline,
   IoRadioOutline,
 } from "react-icons/io5";
@@ -13,6 +14,7 @@ import ViewBlogs from "./viewBlogs/ViewBlogs.jsx";
 import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
+import ViewProjects from "./viewProjects/ViewProjects.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function Settings() {
@@ -59,10 +61,20 @@ function Settings() {
             </button>
             <button
               className="set-item"
+              onClick={() => switchLayout("viewProjects")}
+            >
+              <div className="set-item-left">
+                <IoEaselOutline fontSize={20} />
+                <span>View & Edit Projects</span>
+              </div>
+              <IoChevronForward fontSize={25} />
+            </button>
+            <button
+              className="set-item"
               onClick={() => switchLayout("viewLibrary")}
             >
               <div className="set-item-left">
-                <IoPaperPlaneOutline fontSize={20} />
+                <IoFileTrayFullOutline fontSize={20} />
                 <span>View & Edit Library</span>
               </div>
               <IoChevronForward fontSize={25} />
@@ -87,6 +99,7 @@ function Settings() {
         <div className="layout-container">
           {currentLayout === "accountSet" && <AccountSet />}
           {currentLayout === "viewBlogs" && <ViewBlogs />}
+          {currentLayout === "viewProjects" && <ViewProjects />}
           {currentLayout === "viewLibrary" && <ViewLibrary />}
           {currentLayout === "extra" && <Extra />}
         </div>
