@@ -11,7 +11,7 @@
     top: 0;
     background-color: $background;
     z-index: 99;
-    border-bottom: 2px solid $shadow;
+    /* border-bottom: 2px solid $shadow; */
 
     @include mini-tablet {
         height: 120px;

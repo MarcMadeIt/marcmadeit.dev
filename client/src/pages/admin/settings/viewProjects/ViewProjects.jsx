@@ -18,7 +18,7 @@ function ViewProjects() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/project/getbyuser`, {
+    fetch(`${apiUrl}/project/get`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ function ViewProjects() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching blogs:", error);
+        console.error("Error fetching projects:", error);
         setLoading(false);
       });
   }, []);
@@ -64,12 +64,12 @@ function ViewProjects() {
 
   return (
     <div className="viewprojects">
-      <div className="viewblogs-title">
+      <div className="viewprojects-title">
         <h3>Overview</h3>
         <p>Projects</p>
       </div>
 
-      <div className="viewblogs-cont">
+      <div className="viewprojects-cont">
         {loading ? (
           <p>Loading...</p>
         ) : (
@@ -77,11 +77,11 @@ function ViewProjects() {
             {Array.isArray(projects) ? (
               projects.map((projectInfo) => (
                 <li key={projectInfo._id}>
-                  <div className="viewblogs-details">
-                    <div className="viewblogs-img">
+                  <div className="viewprojects-details">
+                    <div className="viewprojects-img">
                       <ImageBlog src={projectInfo.imageinfo} />
                     </div>
-                    <div className="viewblogs-desc">
+                    <div className="viewprojects-desc">
                       <p>{truncateText(projectInfo.title, 4)}</p>
                       <span>
                         {format(
@@ -91,7 +91,7 @@ function ViewProjects() {
                       </span>
                     </div>
                   </div>
-                  <div className="viewblogs-buttons">
+                  <div className="viewprojects-buttons">
                     <Link
                       className="blodpage-edit"
                       to={`/edit/${projectInfo._id}`}

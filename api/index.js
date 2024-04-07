@@ -70,65 +70,79 @@ const upload = multer({ storage: storage });
 
 // BLOG -------------------------------------------------------------- BLOG
 
-app.post("/api/blog/create", upload.single('file'), async (req, res) => {
+app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
     try {
-        const bucketName = process.env.BUCKET_NAME;
-
-        // Function to generate upload parameters for S3
-        const generateUploadParams = async (fileBuffer, mimetype) => {
-            const imageKey = crypto.randomBytes(20).toString("hex");
-            const buffer = await sharp(fileBuffer)
-                .resize({ height: 1000, width: 1920, fit: "cover" })
-                .toBuffer();
-
-            return {
-                Bucket: bucketName,
-                Key: imageKey,
-                Body: buffer,
-                ContentType: mimetype,
-            };
-        };
-
-        // Use the existing S3 client to send the object to S3
-        const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
-        await s3Client.send(new PutObjectCommand(uploadParams));
-
-        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${uploadParams.Key}`;
-
-        // Blog creation logic
         await connectToMongo();
-        const { title, desc, content, tags } = req.body;
-        const tagsArray = tags ? tags.split(',') : [];
+        const { id } = req.params;
         const { token } = req.cookies;
 
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
-                return res.status(401).json({ error: 'Unauthorized' });
+
+                if (err.name === 'TokenExpiredError') {
+                    return res.status(401).json({ error: 'Token expired' });
+                }
+
+                return res.status(500).json({ error: 'Internal Server Error' });
             }
 
-            const newBlog = new Blog({
-                title,
-                desc,
-                content,
-                tags: tagsArray,
-                author: info.id,
-                imageinfo: imageUrl,
-            });
+            const { title, desc, content, tags } = req.body;
 
-            const savedBlog = await newBlog.save();
+            try {
+                const blogDoc = await Blog.findById(id);
 
-            res.status(201).json({
-                message: 'Blog created successfully',
-                blog: savedBlog,
-                tokenInfo: {
-                    id: info.id,
-                    username: info.username,
-                },
-            });
+                if (!blogDoc) {
+                    return res.status(404).json('Blog post not found');
+                }
+
+                const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
+
+                if (!isAuthor) {
+                    return res.status(400).json('You are not the author');
+                }
+
+                // Check if a new file is uploaded
+                if (req.file) {
+                    const bucketName = process.env.BUCKET_NAME;
+                    const imageKey = `image_${Date.now()}_${Math.floor(Math.random() * 1000)}_${req.file.originalname}`;
+
+                    // Function to generate upload parameters for S3
+                    const generateUploadParams = async (fileBuffer, mimetype) => {
+                        const buffer = await sharp(fileBuffer)
+                            .resize({ height: 1000, width: 1920, fit: "cover" })
+                            .toBuffer();
+
+                        return {
+                            Bucket: bucketName,
+                            Key: imageKey,
+                            Body: buffer,
+                            ContentType: mimetype,
+                        };
+                    };
+
+                    // Upload the new image to S3
+                    const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
+                    await s3Client.send(new PutObjectCommand(uploadParams));
+
+                    // Update the image URL in the database
+                    blogDoc.imageinfo = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
+                }
+
+                // Update other fields in the blog document
+                blogDoc.title = title;
+                blogDoc.desc = desc;
+                blogDoc.content = content;
+                blogDoc.tags = tags;
+
+                await blogDoc.save();
+                res.json(blogDoc);
+            } catch (error) {
+                console.error('Error updating blog post:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         });
     } catch (error) {
-        console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

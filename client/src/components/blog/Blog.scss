@@ -4,7 +4,7 @@
 
         .blog {
             width: 100%;
-            height: 160px;
+            height: 200px;
             border-radius: 6px;
             box-shadow: $shadow 0px 0px 3px .5px;
             color: $text;
@@ -101,7 +101,7 @@
                 .blog-desc {
 
                     p {
-                        font-size: 13px;
+                        font-size: 12px;
                         margin: 0;
                         letter-spacing: .5px;
 
@@ -119,6 +119,9 @@
                     display: flex;
                     justify-content: space-between;
                     margin-top: 10px;
+                    position: absolute;
+                    bottom: 15px;
+                    width: 90%;
               
                     
 
