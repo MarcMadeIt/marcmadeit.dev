@@ -34,11 +34,13 @@
 
             .blog-image{
                 display: none;
+                
 
                 @include large-mobile {
                     flex: 1;
                     height: 100%;
                     display: block;
+                    padding: 10px;
                     
 
                 } 
@@ -120,9 +122,7 @@
                     display: flex;
                     justify-content: space-between;
                     margin-top: 10px;
-                    position: absolute;
-                    bottom: 10px;   
-                    gap: 50px;
+              
                     
 
 

@@ -15,7 +15,13 @@
       }
 
       .library-title {
-        color: $primary;
+
+
+        h2 {
+
+          color: $primary;
+          font-weight: 300;
+        }
       }
 
       .library-filter {

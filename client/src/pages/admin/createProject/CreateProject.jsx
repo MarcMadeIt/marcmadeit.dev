@@ -2,7 +2,6 @@ import Select from "react-select";
 import "./CreateProject.scss";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
-import Editor from "../../../components/editor/Editor";
 
 function CreateProject() {
   const options = [
@@ -14,6 +13,7 @@ function CreateProject() {
     { value: "NextJS", label: "NextJS" },
     { value: "ExpressJS", label: "ExpressJS" },
     { value: "MongoDB", label: "MongoDB" },
+    { value: "AWS S3", label: "AWS S3" },
     { value: "MySQL", label: "MySQL" },
     { value: "PostgreSQL", label: "PostgreSQL" },
   ];
@@ -21,7 +21,7 @@ function CreateProject() {
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ function CreateProject() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("desc", desc);
-      formData.append("content", content);
+      formData.append("link", link);
       formData.append("tags", tags.map((tag) => tag.value).join(","));
       formData.append("file", file[0]);
 
@@ -45,7 +45,7 @@ function CreateProject() {
         credentials: "include",
       }).catch((error) => {
         console.error("Fetch Error:", error);
-        throw error; // Rethrow the error to continue handling it outside the fetch block
+        throw error;
       });
 
       if (response.ok) {
@@ -55,7 +55,6 @@ function CreateProject() {
       } else {
         const errorMessage = await response.text();
         console.error("Failed to create project:", errorMessage);
-        // Display an error message to the user
       }
     } catch (error) {
       console.error("Error creating blog:", error);
@@ -93,13 +92,18 @@ function CreateProject() {
             className="desc-project"
             placeholder="Description of the project.."
             name="desc"
-            id=""
+            type="desc"
             value={desc}
             onChange={(ev) => setDesc(ev.target.value)}
           ></textarea>
-          <div className="text-editor">
-            <Editor onChange={setContent} value={content} />
-          </div>
+          <input
+            className="link-project"
+            name="link"
+            type="link"
+            placeholder="Link to the project"
+            value={link}
+            onChange={(ev) => setLink(ev.target.value)}
+          />
           <label className="file-input-label">
             <input
               name="file"

@@ -5,14 +5,9 @@ const { Schema, model } = mongoose;
 const ProjectSchema = new Schema({
     title: String,
     desc: String,
-    content: { type: String },
+    link: String,
     tags: [String],
     imageinfo: String,
-    author: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
 }, {
     timestamps: true,
 });

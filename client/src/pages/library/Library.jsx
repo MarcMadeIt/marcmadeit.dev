@@ -10,7 +10,7 @@ function Library() {
     <div className="library">
       <Header />
       <div className="library-title">
-        <h2>Library</h2>
+        <h2>My Library</h2>
       </div>
       <div className="library-filter">
         <Filter />

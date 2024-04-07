@@ -10,6 +10,7 @@ import multer from 'multer';
 import jwt from 'jsonwebtoken';
 import User from "./modules/User.js"
 import Blog from "./modules/Blog.js"
+import Project from "./modules/Project.js"
 import session from 'express-session';
 import apicache from "apicache"
 
@@ -68,30 +69,32 @@ const s3Client = new S3Client({
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Function to generate upload parameters for S3
-const generateUploadParams = async (fileBuffer, mimetype) => {
-    const imageKey = crypto.randomBytes(20).toString("hex");
-    const buffer = await sharp(fileBuffer)
-        .resize({ height: 1000, width: 1920, fit: "cover" })
-        .toBuffer();
-
-    return {
-        Bucket: process.env.BUCKET_NAME,
-        Key: imageKey,
-        Body: buffer,
-        ContentType: mimetype,
-    };
-};
-
 // BLOG -------------------------------------------------------------- BLOG
 
 app.post("/api/blog/create", upload.single('file'), async (req, res) => {
     try {
+        const bucketName = process.env.BUCKET_NAME;
+
+        // Function to generate upload parameters for S3
+        const generateUploadParams = async (fileBuffer, mimetype) => {
+            const imageKey = crypto.randomBytes(20).toString("hex");
+            const buffer = await sharp(fileBuffer)
+                .resize({ height: 1000, width: 1920, fit: "cover" })
+                .toBuffer();
+
+            return {
+                Bucket: bucketName,
+                Key: imageKey,
+                Body: buffer,
+                ContentType: mimetype,
+            };
+        };
+
         // Use the existing S3 client to send the object to S3
-        const uploadParams = generateUploadParams(req.file.buffer, req.file.mimetype);
+        const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
         await s3Client.send(new PutObjectCommand(uploadParams));
 
-        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`;
+        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${uploadParams.Key}`;
 
         // Blog creation logic
         await connectToMongo();
@@ -100,39 +103,30 @@ app.post("/api/blog/create", upload.single('file'), async (req, res) => {
         const { token } = req.cookies;
 
         jwt.verify(token, secret, {}, async (err, info) => {
-            try {
-                if (err) {
-                    throw err;
-                }
-
-                const newBlog = new Blog({
-                    title,
-                    desc,
-                    content,
-                    tags: tagsArray,
-                    author: info.id,
-                    imageinfo: imageUrl,
-                });
-
-                const savedBlog = await newBlog.save();
-
-                res.status(201).json({
-                    message: 'Blog created successfully',
-                    blog: savedBlog,
-                    tokenInfo: {
-                        id: info.id,
-                        username: info.username,
-                    },
-                });
-            } catch (error) {
-                console.error('Error creating blog:', error);
-
-                if (error.name === 'JsonWebTokenError') {
-                    return res.status(401).json({ error: 'Unauthorized' });
-                }
-
-                res.status(500).json({ error: 'Failed to create blog' });
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(401).json({ error: 'Unauthorized' });
             }
+
+            const newBlog = new Blog({
+                title,
+                desc,
+                content,
+                tags: tagsArray,
+                author: info.id,
+                imageinfo: imageUrl,
+            });
+
+            const savedBlog = await newBlog.save();
+
+            res.status(201).json({
+                message: 'Blog created successfully',
+                blog: savedBlog,
+                tokenInfo: {
+                    id: info.id,
+                    username: info.username,
+                },
+            });
         });
     } catch (error) {
         console.error('Error:', error);
@@ -350,51 +344,60 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
 
 app.post("/api/project/create", upload.single('file'), async (req, res) => {
     try {
+        const bucketName = process.env.BUCKET_NAME;
+
+        // Function to generate upload parameters for S3
+        const generateUploadParams = async (fileBuffer, mimetype) => {
+            const imageKey = crypto.randomBytes(20).toString("hex");
+            const buffer = await sharp(fileBuffer)
+                .resize({ height: 1000, width: 1920, fit: "cover" })
+                .toBuffer();
+
+            return {
+                Bucket: bucketName,
+                Key: imageKey,
+                Body: buffer,
+                ContentType: mimetype,
+            };
+        };
+
         // Use the existing S3 client to send the object to S3
-        const uploadParams = generateUploadParams(req.file.buffer, req.file.mimetype);
+        const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
         await s3Client.send(new PutObjectCommand(uploadParams));
 
-        const imageUrl = `https://${process.env.BUCKET_NAME}.s3.amazonaws.com/${uploadParams.Key}`;
+        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${uploadParams.Key}`;
 
         // Project creation logic
         await connectToMongo();
-        const { title, description, technologies } = req.body;
-        const technologiesArray = technologies ? technologies.split(',') : [];
+        const { title, desc, tags, link } = req.body;
+        const tagsArray = tags ? tags.split(',') : [];
         const { token } = req.cookies;
 
         jwt.verify(token, secret, {}, async (err, info) => {
-            try {
-                if (err) {
-                    throw err;
-                }
-
-                const newProject = new Project({
-                    title,
-                    description,
-                    technologies: technologiesArray,
-                    author: info.id,
-                    imageinfo: imageUrl,
-                });
-
-                const savedProject = await newProject.save();
-
-                res.status(201).json({
-                    message: 'Project created successfully',
-                    project: savedProject,
-                    tokenInfo: {
-                        id: info.id,
-                        username: info.username,
-                    },
-                });
-            } catch (error) {
-                console.error('Error creating project:', error);
-
-                if (error.name === 'JsonWebTokenError') {
-                    return res.status(401).json({ error: 'Unauthorized' });
-                }
-
-                res.status(500).json({ error: 'Failed to create project' });
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(401).json({ error: 'Unauthorized' });
             }
+
+            const newProject = new Project({
+                title,
+                link,
+                desc,
+                tags: tagsArray,
+                author: info.id,
+                imageinfo: imageUrl,
+            });
+
+            const savedProject = await newProject.save();
+
+            res.status(201).json({
+                message: 'Project created successfully',
+                project: savedProject,
+                tokenInfo: {
+                    id: info.id,
+                    username: info.username,
+                },
+            });
         });
     } catch (error) {
         console.error('Error:', error);
@@ -408,7 +411,7 @@ app.get("/api/project/get", async (req, res) => {
         await connectToMongo();
 
         // Fetch only the latest two blog posts, excluding the "content" field
-        const projects = await ProjectModel.find().sort({ createdAt: -1 }).limit(2).populate('author', ['username']).select('-content');
+        const projects = await ProjectModel.find().sort({ createdAt: -1 });
 
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
         res.status(200).json(projects);

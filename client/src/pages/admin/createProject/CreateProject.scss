@@ -46,6 +46,26 @@
                 }
             }
 
+            .link-project {
+                border-radius: 6px;
+                padding: 10px;
+                outline: none;
+                border: none;
+                border: 1.5px solid $primary;
+                font-size: $fs-small;
+                color: $text;
+                background-color: transparent;
+                width: 90%;
+                
+                &::placeholder {
+                    color: $placeholder;
+                }
+
+                &:focus {
+                    box-shadow: 0 0 4px 1px $primary;
+                }  
+            }
+
             .file-input-label {
                 background-color: $background;
                 color: $primary;
@@ -115,7 +135,7 @@
                 }
             }
  
-                .react-select-container {
+            .react-select-container {
                     width: auto;
                     font-size: $fs-small;
                     display: flex;
@@ -181,7 +201,7 @@
                         
 
             
-                }
+            }
 
 
 

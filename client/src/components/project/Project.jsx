@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./Project.scss";
 import Image from "../../assets/img/content/dashboard.png";
 import { FaArrowRight } from "react-icons/fa6";
+import ImageBlog from "../image/ImageBlog";
 
-function Project() {
+function Project({ _id, title, desc, tags = [], imageinfo, link }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -20,44 +21,35 @@ function Project() {
   const renderTags = () => {
     if (isMobile) {
       // Render only the first two tags in mobile view
-      return (
-        <>
-          <span>NextJS</span>
-          <span>MongoDB</span>
-        </>
-      );
+      return tags
+        .slice(0, 2)
+        .map((tag, index) => (
+          <span key={`${_id}-${index}-${tag}`}>{`#${tag}`}</span>
+        ));
     } else {
       // Render all tags
-      return (
-        <>
-          <span>NextJS</span>
-          <span>MongoDB</span>
-          <span>NodeJS</span>
-        </>
-      );
+      return tags.map((tag, index) => (
+        <span key={`${_id}-${index}-${tag}`}>{`#${tag}`}</span>
+      ));
     }
   };
 
   return (
     <div className="project">
       <div className="project-image">
-        <img src={Image} alt="" />
+        <ImageBlog src={imageinfo} />
       </div>
       <div className="project-content">
         <div className="project-title">
-          <h2>Dashboard</h2>
+          <h2>{title}</h2>
         </div>
         <div className="project-desc">
-          <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim
-            quisquam nihil voluptatibus illum recusandae fugiat voluptates
-            dolorum ducimus minus consectetur?
-          </span>
+          <span>{desc}</span>
         </div>
         <div className="project-info">
           <div className="project-tags">{renderTags()}</div>
           <div className="project-btn">
-            <a className="link" href="/">
+            <a className="link" href={link}>
               <button>
                 View Project <FaArrowRight />
               </button>
