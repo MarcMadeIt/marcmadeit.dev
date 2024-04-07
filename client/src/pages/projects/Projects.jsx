@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../../components/header/Header";
 import "./Projects.scss";
 import Project from "../../components/project/Project.jsx";
+import Footer from "../../components/footer/Footer.jsx";
 
 function Projects() {
   return (
@@ -17,6 +18,7 @@ function Projects() {
         <Project />
         <Project />
       </div>
+      <Footer />
     </div>
   );
 }
