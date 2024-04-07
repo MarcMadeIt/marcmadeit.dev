@@ -1,7 +1,8 @@
 import React from "react";
 import "./Project.scss";
 import { format } from "date-fns";
-import Image from "../../assets/img/content/tiger.jpg";
+import Image from "../../assets/img/content/dashboard.png";
+import { FaArrowRight } from "react-icons/fa6";
 
 function truncateText(text, limit) {
   if (typeof text !== "string") {
@@ -24,30 +25,37 @@ function Project({
   const truncatedDesc = truncateText(desc, 17);
 
   return (
-    //<Link className="link" to={`/projects/project/${_id}`}>
-    <div className="project">
-      <div className="project-image">
-        <img src={Image} alt="" />
-      </div>
-      <div className="project-content">
-        <div className="project-title">
-          <h3>Dashboard</h3>
+    <a className="link" href="/">
+      <div className="project">
+        <div className="project-image">
+          <img src={Image} alt="" />
         </div>
-        <div className="project-tags"></div>
-        <div className="project-info">
-          <div className="project-btn">
-            <button>View Project</button>
+        <div className="project-content">
+          <div className="project-title">
+            <h2>Dashboard</h2>
           </div>
-          <div className="project-tags">
-            <span>NextJS</span>
-            <span>NodeJS</span>
-            <span>Express</span>
-            <span>MongoDB</span>
+          <div className="project-desc">
+            <span>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim
+              quisquam nihil voluptatibus illum recusandae fugiat voluptates
+              dolorum ducimus minus consectetur?
+            </span>
+          </div>
+          <div className="project-info">
+            <div className="project-btn">
+              <button>
+                View Project <FaArrowRight />
+              </button>
+            </div>
+            <div className="project-tags">
+              <span>NextJS</span>
+              <span>MongoDB</span>
+              <span>NodeJS</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    //</Link>
+    </a>
   );
 }
 
