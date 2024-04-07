@@ -16,7 +16,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 40px;
+        gap: 50px;
 
         @include mini-tablet {
             max-width: 900px;
