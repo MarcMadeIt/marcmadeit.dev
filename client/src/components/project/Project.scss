@@ -11,10 +11,12 @@
     overflow: hidden;
     transition: all 0.9s ease;
     background: rgb(1, 13, 13);
-    background: linear-gradient(0deg, rgb(1, 12, 12) 10%, rgba(2, 27, 27, 0.8) 50%, rgba(0,0,0,0) 100%);
+        background: linear-gradient(0deg, rgb(1, 12, 12) 30%, rgba(2, 27, 27, 0.75) 60%, rgba(0,0,0,0) 100%);
+    
 
     @include mini-tablet {
         height: 400px;
+        background: linear-gradient(0deg, rgb(1, 12, 12) 10%, rgba(2, 27, 27, 0.8) 50%, rgba(0,0,0,0) 100%);
     }   
 
 
