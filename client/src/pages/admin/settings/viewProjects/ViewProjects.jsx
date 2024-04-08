@@ -38,7 +38,7 @@ function ViewProjects() {
 
   const handleDelete = async (projectId) => {
     try {
-      const response = await fetch(`${apiUrl}/project/${projectId}`, {
+      const response = await fetch(`${apiUrl}/project/get/${projectId}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -464,13 +464,13 @@ app.delete("/api/project/get/:id", async (req, res) => {
     const { id } = req.params;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ error: 'Invalid blog ID' });
+            return res.status(400).json({ error: 'Invalid Project ID' });
         }
 
         const deletedProject = await Project.findByIdAndDelete(id);
 
         if (!deletedProject) {
-            return res.status(404).json({ error: 'Blog not found' });
+            return res.status(404).json({ error: 'Project not found' });
         }
 
         res.json({ message: 'Project deleted successfully' });
