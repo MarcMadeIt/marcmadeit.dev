@@ -1,6 +1,6 @@
 import "./Header.scss";
 import logoImageName from "../../assets/img/logo/LOGO-name.png";
-import logoImage from "../../assets/img/logo/logo-mmi-single.png";
+import logoImage from "../../assets/img/logo/logo1.png";
 import { Link, useLocation } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
 import Sidebar from "../sidebar/Sidebar.jsx";
