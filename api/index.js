@@ -311,6 +311,10 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         const { id } = req.params;
         const { token } = req.cookies;
 
+        if (!token) {
+            return res.status(401).json({ error: 'No token provided' });
+        }
+
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
@@ -328,14 +332,15 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                 const blogDoc = await Blog.findById(id);
 
                 if (!blogDoc) {
-                    return res.status(404).json('Blog post not found');
+                    return res.status(404).json({ error: 'Blog post not found' });
                 }
 
                 const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
 
                 if (!isAuthor) {
-                    return res.status(400).json('You are not the author');
+                    return res.status(403).json({ error: 'You are not the author' });
                 }
+
                 blogDoc.title = title;
                 blogDoc.desc = desc;
                 blogDoc.content = content;
@@ -348,6 +353,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
             }
         });
     } catch (error) {
+        console.error('Error in PUT request:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
