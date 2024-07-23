@@ -8,31 +8,40 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
+import { RingLoader } from "react-spinners";
+import Skills from "../../components/about/About.jsx";
+import About from "../../components/about/About.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Home() {
+  const [loading, setLoading] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const maxBlogsToShow = 2;
   const limitedBlogs = Array.isArray(blogs)
     ? blogs.slice(0, maxBlogsToShow)
     : [];
 
-  useEffect(() => {
-    fetch(`${apiUrl}/blog/get`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((blogs) => {
-        setBlogs(blogs);
-      })
-      .catch((error) => {
-        console.error("Error fetching blogs:", error);
-      });
-  }, []);
+    useEffect(() => {
+      setLoading(true);
+      setTimeout(() => {
+        fetch(`${apiUrl}/blog/get`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((blogs) => {
+            setBlogs(blogs);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching blogs:", error);
+            setLoading(false);
+          });
+      }, 2000); // 2 seconds delay
+    }, []);
 
   const { userInfo, handleLogout } = useContext(UserContext);
 
@@ -57,12 +66,19 @@ function Home() {
       <div className="home-hero">
         <Hero />
       </div>
-
+      <div className="home-about">
+        <About />
+      </div>
       <div className="home-blogs">
         <div className="home-blogs-title">
           <h2>Latest Blog Post </h2>
         </div>
         <div className="home-blogs-content">
+        {loading && (
+          <div className="loading-container loading-front">
+            <RingLoader loading={loading} color="#06F9EC" size={100} />
+          </div>
+        )}
           {limitedBlogs.length > 0 &&
             limitedBlogs.map((blog) => (
               <Blog

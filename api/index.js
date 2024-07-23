@@ -27,7 +27,7 @@ const cache = apicache.middleware;
 
 const corsOptions = {
     credentials: true,
-    origin: 'https://marcmadeit.vercel.app',
+    origin: ['https://marcmadeit.vercel.app', 'http://localhost:5173'],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }

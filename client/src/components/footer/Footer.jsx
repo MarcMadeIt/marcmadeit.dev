@@ -19,7 +19,7 @@ function Footer() {
       </div>
       <div className="footer-item footer-center">
         <p>
-          <span>©</span> 2024 marcmadeit.dev
+          <span>©</span>2024 marcmadeit.dev
         </p>
       </div>
       <div className="footer-item footer-right">

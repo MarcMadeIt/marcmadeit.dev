@@ -27,6 +27,7 @@ body {
     height: 100vh;
     font-family: 'poppins', sans-serif;
     background-color: $background;
+    color: $primary;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -44,6 +45,10 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.loading-front {
+  height: 300px;
 }
 
 ::-webkit-scrollbar {

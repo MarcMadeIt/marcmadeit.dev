@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import ProfilePic from "../../assets/img/profile/profile-small.png";
 import ImageBlog from "../image/ImageBlog";
 import { Link } from "react-router-dom";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function truncateText(text, limit) {
   if (typeof text !== "string") {
@@ -21,30 +23,36 @@ function Blog({ _id, title, desc, tags = [], imageinfo, createdAt, author }) {
     <Link className="link" to={`/blogs/blog/${_id}`}>
       <div className="blog post">
         <div className="blog-image">
-          <ImageBlog src={imageinfo} />
+          {imageinfo ? <ImageBlog src={imageinfo} /> : <Skeleton height={200} />}
         </div>
         <div className="blog-content">
           <div className="blog-tags">
-            {tags.map((tag, index) => (
+            {tags.length ? tags.map((tag, index) => (
               <span key={`${_id}-${index}-${tag}`}>{`#${tag}`}</span>
-            ))}
+            )) : <Skeleton width={100} />}
           </div>
-          <div className="blog-title">{title}</div>
+          <div className="blog-title">
+            {title || <Skeleton width={200} />}
+          </div>
           <div className="blog-desc">
-            <p>{truncatedDesc}</p>
+            <p>{desc ? truncatedDesc : <Skeleton count={2} />}</p>
           </div>
           <div className="blog-details">
             <div className="by-author">
-              <>
-                <span>
-                  <img src={ProfilePic} alt="alt" />
-                </span>
-                <span> Made by</span>
-                {author && <span>{author.username}</span>}
-              </>
+              {author ? (
+                <>
+                  <span>
+                    <img src={ProfilePic} alt="alt" />
+                  </span>
+                  <span> Made by</span>
+                  <span>{author.username}</span>
+                </>
+              ) : (
+                <Skeleton width={150} />
+              )}
             </div>
             <div className="blog-time">
-              <span>{format(new Date(createdAt), "dd. MMM yyyy")}</span>
+              {createdAt ? <span>{format(new Date(createdAt), "dd. MMM yyyy")}</span> : <Skeleton width={80} />}
             </div>
           </div>
         </div>
