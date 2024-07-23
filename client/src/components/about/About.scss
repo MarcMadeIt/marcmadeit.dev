@@ -31,9 +31,13 @@
 
         .about-header {
             h1 {
-                font-size: 50px;
+                font-size: 40px;
                 font-weight: 200;
                 color: $text-low;
+
+                @include mini-tablet {
+                    font-size: 50px;
+                }
             }
         }
 
@@ -53,7 +57,7 @@
                     display: flex; 
                     align-items: center;
                     gap: 10px;
-                    font-size: 20px;
+                    font-size: 17px;
 
                     @include tablet {
                         font-size: 25px;
@@ -109,11 +113,15 @@
                     }
 
                 .skills {
-                    width: 300px;
+                    width: 100%;
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: center;
                     gap: 10px;
+
+                    @include tablet {
+                        width: 300px;
+                    }
 
                     .skills-item {
                        box-shadow:$secondary 0 0 1px 1.5px;
