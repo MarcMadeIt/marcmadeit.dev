@@ -14,15 +14,16 @@ function About() {
         </div>
         <div className="about-two">
             <div className="about-header">
-                <h1>Who made it?</h1>
+                <h1>Who made this?</h1>
             </div>
             <div className="about-content">
                 <div className="about-details">
-                    <h2>Marc Møller <span>|</span> 31 years <span>|</span> Denmark <img src={FlagImage} alt="" /></h2>
+                    <h2>Marc Møller <hr /> 31 years <hr /> Denmark <img src={FlagImage} alt="" /></h2>
                 </div>
                 <div className="prof">
+                    
                     <h2 className='prof-title'>React Developer</h2>
-                    <hr />
+        
                     <div className="skills">
                         <div className="skills-item">#NextJS</div>
                         <div className="skills-item">#TypeScript</div>

@@ -16,9 +16,11 @@
     font-size: 15px;
     font-weight: 700;
 
-    &:hover {
-      box-shadow: 0 0 7px 1px $primary;
-      transition: 400ms;
+    @include desktop {
+      &:hover {
+          box-shadow: 0 0 7px 1px $primary;
+          transition: 400ms;
+        }
     }
   }
 

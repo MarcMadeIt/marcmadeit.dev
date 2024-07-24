@@ -69,6 +69,10 @@ function Home() {
       <div className="home-about">
         <About />
       </div>
+      <div className="section home-contact" id="contact">
+        <h2>Contact for business?</h2>
+        <ContactPop />
+      </div>
       <div className="home-blogs">
         <div className="home-blogs-title">
           <h2>Latest Blog Post </h2>
@@ -98,10 +102,6 @@ function Home() {
             <button>View All Posts</button>
           </Link>
         </div>
-      </div>
-      <div className="section home-contact" id="contact">
-        <h2>Elevating Web Development Together!</h2>
-        <ContactPop />
       </div>
       <Footer />
     </div>
