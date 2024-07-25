@@ -600,6 +600,29 @@ app.get("/api/podcast/getlimit", async (req, res) => {
 });
 
 
+app.get("/api/podcast/get/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await connectToMongo();
+
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid Podcast ID' });
+        }
+
+        const podcastDoc = await PodcastModel.findById(id).populate('author', ['username']);
+
+        if (!podcastDoc) {
+            return res.status(404).json({ error: 'Podcast not found' });
+        }
+
+        res.json(podcastDoc);
+    } catch (error) {
+        console.error('Error fetching specific podcast:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 // AUTH ------------------------------------------ AUTH

@@ -7,7 +7,11 @@ function Audio({ src, alt = "", ...rest }) {
       ? src
       : `http://localhost:8000/api/podcast/get/${src}`;
 
-  return <img {...rest} src={src} alt={alt} />;
+  return (
+    <audio controls autoPlay>
+      <source {...rest} src={src} alt={alt}  type="audio/mpeg" />
+    </audio>
+  )
 }
 
 export default Audio;

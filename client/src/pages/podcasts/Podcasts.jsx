@@ -6,6 +6,7 @@ import Filter from "../../components/filter/Filter.jsx";
 import Podcast from "../../components/podcast/Podcast.jsx";
 import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
+import AudioPlayer from "../../function/audioplayer/AudioPlayer.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,6 +16,7 @@ function Podcasts() {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6);
   const [totalCount, setTotalCount] = useState(0);
+  const [currentPodcast, setCurrentPodcast] = useState(null);
 
   useEffect(() => {
     const fetchPodcasts = async (page = currentPage) => {
@@ -43,6 +45,11 @@ function Podcasts() {
   };
 
 
+  const handlePodcastClick = (podcast) => {
+    setCurrentPodcast(podcast);
+  };
+
+
   return (
     <>
     {loading && (
@@ -68,6 +75,7 @@ function Podcasts() {
           tags={podcast.tags}
           imageinfo={podcast.imageinfo}
           createdAt={podcast.createdAt}
+          onClick={() => handlePodcastClick(podcast)}
         />
       ))}
       </div>
@@ -78,6 +86,7 @@ function Podcasts() {
           totalCount={totalCount}
         />
       <Footer />
+      {currentPodcast && <AudioPlayer podcast={currentPodcast} />}
     </div>
       </>
   );

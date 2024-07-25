@@ -46,7 +46,7 @@ function Sidebar() {
             className={`link ${
               location.pathname === "/podcasts" ? "active" : ""
             }`}
-            to="/podvasts"
+            to="/podcasts"
           >
             <li>Podcasts</li>
           </Link>

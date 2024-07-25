@@ -2,6 +2,7 @@ import "./Podcast.scss";
 import { format } from "date-fns";
 import Image from "../image/Image";
 import ProfilePic from "../../assets/img/profile/profile-small.png";
+import { Link } from "react-router-dom";
 
 function truncateText(text, limit) {
   if (typeof text !== "string") {
@@ -12,12 +13,11 @@ function truncateText(text, limit) {
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
 }
 
-function Podcast({ _id, title, desc, tags = [], imageinfo, audioinfo, createdAt, author}) {
+function Podcast({ _id, title, desc, tags = [], imageinfo, audioinfo, createdAt, author, onClick}) {
   const truncatedDesc = truncateText(desc, 4);
 
   return (
-
-      <div className="podcast">
+      <div className="podcast" onClick={onClick}>
         <div className="podcast-image">
             <Image src={imageinfo} />
         </div>

@@ -175,11 +175,13 @@
                     letter-spacing: 0.7px;
                     font-weight: 600;
                     position: absolute;
-                    right: 5px;
-                    bottom: -5px;
+                    right: 4px;
+                    bottom: -4px;
 
                     @include large-mobile {
                         font-size: 12px;
+                        right: 10px;
+                        bottom: 10px;
                     }
                 }
             }
