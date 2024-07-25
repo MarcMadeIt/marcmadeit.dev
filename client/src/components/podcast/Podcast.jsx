@@ -13,7 +13,7 @@ function truncateText(text, limit) {
 }
 
 function Podcast({ _id, title, desc, tags = [], imageinfo, audioinfo, createdAt, author}) {
-  const truncatedDesc = truncateText(desc, 17);
+  const truncatedDesc = truncateText(desc, 4);
 
   return (
 
@@ -24,7 +24,9 @@ function Podcast({ _id, title, desc, tags = [], imageinfo, audioinfo, createdAt,
         <div className="podcast-content">
             <div className="podcast-title">
                 <h3>{title}</h3>
-                <span>{truncatedDesc}</span>
+            </div>
+            <div className="podcast-desc">
+            <span>{truncatedDesc}</span>
             </div>
             <div className="podcast-tags">
                 {tags.map((tag, index) => (
