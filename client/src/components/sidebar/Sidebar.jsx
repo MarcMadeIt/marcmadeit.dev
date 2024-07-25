@@ -44,11 +44,19 @@ function Sidebar() {
           </Link>
           <Link
             className={`link ${
+              location.pathname === "/podcasts" ? "active" : ""
+            }`}
+            to="/podvasts"
+          >
+            <li>Podcasts</li>
+          </Link>
+          <Link
+            className={`link ${
               location.pathname === "/#contact" ? "active" : ""
             }`}
             to="/#contact"
           >
-            <li>About</li>
+            <li>Contact</li>
           </Link>
         </ul>
         <div>

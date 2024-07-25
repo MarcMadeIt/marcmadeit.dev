@@ -40,7 +40,7 @@ function Project({ _id, title, desc, tags = [], imageinfo, link }) {
       </div>
       <div className="project-content">
         <div className="project-title">
-          <h2>{title}</h2>
+          <h3>{title}</h3>
         </div>
         <div className="project-desc">
           <span>{desc}</span>

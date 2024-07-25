@@ -64,7 +64,7 @@ function CreatePodcast() {
   };
 
   if (redirect) {
-    return <Navigate to={"/podcast"} />;
+    return <Navigate to={"/podcasts"} />;
   }
 
   return (

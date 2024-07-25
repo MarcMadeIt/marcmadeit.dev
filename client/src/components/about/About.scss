@@ -15,19 +15,16 @@
         .about-img {
             height: 200px;
             width: 200px;
-            
+
             border-radius: 50%;
             overflow: hidden;
             padding: 5px;
-        
+
             @include tablet {
                 height: 300px;
                 width: 300px;
             }
-        
         }
-
-
     }
 
     .about-two {
@@ -65,7 +62,7 @@
 
                 h2 {
                     font-weight: 300;
-                    display: flex; 
+                    display: flex;
                     align-items: center;
                     gap: 10px;
                     font-size: 17px;
@@ -74,19 +71,16 @@
                         font-size: 25px;
                     }
 
-
                     hr {
                         width: 0;
                         height: 26px;
                         border: 1.5px solid $primary;
                     }
 
-
                     span {
                         color: $primary;
                         font-weight: 500;
-                        
-                        
+
                         @include tablet {
                             font-size: 40px;
                         }
@@ -104,42 +98,37 @@
                     align-items: center;
                     gap: 10px;
                     text-align: center;
-
-
-                
                 }
             }
-                .prof {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 15px;
-                    color: $text-low;
-                
-                    .prof-title {
+            .prof {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                color: $text-low;
 
-                            text-decoration: underline $primary;
-                            text-underline-offset: 10px;
-                            text-decoration-thickness: 2px;
-                            font-weight: 300;
-                            letter-spacing: 1px;
-                            border-radius: $borderradius;
-                            font-size: 25px;
-                            color: $primary;
-                            padding: 3px 9px;
-                            filter: drop-shadow($primary 0px 0px 7px);
+                .prof-title {
+                    text-decoration: underline $primary;
+                    text-underline-offset: 10px;
+                    text-decoration-thickness: 2px;
+                    font-weight: 300;
+                    letter-spacing: 1px;
+                    border-radius: $borderradius;
+                    font-size: 25px;
+                    color: $primary;
+                    padding: 3px 9px;
+                    filter: drop-shadow($primary 0px 0px 7px);
 
-                            @include mini-tablet {
-                                font-size: 30px;
-                            }
-                        
-
-                        hr {
-                            width: 0;
-                            height: 26px;
-                            border: 1.5px solid $primary;
-                        }
+                    @include mini-tablet {
+                        font-size: 30px;
                     }
+
+                    hr {
+                        width: 0;
+                        height: 26px;
+                        border: 1.5px solid $primary;
+                    }
+                }
 
                 .skills {
                     width: 270px;
@@ -153,7 +142,7 @@
                     }
 
                     .skills-item {
-                       box-shadow: $secondary 0 0 1px 1.5px;
+                        box-shadow: $secondary 0 0 1px 1.5px;
                         padding: 2px 6px;
                         border-radius: $borderradius;
                         display: flex;
@@ -161,12 +150,11 @@
                         color: $primary;
                         letter-spacing: 0.5px;
                         font-weight: 300;
-                    
+
                         @include tablet {
                             font-size: 14px;
                         }
                     }
-
                 }
             }
         }
