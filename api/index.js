@@ -16,6 +16,7 @@ import apicache from "apicache"
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import ProjectModel from './modules/Project.js';
+import PodcastModel from './modules/Podcast.js';
 
 dotenv.config();
 
@@ -359,7 +360,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
 });
 
 
-// PROJECT ---------------------------------------------------------- PROJECT
+// PROJECT --------------------------------------- PROJECT
 
 app.post("/api/project/create", upload.single('file'), async (req, res) => {
     try {
@@ -487,7 +488,121 @@ app.delete("/api/project/get/:id", async (req, res) => {
 });
 
 
-// AUTH ------------------------------------------------------- AUTH
+// PODCAST ------------------------------------ PODCAST
+
+
+app.post("/api/podcast/create", upload.fields([{ name: 'file', maxCount: 1 }, { name: 'image', maxCount: 1 }]), async (req, res) => {
+    try {
+        const bucketName = process.env.BUCKET_NAME;
+
+        // Function to generate upload parameters for S3
+        const generateUploadParams = async (fileBuffer, mimetype, isImage = false) => {
+            const fileKey = crypto.randomBytes(20).toString("hex");
+
+            if (isImage) {
+                const buffer = await sharp(fileBuffer)
+                    .resize({ height: 1000, width: 1920, fit: "cover" })
+                    .toBuffer();
+
+                return {
+                    Bucket: bucketName,
+                    Key: fileKey,
+                    Body: buffer,
+                    ContentType: mimetype,
+                };
+            }
+
+            return {
+                Bucket: bucketName,
+                Key: fileKey,
+                Body: fileBuffer,
+                ContentType: mimetype,
+            };
+        };
+
+        // Upload image to S3
+        const imageParams = await generateUploadParams(req.files.image[0].buffer, req.files.image[0].mimetype, true);
+        await s3Client.send(new PutObjectCommand(imageParams));
+        const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageParams.Key}`;
+
+        // Upload audio to S3
+        const audioParams = await generateUploadParams(req.files.file[0].buffer, req.files.file[0].mimetype);
+        await s3Client.send(new PutObjectCommand(audioParams));
+        const audioUrl = `https://${bucketName}.s3.amazonaws.com/${audioParams.Key}`;
+
+        // Podcast creation logic
+        await connectToMongo();
+        const { title, desc, tags, link } = req.body;
+        const tagsArray = tags ? tags.split(',') : [];
+        const { token } = req.cookies;
+
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if (err) {
+                console.error('Error verifying token:', err);
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            const newPodcast = new PodcastModel({
+                title,
+                link,
+                desc,
+                tags: tagsArray,
+                author: info.id,
+                imageinfo: imageUrl, // Store the image URL
+                audioinfo: audioUrl, // Store the audio URL
+            });
+
+            const savedPodcast = await newPodcast.save();
+
+            res.status(201).json({
+                message: 'Podcast created successfully',
+                podcast: savedPodcast,
+                tokenInfo: {
+                    id: info.id,
+                    username: info.username,
+                },
+            });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+app.get("/api/podcast/getlimit", async (req, res) => {
+    try {
+        await connectToMongo();
+        const { page = 1, limit = 3 } = req.query;
+        console.log('Requested Page:', page);
+        const skip = (page - 1) * limit;
+
+        // Fetch podcasts from the database
+        const podcasts = await PodcastModel.find()
+            .sort({ createdAt: -1 })
+            .populate('author', ['username']) // Assuming author is a reference to a user model
+            .select('-content') // Assuming you want to exclude the content field
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        // Get the total count of podcasts
+        const totalCount = await PodcastModel.countDocuments();
+
+        // Set cache headers
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+
+        // Send the response
+        res.status(200).json({ podcasts, totalCount });
+    } catch (error) {
+        console.error('Error fetching podcasts:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+
+// AUTH ------------------------------------------ AUTH
 
 
 app.post("/api/auth/register", async (req, res) => {
@@ -566,7 +681,7 @@ app.post("/api/auth/logout", (req, res) => {
     });
 });
 
-// USER ----------------------------------------------------------- USER 
+// USER --------------------------------------------- USER 
 
 app.get("/api/user/profile", (req, res) => {
     const { token } = req.cookies;

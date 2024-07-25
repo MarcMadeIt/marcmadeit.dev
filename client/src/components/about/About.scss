@@ -118,9 +118,9 @@
                 
                     .prof-title {
 
-                            text-decoration: underline dashed $text-low;
+                            text-decoration: underline $primary;
                             text-underline-offset: 10px;
-                            text-decoration-thickness: 4px;
+                            text-decoration-thickness: 2px;
                             font-weight: 300;
                             letter-spacing: 1px;
                             border-radius: $borderradius;

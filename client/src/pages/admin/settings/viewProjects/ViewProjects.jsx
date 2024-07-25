@@ -3,7 +3,7 @@ import "./ViewProjects.scss";
 import { Link } from "react-router-dom";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
-import ImageBlog from "../../../../components/image/ImageBlog.jsx";
+import ImageBlog from "../../../../components/image/Image.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 

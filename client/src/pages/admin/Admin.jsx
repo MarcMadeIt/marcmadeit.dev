@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./Admin.scss";
 import CreateBlog from "./createBlog/CreateBlog.jsx";
 import CreateProject from "./createProject/CreateProject.jsx";
+import CreatePodcast from "./createPodcast/CreatePodcast.jsx";
 import Settings from "./settings/Settings.jsx";
 import Preview from "./preview/Preview.jsx";
 import { Link } from "react-router-dom";
 import { FaHouse } from "react-icons/fa6";
-import CreateComponent from "./createComponet/CreateComponent.jsx";
 
 function RadioButton({ value, label, isSelected, onSelect }) {
   return (
@@ -40,8 +40,8 @@ function Admin() {
         return <CreateBlog />;
       case "project":
         return <CreateProject />;
-      case "component":
-        return <CreateComponent />;
+      case "podcast":
+        return <CreatePodcast />;
       default:
         return null;
     }
@@ -108,9 +108,9 @@ function Admin() {
                 onSelect={selectCreate}
               />
               <RadioButton
-                value="component"
-                label="Component"
-                isSelected={selectedCreate === "component"}
+                value="podcast"
+                label="Podcast"
+                isSelected={selectedCreate === "podcast"}
                 onSelect={selectCreate}
               />
             </div>

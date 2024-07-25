@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Project.scss";
-import Image from "../../assets/img/content/dashboard.png";
 import { FaArrowRight } from "react-icons/fa6";
-import ImageBlog from "../image/ImageBlog";
+import Image from "../image/Image";
 
 function Project({ _id, title, desc, tags = [], imageinfo, link }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -37,7 +36,7 @@ function Project({ _id, title, desc, tags = [], imageinfo, link }) {
   return (
     <div className="project">
       <div className="project-image">
-        <ImageBlog src={imageinfo} />
+        <Image src={imageinfo} />
       </div>
       <div className="project-content">
         <div className="project-title">

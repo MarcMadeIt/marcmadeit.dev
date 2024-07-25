@@ -7,7 +7,7 @@ import Footer from "../../../components/footer/Footer.jsx";
 import ProfilePic from "../../../assets/img/profile/profile-small.png";
 //import { UserContext } from "../../../data/userContext.jsx";
 //import { FaPencilAlt } from "react-icons/fa";
-import ImageBlog from "../../../components/image/ImageBlog.jsx";
+import Image from "../../../components/image/Image.jsx";
 import { RingLoader } from "react-spinners";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -70,7 +70,7 @@ function BlogPage() {
         </div>
 
         <div className="blogpage-image">
-          <ImageBlog className="blogpage-img" src={blogInfo.imageinfo} />
+          <Image className="blogpage-img" src={blogInfo.imageinfo} />
         </div>
         <div className="blogpage-details">
           {blogInfo.author && (

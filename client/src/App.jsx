@@ -11,6 +11,7 @@ import EditBlog from "./pages/admin/editBlog/EditBlog.jsx";
 import { useContext } from "react";
 import Library from "./pages/library/Library.jsx";
 import Projects from "./pages/projects/Projects.jsx";
+import Podcasts from "./pages/podcasts/Podcasts.jsx";
 
 function ProtectedRoute({ element, path }) {
   const { userInfo } = useContext(UserContext);
@@ -48,6 +49,7 @@ function App() {
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/library" element={<Library />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/podcasts" element={<Podcasts />} />
 
         {/* Other Public Routes */}
         <Route path="/blogs/blog/:id" element={<BlogPage />} />
