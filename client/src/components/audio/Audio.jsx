@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Audio.scss";
 import { FaBackward, FaForward, FaPause, FaPlay } from "react-icons/fa6";
+import { RiForward15Line, RiReplay15Fill } from "react-icons/ri";
 
 function Audio({ src, alt = "", ...rest }) {
   // use state
@@ -75,9 +76,8 @@ function Audio({ src, alt = "", ...rest }) {
 
   const updateSeekBeforeWidth = (currentTime) => {
     if (duration && !isNaN(duration)) {
-      const percentage = (currentTime / duration) * 100;
-      // Add 3% offset
-      progressBar.current.style.setProperty('--seek-before-width', `${Math.min(percentage + 3, 100)}%`);
+      const percentage = (currentTime / duration) * 97 + 3;
+      progressBar.current.style.setProperty('--seek-before-width', `${Math.min(percentage, 100)}%`);
     }
   };
 
@@ -87,6 +87,16 @@ function Audio({ src, alt = "", ...rest }) {
       updateSeekBeforeWidth(currentTime);
       setCurrentTime(currentTime);
     }
+  };
+
+  const handleBack = () => {
+    progressBar.current.value = Math.max(0, progressBar.current.value - 15);
+    changeRange();
+  };
+
+  const handleForward = () => {
+    progressBar.current.value = Math.min(progressBar.current.max, Number(progressBar.current.value) + 15);
+    changeRange();
   };
 
   src = src && src.includes("https://") ? src : `http://localhost:8000/api/podcast/get/${src}`;
@@ -103,11 +113,11 @@ function Audio({ src, alt = "", ...rest }) {
         onPause={() => setIsPlaying(false)}
         autoPlay
       />
-      <button><FaBackward /> <span>15</span></button>
+      <button onClick={handleBack}><RiReplay15Fill size={22}  /></button>
       <button onClick={togglePlayPause} className="play-pause-btn">
         {isPlaying ? <FaPause /> : <FaPlay className="play" />}
       </button>
-      <button><span>15</span><FaForward /></button>
+      <button onClick={handleForward}><RiForward15Line size={22} /></button>
 
       {/* current time */}
       <div className="current">{calculateTime(currentTime)}</div>
