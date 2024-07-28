@@ -3,7 +3,7 @@ import "./Audio.scss";
 import { FaBackward, FaForward, FaPause, FaPlay } from "react-icons/fa6";
 import { RiForward15Line, RiReplay15Fill } from "react-icons/ri";
 
-function Audio({ src, alt = "", ...rest }) {
+function Audio({expanded, src, alt = "", ...rest }) {
   // use state
   const [isPlaying, setIsPlaying] = useState(true);
   const [duration, setDuration] = useState(0);
@@ -102,7 +102,8 @@ function Audio({ src, alt = "", ...rest }) {
   src = src && src.includes("https://") ? src : `http://localhost:8000/api/podcast/get/${src}`;
 
   return (
-    <div className="audio">
+    <div className={expanded ? "audio expanded" : "audio"}>
+
       <audio
         ref={audioPlayer}
         {...rest}
@@ -113,22 +114,27 @@ function Audio({ src, alt = "", ...rest }) {
         onPause={() => setIsPlaying(false)}
         autoPlay
       />
-      <button onClick={handleBack}><RiReplay15Fill size={22}  /></button>
-      <button onClick={togglePlayPause} className="play-pause-btn">
-        {isPlaying ? <FaPause /> : <FaPlay className="play" />}
-      </button>
-      <button onClick={handleForward}><RiForward15Line size={22} /></button>
+      <div className="audio-btn-group">
 
-      {/* current time */}
-      <div className="current">{calculateTime(currentTime)}</div>
-
-      {/* Progress bar */}
-      <div>
-        <input type="range" className="progress" defaultValue={0} ref={progressBar} onChange={changeRange} />
+          <button onClick={handleBack}><RiReplay15Fill /></button>
+          <button onClick={togglePlayPause} className="play-pause-btn">
+          {isPlaying ? <FaPause /> : <FaPlay className="play" />}
+          </button>
+          <button onClick={handleForward}><RiForward15Line /></button>
       </div>
-
-      {/* duration */}
-      <div className="duration">{(duration && !isNaN(duration)) && calculateTime(duration)}</div>
+      <div className="progress-group">
+        {/* current time */}
+        <div className="current">
+          {calculateTime(currentTime)}
+        </div>
+        {/* Progress bar */}
+        <div>
+          <input type="range" className="progress" defaultValue={0} ref={progressBar} onChange={changeRange} />
+        </div>
+        {/* duration */}
+        <div className="duration">{(duration && !isNaN(duration)) && calculateTime(duration)}
+        </div>
+      </div>
     </div>
   );
 }
