@@ -20,6 +20,9 @@
     bottom 0.5s ease,
     height 0.5s ease;
 
+
+    -webkit-tap-highlight-color: transparent;
+
   &.show {
     bottom: 0; // End position in view
   }
@@ -143,7 +146,7 @@
     outline: none;
     background-color: transparent;
     color: $primary;
-    font-size: 20px;
+    font-size: 30px;
     cursor: pointer;
     padding: 10px;
   }
