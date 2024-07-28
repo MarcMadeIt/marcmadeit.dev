@@ -11,6 +11,7 @@
     position: relative;
     cursor: pointer;
     border-radius: $borderradius;
+    -webkit-tap-highlight-color: transparent;
     
 
     @include large-mobile {

@@ -8,6 +8,9 @@
     padding: 130px 15px 0 15px;
 
 
+    -webkit-tap-highlight-color: transparent;
+
+
 
     @include mini-tablet {
          padding: 200px 15px 0 15px;
