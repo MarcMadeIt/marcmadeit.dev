@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./ViewProjects.scss";
+import "./ViewPodcasts.scss";
 import { Link } from "react-router-dom";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
@@ -12,13 +12,13 @@ function truncateText(text, limit) {
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
 }
 
-function ViewProjects() {
-  const [projects, setProjects] = useState([]);
+function ViewPodcasts() {
+  const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/project/getbyuser`, {
+    fetch(`${apiUrl}/podcast/getbyuser`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -26,75 +26,75 @@ function ViewProjects() {
       credentials: "include",
     })
       .then((response) => response.json())
-      .then((projects) => {
-        setProjects(projects);
+      .then((podcasts) => {
+        setPodcasts(podcasts);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching blogs:", error);
+        console.error("Error fetching podcasts:", error);
         setLoading(false);
       });
   }, []);
 
-  const handleDelete = async (projectId) => {
+  const handleDelete = async (podcastId) => {
     try {
-      const response = await fetch(`${apiUrl}/project/get/${projectId}`, {
+      const response = await fetch(`${apiUrl}/podcast/get/${podcastId}`, {
         method: "DELETE",
         credentials: "include",
       });
       if (response.ok) {
-        setProjects((prevProjects) =>
-          prevProjects.filter((project) => project._id !== projectId)
+        setPodcasts((prevPodcasts) =>
+            prevPodcasts.filter((podcast) => podcast._id !== podcastId)
         );
         setDeleteConfirmation(null);
       } else {
-        console.error("Failed to delete project");
+        console.error("Failed to delete podcast");
       }
     } catch (error) {
-      console.error("Error deleting project:", error);
+      console.error("Error deleting podcast:", error);
     }
   };
 
-  const openDeleteConfirmation = (projectId) => {
+  const openDeleteConfirmation = (podcastId) => {
     setDeleteConfirmation({
-      projectId,
-      message: "Are you sure you want to delete this project?",
+        podcastId,
+      message: "Are you sure you want to delete this podcast?",
     });
   };
 
   return (
-    <div className="viewprojects">
-      <div className="viewprojects-title">
+    <div className="viewpodcasts">
+      <div className="viewpodcasts-title">
         <h3>Overview</h3>
         <p>Projects</p>
       </div>
 
-      <div className="viewprojects-cont">
+      <div className="viewpodcasts-cont">
         {loading ? (
           <p>Loading...</p>
         ) : (
           <ul>
-            {Array.isArray(projects) ? (
-              projects.map((projectInfo) => (
-                <li key={projectInfo._id}>
-                  <div className="viewprojects-details">
-                    <div className="viewprojects-img">
-                      <ImageBlog src={projectInfo.imageinfo} />
+            {Array.isArray(podcasts) ? (
+              podcasts.map((podcastInfo) => (
+                <li key={podcastInfo._id}>
+                  <div className="viewpodcasts-details">
+                    <div className="viewpodcasts-img">
+                      <ImageBlog src={podcastInfo.imageinfo} />
                     </div>
-                    <div className="viewprojects-desc">
-                      <p>{truncateText(projectInfo.title, 4)}</p>
+                    <div className="viewpodcasts-desc">
+                      <p>{truncateText(podcastInfo.title, 4)}</p>
                       <span>
                         {format(
-                          new Date(projectInfo.createdAt),
+                          new Date(podcastInfo.createdAt),
                           "dd. MMM yyyy"
                         )}
                       </span>
                     </div>
                   </div>
-                  <div className="viewprojects-buttons">
+                  <div className="viewpodcasts-buttons">
                     <Link
                       className="podcasts-edit"
-                      to={`/edit/${projectInfo._id}`}
+                      to={`/edit/${podcastInfo._id}`}
                     >
                       <button>
                         <FaPencilAlt />
@@ -103,7 +103,7 @@ function ViewProjects() {
 
                     <button
                       className="delete-btn"
-                      onClick={() => openDeleteConfirmation(projectInfo._id)}
+                      onClick={() => openDeleteConfirmation(podcastInfo._id)}
                     >
                       <FaRegTrashAlt />
                     </button>
@@ -111,7 +111,7 @@ function ViewProjects() {
                 </li>
               ))
             ) : (
-              <p>No projects available</p>
+              <p>No podcasts available</p>
             )}
           </ul>
         )}
@@ -129,7 +129,7 @@ function ViewProjects() {
               </button>
               <button
                 className="delete-opt-btn"
-                onClick={() => handleDelete(deleteConfirmation.projectId)}
+                onClick={() => handleDelete(deleteConfirmation.podcastsId)}
               >
                 Delete
               </button>
@@ -141,4 +141,4 @@ function ViewProjects() {
   );
 }
 
-export default ViewProjects;
+export default ViewPodcasts;

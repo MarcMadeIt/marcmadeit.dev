@@ -118,7 +118,7 @@ function Audio({expanded, src, alt = "", ...rest }) {
 
           <button onClick={handleBack}><RiReplay15Fill /></button>
           <button onClick={togglePlayPause} className="play-pause-btn">
-          {isPlaying ? <FaPause /> : <FaPlay className="play" />}
+          {isPlaying ? <FaPause className="pause" /> : <FaPlay className="play" />}
           </button>
           <button onClick={handleForward}><RiForward15Line /></button>
       </div>

@@ -15,6 +15,8 @@ import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
 import ViewProjects from "./viewProjects/ViewProjects.jsx";
+import ViewPodcasts from "./viewPodcasts/ViewPodcasts.jsx";
+import { FaPodcast } from "react-icons/fa";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function Settings() {
@@ -71,6 +73,16 @@ function Settings() {
             </button>
             <button
               className="set-item"
+              onClick={() => switchLayout("viewPodcasts")}
+            >
+              <div className="set-item-left">
+                <FaPodcast fontSize={20} />
+                <span>View & Edit Podcasts</span>
+              </div>
+              <IoChevronForward fontSize={25} />
+            </button>
+            <button
+              className="set-item"
               onClick={() => switchLayout("viewLibrary")}
             >
               <div className="set-item-left">
@@ -100,6 +112,7 @@ function Settings() {
           {currentLayout === "accountSet" && <AccountSet />}
           {currentLayout === "viewBlogs" && <ViewBlogs />}
           {currentLayout === "viewProjects" && <ViewProjects />}
+          {currentLayout === "viewPodcasts" && <ViewPodcasts />}
           {currentLayout === "viewLibrary" && <ViewLibrary />}
           {currentLayout === "extra" && <Extra />}
         </div>

@@ -458,7 +458,7 @@ app.get("/api/project/getbyuser", async (req, res) => {
             }
             res.status(200).json(userProjects);
         } catch (error) {
-            console.error('Error fetching Project:', error);
+            console.error('Error fetching Projects:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     } catch (error) {
@@ -466,6 +466,8 @@ app.get("/api/project/getbyuser", async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 app.delete("/api/project/get/:id", async (req, res) => {
     const { id } = req.params;
@@ -605,8 +607,6 @@ app.get("/api/podcast/get/:id", async (req, res) => {
 
     try {
         await connectToMongo();
-
-
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Invalid Podcast ID' });
         }
@@ -620,6 +620,54 @@ app.get("/api/podcast/get/:id", async (req, res) => {
         res.json(podcastDoc);
     } catch (error) {
         console.error('Error fetching specific podcast:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.get("/api/podcast/getbyuser", async (req, res) => {
+    try {
+        await connectToMongo();
+        const { token } = req.cookies;
+        if (!token) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        try {
+            const { id: userId } = jwt.verify(token, secret);
+            const userPodcasts = await PodcastModel.find({ author: userId })
+                .sort({ createdAt: -1 })
+                .populate('author', ['username']);
+            if (!userPodcasts || userPodcasts.length === 0) {
+                return res.status(404).json({ error: 'No Podcasts found for the user' });
+            }
+            res.status(200).json(userPodcasts);
+        } catch (error) {
+            console.error('Error fetching Podcasts:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    } catch (error) {
+        console.error('Error in /api/podcast/getbyuser route:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+app.delete("/api/podcast/get/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid Podcast ID' });
+        }
+
+        const deletedPodcast = await PodcastModel.findByIdAndDelete(id);
+
+        if (!deletedPodcast) {
+            return res.status(404).json({ error: 'Podcast not found' });
+        }
+
+        res.json({ message: 'Podcast deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting Podcast:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
