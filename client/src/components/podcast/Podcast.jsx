@@ -13,7 +13,7 @@ function truncateText(text, limit) {
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
 }
 
-function Podcast({ _id, title, desc, tags = [], imageinfo, audioinfo, createdAt, author, onClick}) {
+function Podcast({ _id, title, desc, tags = [], imageinfo, createdAt, author, onClick}) {
   const truncatedDesc = truncateText(desc, 4);
 
   return (

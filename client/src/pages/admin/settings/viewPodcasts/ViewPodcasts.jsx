@@ -129,7 +129,7 @@ function ViewPodcasts() {
               </button>
               <button
                 className="delete-opt-btn"
-                onClick={() => handleDelete(deleteConfirmation.podcastsId)}
+                onClick={() => handleDelete(deleteConfirmation.podcastId)}
               >
                 Delete
               </button>

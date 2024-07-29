@@ -16,7 +16,7 @@ import Extra from "./extra/Exstra.jsx";
 import { UserContext } from "../../../data/userContext";
 import ViewProjects from "./viewProjects/ViewProjects.jsx";
 import ViewPodcasts from "./viewPodcasts/ViewPodcasts.jsx";
-import { FaPodcast } from "react-icons/fa";
+import { FaPodcast } from "react-icons/fa6";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function Settings() {
@@ -56,7 +56,7 @@ function Settings() {
               onClick={() => switchLayout("viewBlogs")}
             >
               <div className="set-item-left">
-                <IoDocumentAttachOutline fontSize={20} />
+              <IoDocumentAttachOutline fontSize={20} />
                 <span>View & Edit Blogs</span>
               </div>
               <IoChevronForward fontSize={25} />

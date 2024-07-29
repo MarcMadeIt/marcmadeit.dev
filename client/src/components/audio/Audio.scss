@@ -10,6 +10,10 @@
 
     -webkit-tap-highlight-color: transparent;
 
+    @include mini-tablet {
+        gap: 20px;
+    }
+
 
 
     &.expanded {
@@ -94,8 +98,13 @@
 
     .progress-group {
         display: flex;
-        gap: 10px;
+        gap: 5px;
         align-items: center;
+
+        @include large-mobile {
+            gap: 10px;
+        }
+
 
         
         .progress {

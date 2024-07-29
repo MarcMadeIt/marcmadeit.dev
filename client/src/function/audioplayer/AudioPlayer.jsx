@@ -3,9 +3,19 @@ import "./AudioPlayer.scss";
 import Audio from "../../components/audio/Audio";
 import { FaChevronDown } from "react-icons/fa6";
 
+function truncateText(text, limit) {
+  if (typeof text !== "string") {
+    return "";
+  }
+
+  const words = text.split(" ");
+  return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
+}
+
 const AudioPlayer = ({ podcast }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const truncatedDesc = truncateText(podcast.desc, 50 );
 
   useEffect(() => {
     setIsVisible(true);
@@ -22,7 +32,12 @@ const AudioPlayer = ({ podcast }) => {
           <img src={podcast.imageinfo} alt={podcast.title} />
           <div className="audio-player-details">
             <h3>{podcast.title}</h3>
-            <p>{podcast.desc}</p>
+            <p>{truncatedDesc}</p>
+            <div className="podcast-tags">
+                {podcast.tags.map((tag, index) => (
+                    <span key={tag}>#{tag}</span>
+                ))}
+            </div>
           </div>
         </div>
         <div className="audio-player-right">

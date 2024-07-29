@@ -489,6 +489,24 @@ app.delete("/api/project/get/:id", async (req, res) => {
     }
 });
 
+app.get("/api/project/count", async (req, res) => {
+
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        try {
+            const projectCount = await Project.countDocuments({ author: info.id });
+            res.status(200).json({ projectCount });
+        } catch (error) {
+            console.error('Error fetching project count:', error);
+            res.status(500).json({ error: 'Failed to fetch project count' });
+        }
+    });
+});
+
 
 // PODCAST ------------------------------------ PODCAST
 
@@ -670,6 +688,25 @@ app.delete("/api/podcast/get/:id", async (req, res) => {
         console.error('Error deleting Podcast:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+app.get("/api/podcast/count", async (req, res) => {
+
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) {
+            console.error('Error verifying token:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        try {
+            const podcastCount = await PodcastModel.countDocuments({ author: info.id });
+            res.status(200).json({ podcastCount });
+        } catch (error) {
+            console.error('Error fetching podcast count:', error);
+            res.status(500).json({ error: 'Failed to fetch podcast count' });
+        }
+    });
 });
 
 

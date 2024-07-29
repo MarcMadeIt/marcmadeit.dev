@@ -20,58 +20,73 @@
     bottom 0.5s ease,
     height 0.5s ease;
 
-
-    -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 
   &.show {
     bottom: 0; // End position in view
   }
 
   &.expanded {
-    height: 50vh;
+    height: 70vh;
     flex-direction: column-reverse;
     padding: 10px;
 
     @include tablet {
-      height: 50vh;
+      height: 60vh;
     }
 
     .audio-player-content {
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       gap: 30px;
-      height: 100%; 
+      height: 100%;
+
 
       .audio-player-left {
         justify-content: center;
         align-items: center;
+        flex: auto;
 
 
         img {
-          height: 120px; 
+          height: 120px;
           width: 120px;
           object-fit: cover;
         }
 
         .audio-player-details {
+          gap: 10px;
+
           h3 {
-            font-size: 24px; 
+            font-size: 22px;
           }
 
           p {
-            font-size: 18px; 
+            max-width: 250px;
+            font-size: 12px;
+            white-space: wrap;
+            text-overflow:unset
+          }
+
+          .podcast-tags {
+            display: flex;
           }
         }
       }
 
       .audio-player-right {
+        flex: auto;
+
+        @include mini-tablet {  
+          .progress {
+            width: 200px;
+          }
+        }
 
         button {
           display: flex;
         }
-
-        
       }
     }
   }
@@ -101,7 +116,6 @@
       align-items: center;
       flex: 1;
 
-
       img {
         height: 40px;
         width: 40px;
@@ -109,8 +123,31 @@
       }
 
       .audio-player-details {
-        flex-grow: 1;
         margin-right: 10px;
+        display: flex;
+        flex-direction: column;
+
+        .podcast-tags {
+          display: none;
+          gap: 15px;
+          color: $primary;
+
+          span {
+            box-shadow: $secondary 0 0 0.5px 0.5px;
+            padding: 1px 3px;
+            border-radius: $borderradius;
+            font-size: 10px;
+            color: $primary;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+
+            @include mini-tablet {
+              font-size: 14px;
+              padding: 2px 6px;
+              box-shadow: $secondary 0 0 1px 1.5px;
+            }
+          }
+        }
 
         h3 {
           font-size: 11px;
@@ -124,13 +161,16 @@
         }
 
         p {
+          max-width: 100px;
+          width: auto;
           font-size: 10px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
 
-          @include large-mobile {
+          @include mini-tablet {
             font-size: 12px;
+            max-width: 200px;
           }
         }
       }
