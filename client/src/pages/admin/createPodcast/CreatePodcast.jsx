@@ -5,11 +5,14 @@ import { Navigate } from "react-router-dom";
 
 function CreatePodcast() {
   const options = [
-    { value: "HTML", label: "HTML" },
-    { value: "CSS", label: "CSS" },
-    { value: "JS", label: "JavaScript" },
-    { value: "ReactJS", label: "ReactJS" },
-    { value: "NodeJS", label: "NodeJS" },
+    { value: "Business", label: "Business" },
+    { value: "Innovation", label: "Innovation" },
+    { value: "Learning", label: "Learning" },
+    { value: "TechNews", label: "TechNews" },
+    { value: "Frontend", label: "Frontend" },
+    { value: "Backend", label: "Backend" },
+    { value: "Motivation", label: "Motivation" },
+    { value: "Startup", label: "Startup" },
   ];
 
   const [tags, setTags] = useState([]);

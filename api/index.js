@@ -600,8 +600,7 @@ app.get("/api/podcast/getlimit", async (req, res) => {
         // Fetch podcasts from the database
         const podcasts = await PodcastModel.find()
             .sort({ createdAt: -1 })
-            .populate('author', ['username']) // Assuming author is a reference to a user model
-            .select('-content') // Assuming you want to exclude the content field
+            .populate('author', ['username'])
             .skip(skip)
             .limit(parseInt(limit));
 

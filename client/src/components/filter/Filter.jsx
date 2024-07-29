@@ -1,93 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import "./Filter.scss";
 import { FaSearch } from "react-icons/fa";
-import { FaArrowDownShortWide, FaArrowDownWideShort } from "react-icons/fa6";
+import { FaArrowDownWideShort } from "react-icons/fa6";
 
-function Filter() {
-  useEffect(() => {
-    const hiddenContent = document.getElementById("filter-options");
-    const toggleButton = document.getElementById("fil-dropdown-btn");
+function Filter({ onSearch, onFilter }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-    function openFilter() {
-      if (hiddenContent.style.display === "none") {
-        hiddenContent.style.display = "block";
-      } else {
-        hiddenContent.style.display = "none";
-      }
-    }
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    onSearch(value);
+  };
 
-    function closeFilterIfOutside(event) {
-      if (
-        !hiddenContent.contains(event.target) &&
-        event.target !== toggleButton
-      ) {
-        hiddenContent.style.display = "none";
-      }
-    }
+  const handleFilterClick = (filter) => {
+    setFilter(filter);
+    onFilter(filter);
+  };
 
-    toggleButton.addEventListener("click", openFilter);
-    document.addEventListener("click", closeFilterIfOutside);
-
-    // Clean up event listeners on unmount
-    return () => {
-      toggleButton.removeEventListener("click", openFilter);
-      document.removeEventListener("click", closeFilterIfOutside);
-    };
-  }, []); // Empty dependency array to run effect only once
-
-  function filterObjects(c) {
-    var x, i;
-    x = document.getElementsByClassName("port-item");
-    if (c === "all") c = "";
-    for (i = 0; i < x.length; i++) {
-      removeClass(x[i], "show1");
-      if (x[i].className.indexOf(c) > -1) addClass(x[i], "show1");
-    }
-  }
-
-  function addClass(element, name) {
-    var i, arr1, arr2;
-    arr1 = element.className.split(" ");
-    arr2 = name.split(" ");
-    for (i = 0; i < arr2.length; i++) {
-      if (arr1.indexOf(arr2[i]) === -1) {
-        element.className += " " + arr2[i];
-      }
-    }
-  }
-
-  function removeClass(element, name) {
-    var i, arr1, arr2;
-    arr1 = element.className.split(" ");
-    arr2 = name.split(" ");
-    for (i = 0; i < arr2.length; i++) {
-      while (arr1.indexOf(arr2[i]) > -1) {
-        arr1.splice(arr1.indexOf(arr2[i]), 1);
-      }
-    }
-    element.className = arr1.join(" ");
-  }
-
-  const search = () => {
-    const searchBox = document
-      .getElementById("search-item")
-      .value.toUpperCase();
-    const cardList = document.getElementById("card-list");
-    const cardItem = document.querySelectorAll(".port-item");
-    const cardName = cardList.getElementsByTagName("h2");
-
-    for (let i = 0; i < cardName.length; i++) {
-      let match = cardItem[i].getElementsByTagName("h2")[0];
-
-      if (match) {
-        let textvalue = match.textContent || match.innerHTML;
-        if (textvalue.toUpperCase().indexOf(searchBox) > -1) {
-          cardItem[i].style.display = "";
-        } else {
-          cardItem[i].style.display = "none";
-        }
-      }
-    }
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
   };
 
   return (
@@ -99,69 +32,69 @@ function Filter() {
             className="form-control"
             type="text"
             placeholder="Search after project..."
-            onKeyUp={search}
-            id="search-item"
+            value={searchTerm}
+            onChange={handleSearch}
           />
         </label>
       </div>
       <div className="dropdown">
-        <button className="fil-dropdown-btn" id="fil-dropdown-btn">
+        <button className="fil-dropdown-btn" id="fil-dropdown-btn" onClick={toggleDropdown}>
           <FaArrowDownWideShort /> Filters
         </button>
-        <ul
-          className="fil-dropdown-menu"
-          id="filter-options"
-          style={{ display: "none" }}
-        >
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("all")}
-            >
-              Show all
-            </a>
-          </li>
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("buttons")}
-            >
-              Buttons
-            </a>
-          </li>
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("cards")}
-            >
-              Cards
-            </a>
-          </li>
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("forms")}
-            >
-              Forms
-            </a>
-          </li>
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("images")}
-            >
-              Image
-            </a>
-          </li>
-          <li>
-            <a
-              className="fil-dropdown-item"
-              onClick={() => filterObjects("texts")}
-            >
-              Text
-            </a>
-          </li>
-        </ul>
+        {isDropdownVisible && (
+          <ul className="fil-dropdown-menu" id="filter-options">
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("all")}>
+                Show all
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Learning")}>
+                Learning
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Innovation")}>
+              Innovation
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Business")}>
+                Business
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Frontend")}>
+                Frontend
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Backend")}>
+                Backend
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Coding")}>
+                Coding
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("TechNews")}>
+                TechNews
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Motivation")}>
+                Motivation
+              </a>
+            </li>
+            <li>
+              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Startup")}>
+                Startup
+              </a>
+            </li>
+          </ul>
+        )}
       </div>
     </div>
   );
