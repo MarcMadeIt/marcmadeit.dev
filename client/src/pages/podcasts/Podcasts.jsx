@@ -94,18 +94,22 @@ function Podcasts() {
           <Filter onSearch={handleSearch} onFilter={handleFilter} />
         </div>
         <div className="podcasts-content">
-          {filteredPodcasts.map((podcast) => (
-            <Podcast
-              key={podcast._id}
-              _id={podcast._id}
-              title={podcast.title}
-              desc={podcast.desc}
-              tags={podcast.tags}
-              imageinfo={podcast.imageinfo}
-              createdAt={podcast.createdAt}
-              onClick={() => handlePodcastClick(podcast)}
-            />
-          ))}
+          {filteredPodcasts.length === 0 && !loading ? (
+            <p className="no-podcasts-message">No podcasts found.</p>
+          ) : (
+            filteredPodcasts.map((podcast) => (
+              <Podcast
+                key={podcast._id}
+                _id={podcast._id}
+                title={podcast.title}
+                desc={podcast.desc}
+                tags={podcast.tags}
+                imageinfo={podcast.imageinfo}
+                createdAt={podcast.createdAt}
+                onClick={() => handlePodcastClick(podcast)}
+              />
+            ))
+          )}
         </div>
         <Pagination
           postsPerPage={postsPerPage}

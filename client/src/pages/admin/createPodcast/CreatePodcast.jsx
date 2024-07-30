@@ -7,12 +7,11 @@ function CreatePodcast() {
   const options = [
     { value: "Business", label: "Business" },
     { value: "Innovation", label: "Innovation" },
-    { value: "Learning", label: "Learning" },
     { value: "TechNews", label: "TechNews" },
     { value: "Frontend", label: "Frontend" },
     { value: "Backend", label: "Backend" },
     { value: "Motivation", label: "Motivation" },
-    { value: "Startup", label: "Startup" },
+    { value: "DailyTalk", label: "DailyTalk" },
   ];
 
   const [tags, setTags] = useState([]);

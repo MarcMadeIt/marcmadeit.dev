@@ -521,7 +521,7 @@ app.post("/api/podcast/create", upload.fields([{ name: 'file', maxCount: 1 }, { 
 
             if (isImage) {
                 const buffer = await sharp(fileBuffer)
-                    .resize({ height: 1000, width: 1000, fit: "cover" })
+                    .resize({ height: 800, width: 800, fit: "cover" })
                     .toBuffer();
 
                 return {

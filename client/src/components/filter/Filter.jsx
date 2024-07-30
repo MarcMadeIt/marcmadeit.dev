@@ -17,6 +17,7 @@ function Filter({ onSearch, onFilter }) {
   const handleFilterClick = (filter) => {
     setFilter(filter);
     onFilter(filter);
+    setIsDropdownVisible(false); 
   };
 
   const toggleDropdown = () => {
@@ -44,55 +45,45 @@ function Filter({ onSearch, onFilter }) {
         {isDropdownVisible && (
           <ul className="fil-dropdown-menu" id="filter-options">
             <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("all")}>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("all")}>
                 Show all
-              </a>
+              </button>
             </li>
             <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Learning")}>
-                Learning
-              </a>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("DailyTalk")}>
+              DailyTalk
+              </button>
             </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Innovation")}>
+            {/* <li>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("Innovation")}>
               Innovation
-              </a>
+              </button>
             </li>
             <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Business")}>
-                Business
-              </a>
-            </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Frontend")}>
-                Frontend
-              </a>
-            </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Backend")}>
-                Backend
-              </a>
-            </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Coding")}>
-                Coding
-              </a>
-            </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("TechNews")}>
-                TechNews
-              </a>
-            </li>
-            <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Motivation")}>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("Motivation")}>
                 Motivation
-              </a>
+              </button>
             </li>
             <li>
-              <a className="fil-dropdown-item" onClick={() => handleFilterClick("Startup")}>
-                Startup
-              </a>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("Business")}>
+                Business
+              </button>
+            </li> */}
+            <li>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("Frontend")}>
+                Frontend
+              </button>
             </li>
+            {/* <li>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("Backend")}>
+                Backend
+              </button>
+            </li>
+            <li>
+              <button className="fil-dropdown-item" onClick={() => handleFilterClick("TechNews")}>
+                TechNews
+              </button>
+            </li> */}
           </ul>
         )}
       </div>

@@ -30,6 +30,18 @@
     justify-content: center;
     gap: 20px;
 
+    .no-podcasts-message {
+      height: 150px;
+
+      @include large-mobile {
+        height: 130px;
+      }
+
+      @include tablet {
+        height: 200px;
+      }
+    }
+
     @include mini-tablet {
       max-width: 900px;
       gap: 30px;
