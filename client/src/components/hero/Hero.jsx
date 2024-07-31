@@ -14,9 +14,9 @@ function Hero() {
             <Link className="link" to="/blogs">
               <li>Blogs</li>
             </Link>
-            <Link className="link" to="/library">
+            {/* <Link className="link" to="/library">
               <li>Library</li>
-            </Link>
+            </Link> */}
             <Link className="link" to="/projects">
               <li>Projects</li>
             </Link>

@@ -370,7 +370,7 @@ app.post("/api/project/create", upload.single('file'), async (req, res) => {
         const generateUploadParams = async (fileBuffer, mimetype) => {
             const imageKey = crypto.randomBytes(20).toString("hex");
             const buffer = await sharp(fileBuffer)
-                .resize({ height: 1000, width: 1920, fit: "cover" })
+                .resize({ height: 750, width: 1220, fit: "cover" })
                 .toBuffer();
 
             return {
@@ -389,7 +389,7 @@ app.post("/api/project/create", upload.single('file'), async (req, res) => {
 
         // Project creation logic
         await connectToMongo();
-        const { title, desc, tags, link } = req.body;
+        const { title, desc, tags, link, github } = req.body;
         const tagsArray = tags ? tags.split(',') : [];
         const { token } = req.cookies;
 
@@ -402,6 +402,7 @@ app.post("/api/project/create", upload.single('file'), async (req, res) => {
             const newProject = new Project({
                 title,
                 link,
+                github,
                 desc,
                 tags: tagsArray,
                 author: info.id,

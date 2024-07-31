@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./Project.scss";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowRight, FaGithub } from "react-icons/fa6";
 import Image from "../image/Image";
 
-function Project({ _id, title, desc, tags = [], imageinfo, link }) {
+function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 568); // Change 768 to your desired breakpoint
+      setIsMobile(window.innerWidth <= 568); // Change 568 to your desired breakpoint
     };
     handleResize(); // Call once to set initial state
     window.addEventListener("resize", handleResize);
@@ -33,6 +33,14 @@ function Project({ _id, title, desc, tags = [], imageinfo, link }) {
     }
   };
 
+  const handleGitHubClick = () => {
+    window.open(github, '_blank');
+  };
+
+  const handleViewProjectClick = () => {
+    window.open(link, '_blank');
+  };
+
   return (
     <div className="project">
       <div className="project-image">
@@ -48,11 +56,14 @@ function Project({ _id, title, desc, tags = [], imageinfo, link }) {
         <div className="project-info">
           <div className="project-tags">{renderTags()}</div>
           <div className="project-btn">
-            <a className="link" href={link}>
-              <button>
-                View Project <FaArrowRight />
-              </button>
-            </a>
+            <button className="project-github-btn" onClick={handleGitHubClick} aria-label="GitHub">
+
+              <FaGithub />
+              <span className="source">Get Source</span>
+            </button>
+            <button className="project-link-btn" onClick={handleViewProjectClick} aria-label="View Project">
+              View Project <FaArrowRight />
+            </button>
           </div>
         </div>
       </div>

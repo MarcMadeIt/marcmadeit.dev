@@ -22,6 +22,7 @@ function CreateProject() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [link, setLink] = useState("");
+  const [github, setGithub] = useState("");
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,7 @@ function CreateProject() {
       formData.append("title", title);
       formData.append("desc", desc);
       formData.append("link", link);
+      formData.append("github", github);
       formData.append("tags", tags.map((tag) => tag.value).join(","));
       formData.append("file", file[0]);
 
@@ -98,9 +100,17 @@ function CreateProject() {
           ></textarea>
           <input
             className="link-project"
+            name="github"
+            type="github"
+            placeholder="Link to the Github Repository..."
+            value={github}
+            onChange={(ev) => setGithub(ev.target.value)}
+          />
+          <input
+            className="link-project"
             name="link"
             type="link"
-            placeholder="Link to the project"
+            placeholder="Link to the Project site..."
             value={link}
             onChange={(ev) => setLink(ev.target.value)}
           />

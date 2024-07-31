@@ -7,14 +7,14 @@ function Footer() {
   return (
     <div className="footer">
       <div className="footer-item footer-left">
-        <Link className="link" to="/library">
-          <span>Library</span>
-        </Link>
-        <Link className="link" to="/blogs">
+      <Link className="link" to="/blogs">
           <span>Blogs</span>
         </Link>
-        <Link className="link" to="/blogs">
-          <span>About</span>
+        <Link className="link" to="/projects">
+          <span>Projects</span>
+        </Link>
+        <Link className="link" to="/podcasts">
+          <span>Podcast</span>
         </Link>
       </div>
       <div className="footer-item footer-center">

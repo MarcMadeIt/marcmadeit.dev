@@ -26,14 +26,14 @@ function Sidebar() {
           >
             <li>Blogs</li>
           </Link>
-          <Link
+          {/* <Link
             className={`link ${
               location.pathname === "/library" ? "active" : ""
             }`}
             to="/library"
           >
             <li>Library</li>
-          </Link>
+          </Link> */}
           <Link
             className={`link ${
               location.pathname === "/projects" ? "active" : ""

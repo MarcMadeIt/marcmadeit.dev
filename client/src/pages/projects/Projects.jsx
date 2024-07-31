@@ -49,6 +49,7 @@ function Projects() {
             _id={project._id}
             title={project.title}
             desc={project.desc}
+            github={project.github}
             tags={project.tags}
             link={project.link}
             imageinfo={project.imageinfo}
