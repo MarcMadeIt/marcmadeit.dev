@@ -68,7 +68,12 @@
 
             .project-btn {
                 display: flex;
-                gap: 50px;
+                gap: 30px;
+
+
+                @include large-mobile {
+                    gap: 50px;
+                }
                 button {
                     font-size: 13px;
                     color: $primary;
@@ -86,21 +91,25 @@
                     overflow: hidden;
                 }
                 .project-link-btn {
-                    &::before {
-                        content: "";
-                        position: absolute;
-                        bottom: 0;
-                        left: -100%;
-                        width: 100%;
-                        height: 4px;
-                        background-color: $primary;
-                        transition: 500ms;
-                        border-radius: $borderradius;
-                    }
 
-                    &:hover::before {
-                        left: 0;
-                        transition: all 0.5s;
+                    @include large-mobile {
+
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            bottom: 0;
+                            left: -100%;
+                            width: 100%;
+                            height: 4px;
+                            background-color: $primary;
+                            transition: 500ms;
+                            border-radius: $borderradius;
+                        }
+                        
+                        &:hover::before {
+                            left: 0;
+                            transition: all 0.5s;
+                        }
                     }
 
                     @include mini-tablet {
@@ -109,6 +118,14 @@
                 }
                 .project-github-btn {
                     font-size: 15px;
+
+                    .source {
+                        display: none;
+
+                        @include large-mobile {
+                            display: block;
+                        }
+                    }
                 }
             }
 
