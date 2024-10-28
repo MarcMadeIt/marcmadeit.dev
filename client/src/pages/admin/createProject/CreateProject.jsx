@@ -7,8 +7,8 @@ function CreateProject() {
   const options = [
     { value: "HTML", label: "HTML" },
     { value: "CSS", label: "CSS" },
-    { value: "JS", label: "JavaScript" },
-    { value: "TS", label: "TypeScript" },
+    { value: "JavaScript", label: "JavaScript" },
+    { value: "TypeScript", label: "TypeScript" },
     { value: "ReactJS", label: "ReactJS" },
     { value: "NodeJS", label: "NodeJS" },
     { value: "NextJS", label: "NextJS" },
