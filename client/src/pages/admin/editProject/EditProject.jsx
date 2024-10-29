@@ -1,64 +1,71 @@
 import React, { useEffect } from "react";
-import "./EditBlog.scss";
+import "./EditProject.scss";
 import { useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import Select from "react-select";
-import Editor from "../../../components/editor/Editor";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-function EditBlog() {
+function EditProject() {
   const options = [
-    { value: "Tips & Tricks", label: "Tips & Tricks" },
-    { value: "Inspiration", label: "Inspiration" },
+    { value: "HTML", label: "HTML" },
     { value: "CSS", label: "CSS" },
-    { value: "Webdesign", label: "WD" },
-    { value: "JavaScript", label: "JS" },
-    { value: "TypeScript", label: "TS" },
+    { value: "JavaScript", label: "JavaScript" },
+    { value: "TypeScript", label: "TypeScript" },
     { value: "ReactJS", label: "ReactJS" },
-    { value: "NextJS", label: "ReactJS" },
+    { value: "NodeJS", label: "NodeJS" },
+    { value: "NextJS", label: "NextJS" },
+    { value: "ExpressJS", label: "ExpressJS" },
+    { value: "MongoDB", label: "MongoDB" },
+    { value: "AWS S3", label: "AWS S3" },
+    { value: "MySQL", label: "MySQL" },
+    { value: "PostgreSQL", label: "PostgreSQL" },
   ];
 
   const { id } = useParams();
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [content, setContent] = useState("");
-  const [files, setFiles] = useState("");
+  const [file, setFile] = useState("");
+  const [link, setLink] = useState("");
+  const [github, setGithub] = useState("");
   const [redirect, setRedirect] = useState(false);
 
-  const fetchBlogInfo = () => {
-    fetch(`${apiUrl}/blog/get/${id}`)
+  const fetchProjectInfo = () => {
+    fetch(`${apiUrl}/project/get/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
-      .then((blogInfo) => {
-        setTitle(blogInfo.title);
-        setContent(blogInfo.content);
-        setTags(blogInfo.tags.map((tag) => ({ value: tag, label: tag })));
-        setFiles(blogInfo.files);
-        setDesc(blogInfo.desc);
+      .then((projectInfo) => {
+        setTitle(projectInfo.title);
+        setLink(projectInfo.link);
+        setGithub(projectInfo.github);
+        setTags(projectInfo.tags.map((tag) => ({ value: tag, label: tag })));
+        setFile(projectInfo.file);
+        setDesc(projectInfo.desc);
       })
       .catch((error) =>
-        console.error("Error fetching blog info:", error.message)
+        console.error("Error fetching project info:", error.message)
       );
   };
 
   useEffect(() => {
     if (id) {
-      fetchBlogInfo();
+      fetchProjectInfo();
     }
   }, [id]);
 
-  const updateBlog = async (ev) => {
+  const updateProject = async (ev) => {
     ev.preventDefault();
 
     const data = new FormData();
     data.set("title", title);
-    data.set("content", content);
+    data.set("file", file);
+    data.set("github", github);
+    data.set("link", link);
     data.set("desc", desc);
     data.set("id", id);
 
@@ -68,14 +75,14 @@ function EditBlog() {
       });
     }
 
-    if (files?.[0]) {
-      data.set("file", files?.[0]);
+    if (file?.[0]) {
+      data.set("file", file?.[0]);
     }
 
     console.log("FormData:", data);
 
     try {
-      const response = await fetch(`${apiUrl}/blog/put/${id}`, {
+      const response = await fetch(`${apiUrl}/project/put/${id}`, {
         method: "PUT",
         body: data,
         credentials: "include",
@@ -85,22 +92,22 @@ function EditBlog() {
         // Redirect after the update is successful
         setRedirect(true);
       } else {
-        console.error("Failed to update blog");
+        console.error("Failed to update project");
       }
     } catch (error) {
-      console.error("Error updating blog:", error);
+      console.error("Error updating project:", error);
     }
   };
   // Check if redirect is true and id is available before navigating
   if (redirect && id) {
-    return <Navigate to={"/blog/" + id} />;
+    return <Navigate to={"/project/" + id} />;
   }
 
   return (
-    <div className="edit-blog">
-      <h3>Update the blog</h3>
+    <div className="edit-project">
+      <h3>Update the Project</h3>
       <div className="form-edit">
-        <form onSubmit={updateBlog}>
+        <form onSubmit={updateProject}>
           <Select
             isMulti
             options={options}
@@ -113,36 +120,49 @@ function EditBlog() {
             getOptionLabel={(option) => option.label}
           />
           <input
-            className="title-blog"
+            className="title-project"
             type="title"
-            placeholder="Title on the new blog..."
+            placeholder="Title on the project..."
             value={title}
             onChange={(ev) => setTitle(ev.target.value)}
           />
           <textarea
-            className="desc-blog"
-            placeholder="Description/summary to the new blog..."
+            className="desc-project"
+            placeholder="Description/summary to the project..."
             name=""
             id=""
             value={desc}
             onChange={(ev) => setDesc(ev.target.value)}
           ></textarea>
-          <div className="text-editor">
-            <Editor onChange={setContent} value={content} />
-          </div>
+          <input
+            className="link-project"
+            name="github"
+            type="github"
+            placeholder="Link to the Github Repository..."
+            value={github}
+            onChange={(ev) => setGithub(ev.target.value)}
+          />
+          <input
+            className="link-project"
+            name="link"
+            type="link"
+            placeholder="Link to the Project site..."
+            value={link}
+            onChange={(ev) => setLink(ev.target.value)}
+          />
           <label className="file-input-label">
             <input
               type="file"
               hidden
-              onChange={(ev) => setFiles(ev.target.files)}
+              onChange={(ev) => setFile(ev.target.files)}
             />
             Choose file
           </label>
           <span className="file-info">
-            {files && files.length > 0 ? files[0].name : "No file selected"}
+            {file && file.length > 0 ? file[0].name : "No file selected"}
           </span>
           <button className="submit-button" type="submit">
-            Update Blog
+            Update Project
           </button>
         </form>
       </div>
@@ -150,4 +170,4 @@ function EditBlog() {
   );
 }
 
-export default EditBlog;
+export default EditProject;

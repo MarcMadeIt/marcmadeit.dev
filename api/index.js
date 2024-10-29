@@ -180,7 +180,7 @@ app.get("/api/blog/get", async (req, res) => {
     }
 });
 
-//Fremkaldelse af specifik blogpost
+// Get info to Edit Blog
 app.get("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -205,7 +205,9 @@ app.get("/api/blog/get/:id", async (req, res) => {
     }
 });
 
-//Fremkald info og få brugernavn til blogpost
+
+
+//GET INFO and specific blog - BLOGPAGE
 app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
 
     try {
@@ -278,7 +280,7 @@ app.delete("/api/blog/get/:id", async (req, res) => {
     }
 });
 
-//Updating af blog
+//Updating blog
 app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
     try {
         await connectToMongo();
@@ -441,7 +443,88 @@ app.get("/api/project/getbyuser", async (req, res) => {
     }
 });
 
+//Get info to Edit Project
 
+app.get("/api/project/get/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await connectToMongo();
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid project ID' });
+        }
+
+        const projectDoc = await Project.findById(id).populate('author', ['username']);
+
+        if (!projectDoc) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        res.json(projectDoc);
+    } catch (error) {
+        console.error('Error fetching specific project post:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Updating project
+
+app.put('/api/project/put/:id', upload.single('file'), async (req, res) => {
+    try {
+        await connectToMongo();
+        const { id } = req.params;
+        const { token } = req.cookies;
+
+        if (!token) {
+            return res.status(401).json({ error: 'No token provided' });
+        }
+
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if (err) {
+                console.error('Error verifying token:', err);
+
+                if (err.name === 'TokenExpiredError') {
+                    return res.status(401).json({ error: 'Token expired' });
+                }
+
+                return res.status(500).json({ error: 'Internal Server Error' });
+            }
+
+            const { title, desc, link, github, tags } = req.body;
+
+            try {
+                const projectDoc = await Project.findById(id);
+
+                if (!projectDoc) {
+                    return res.status(404).json({ error: 'Project post not found' });
+                }
+
+                const isAuthor = JSON.stringify(projectDoc.author) === JSON.stringify(info.id);
+
+                if (!isAuthor) {
+                    return res.status(403).json({ error: 'You are not the author' });
+                }
+
+                projectDoc.title = title;
+                projectDoc.desc = desc;
+                projectDoc.github = github;
+                projectDoc.link = link;
+                projectDoc.tags = Array.isArray(tags) ? tags : JSON.parse(tags);
+                await projectDoc.save();
+                res.json(projectDoc);
+            } catch (error) {
+                console.error('Error updating blog post:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+    } catch (error) {
+        console.error('Error in PUT request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Delete project
 
 app.delete("/api/project/get/:id", async (req, res) => {
     const { id } = req.params;

@@ -91,7 +91,7 @@ function ViewBlogs() {
                   <div className="viewblogs-buttons">
                     <Link
                       className="blodpage-edit"
-                      to={`/edit/${blogInfo._id}`}
+                      to={`/blog/edit/${blogInfo._id}`}
                     >
                       <button>
                         <FaPencilAlt />

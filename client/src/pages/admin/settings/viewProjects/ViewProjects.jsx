@@ -94,7 +94,7 @@ function ViewProjects() {
                   <div className="viewprojects-buttons">
                     <Link
                       className="podcasts-edit"
-                      to={`/edit/${projectInfo._id}`}
+                      to={`/project/edit/${projectInfo._id}`}
                     >
                       <button>
                         <FaPencilAlt />
