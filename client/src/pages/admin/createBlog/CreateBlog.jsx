@@ -9,15 +9,18 @@ function CreateBlog() {
     { value: "Tips & Tricks", label: "Tips & Tricks" },
     { value: "Inspiration", label: "Inspiration" },
     { value: "CSS", label: "CSS" },
-    { value: "JS", label: "JS" },
-    { value: "ReactJS", label: "ReactJS" },
+    { value: "Webdesign", label: "WD" },
+    { value: "JavaScript", label: "JS" },
+    { value: "TypeScript", label: "TS" },
+    { value: "React", label: "React" },
+    { value: "NextJS", label: "ReactJS" },
   ];
 
   const [tags, setTags] = useState([]);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -35,7 +38,7 @@ function CreateBlog() {
       formData.append("desc", desc);
       formData.append("content", content);
       formData.append("tags", tags.map((tag) => tag.value).join(","));
-      formData.append("file", file[0]);
+      formData.append("file", file);
 
       const response = await fetch(`${apiUrl}/blog/create`, {
         method: "POST",
@@ -103,7 +106,7 @@ function CreateBlog() {
               name="file"
               type="file"
               hidden
-              onChange={(ev) => setFile(ev.target.files)}
+              onChange={(ev) => setFile(ev.target.files[0])}
               accept="image/*"
             />
             Choose file

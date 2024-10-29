@@ -71,12 +71,12 @@ const upload = multer({ storage: storage });
 
 // BLOG -------------------------------------------------------------- BLOG
 
-app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
+app.post('/api/blog/create', upload.single('file'), async (req, res) => {
     try {
         await connectToMongo();
-        const { id } = req.params;
         const { token } = req.cookies;
 
+        // Verificer JWT-tokenet for at få brugeroplysninger
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
@@ -90,56 +90,47 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
 
             const { title, desc, content, tags } = req.body;
 
-            try {
-                const blogDoc = await Blog.findById(id);
+            // Håndter billedupload, hvis der er en fil vedlagt
+            let imageUrl = null;
+            if (req.file) {
+                const bucketName = process.env.BUCKET_NAME;
+                const imageKey = `image_${Date.now()}_${Math.floor(Math.random() * 1000)}_${req.file.originalname}`;
 
-                if (!blogDoc) {
-                    return res.status(404).json('Blog post not found');
-                }
+                // Funktion til at generere upload-parametre til S3
+                const generateUploadParams = async (fileBuffer, mimetype) => {
+                    const buffer = await sharp(fileBuffer)
+                        .resize({ height: 1000, width: 1920, fit: "cover" })
+                        .toBuffer();
 
-                const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
-
-                if (!isAuthor) {
-                    return res.status(400).json('You are not the author');
-                }
-
-                // Check if a new file is uploaded
-                if (req.file) {
-                    const bucketName = process.env.BUCKET_NAME;
-                    const imageKey = `image_${Date.now()}_${Math.floor(Math.random() * 1000)}_${req.file.originalname}`;
-
-                    // Function to generate upload parameters for S3
-                    const generateUploadParams = async (fileBuffer, mimetype) => {
-                        const buffer = await sharp(fileBuffer)
-                            .resize({ height: 1000, width: 1920, fit: "cover" })
-                            .toBuffer();
-
-                        return {
-                            Bucket: bucketName,
-                            Key: imageKey,
-                            Body: buffer,
-                            ContentType: mimetype,
-                        };
+                    return {
+                        Bucket: bucketName,
+                        Key: imageKey,
+                        Body: buffer,
+                        ContentType: mimetype,
                     };
+                };
 
-                    // Upload the new image to S3
-                    const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
-                    await s3Client.send(new PutObjectCommand(uploadParams));
+                // Upload billedet til S3 og opdater image URL
+                const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
+                await s3Client.send(new PutObjectCommand(uploadParams));
+                imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
+            }
 
-                    // Update the image URL in the database
-                    blogDoc.imageinfo = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
-                }
+            // Opret en ny blogpost i databasen
+            try {
+                const newBlogPost = new Blog({
+                    title,
+                    desc,
+                    content,
+                    tags,
+                    author: info.id, // Tilføjer bruger-ID som author
+                    imageinfo: imageUrl,
+                });
 
-                // Update other fields in the blog document
-                blogDoc.title = title;
-                blogDoc.desc = desc;
-                blogDoc.content = content;
-                blogDoc.tags = tags;
-
-                await blogDoc.save();
-                res.json(blogDoc);
+                await newBlogPost.save();
+                res.status(201).json(newBlogPost);
             } catch (error) {
-                console.error('Error updating blog post:', error);
+                console.error('Error creating blog post:', error);
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         });
@@ -147,6 +138,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 //Fremkaldelse af alle blogs til fremvisning, men sideopdelt
