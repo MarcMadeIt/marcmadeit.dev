@@ -38,7 +38,7 @@ function CreateBlog() {
       formData.append("desc", desc);
       formData.append("content", content);
       formData.append("tags", tags.map((tag) => tag.value).join(","));
-      formData.append("file", file);
+      formData.append("file", file[0]);
 
       const response = await fetch(`${apiUrl}/blog/create`, {
         method: "POST",
@@ -106,7 +106,7 @@ function CreateBlog() {
               name="file"
               type="file"
               hidden
-              onChange={(ev) => setFile(ev.target.files[0])}
+              onChange={(ev) => setFile(ev.target.files)}
               accept="image/*"
             />
             Choose file
