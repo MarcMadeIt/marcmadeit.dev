@@ -34,11 +34,11 @@ function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
   };
 
   const handleGitHubClick = () => {
-    window.open(github, '_blank');
+    window.open(github, "_blank");
   };
 
   const handleViewProjectClick = () => {
-    window.open(link, '_blank');
+    window.open(link, "_blank");
   };
 
   return (
@@ -56,12 +56,19 @@ function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
         <div className="project-info">
           <div className="project-tags">{renderTags()}</div>
           <div className="project-btn">
-            <button className="project-github-btn" onClick={handleGitHubClick} aria-label="GitHub">
-
+            <button
+              className="project-github-btn"
+              onClick={handleGitHubClick}
+              aria-label="GitHub"
+            >
               <FaGithub />
               <span className="source">Get Source</span>
             </button>
-            <button className="project-link-btn" onClick={handleViewProjectClick} aria-label="View Project">
+            <button
+              className="project-link-btn"
+              onClick={handleViewProjectClick}
+              aria-label="View Project"
+            >
               View Project <FaArrowRight />
             </button>
           </div>
