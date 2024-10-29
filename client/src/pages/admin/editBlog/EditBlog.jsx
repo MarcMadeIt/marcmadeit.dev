@@ -71,7 +71,7 @@ function EditBlog() {
     console.log("FormData:", data);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/blog/put/${id}`, {
+      const response = await fetch(`${apiUrl}/blog/put/${id}`, {
         method: "PUT",
         body: data,
         credentials: "include",
