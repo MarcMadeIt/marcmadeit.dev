@@ -12,7 +12,7 @@ function CreateBlog() {
     { value: "Webdesign", label: "WD" },
     { value: "JavaScript", label: "JS" },
     { value: "TypeScript", label: "TS" },
-    { value: "React", label: "React" },
+    { value: "ReactJS", label: "ReactJS" },
     { value: "NextJS", label: "ReactJS" },
   ];
 
@@ -20,7 +20,7 @@ function CreateBlog() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
   const apiUrl = import.meta.env.VITE_API_BASE_URL;
