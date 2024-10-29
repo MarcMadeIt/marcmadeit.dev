@@ -68,10 +68,14 @@
 
             .project-btn {
                 display: flex;
-                gap: 15px;
+                gap: 10px;
 
 
                 @include large-mobile {
+                    gap: 15px;
+                }
+
+                @include mini-tablet {
                     gap: 50px;
                 }
                 button {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Editor from "../../../components/editor/Editor";
 
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
 function CreateBlog() {
   const options = [
     { value: "Tips & Tricks", label: "Tips & Tricks" },
@@ -23,7 +25,6 @@ function CreateBlog() {
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const createNewBlog = async (ev) => {
     ev.preventDefault();
@@ -37,7 +38,7 @@ function CreateBlog() {
       formData.append("title", title);
       formData.append("desc", desc);
       formData.append("content", content);
-      formData.append("tags", tags.map((tag) => tag.value).join(","));
+      formData.append("tags", JSON.stringify(tags.map((tag) => tag.value)));
       formData.append("file", file[0]);
 
       const response = await fetch(`${apiUrl}/blog/create`, {

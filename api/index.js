@@ -14,7 +14,7 @@ import Project from "./modules/Project.js"
 import session from 'express-session';
 import apicache from "apicache"
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import ProjectModel from './modules/Project.js';
 import PodcastModel from './modules/Podcast.js';
 
@@ -37,7 +37,6 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 mongoose.set('strictQuery', true);
-
 const connectToMongo = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL);
@@ -71,71 +70,79 @@ const upload = multer({ storage: storage });
 
 // BLOG -------------------------------------------------------------- BLOG
 
-app.post('/api/blog/create', upload.single('file'), async (req, res) => {
+app.post("/api/blog/create", upload.single("file"), async (req, res) => {
     try {
-        await connectToMongo();
+        const bucketName = process.env.BUCKET_NAME;
+
+        // Function to generate S3 upload parameters
+        const generateUploadParams = async (fileBuffer, mimetype) => {
+            const imageKey = crypto.randomBytes(20).toString("hex");
+            const buffer = await sharp(fileBuffer)
+                .resize({ height: 1000, width: 1920, fit: "cover" })
+                .toBuffer();
+
+            return {
+                Bucket: bucketName,
+                Key: imageKey,
+                Body: buffer,
+                ContentType: mimetype,
+            };
+        };
+
+        // Upload image if file is provided
+        let imageUrl = null;
+        if (req.file) {
+            const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
+            await s3Client.send(new PutObjectCommand(uploadParams));
+            imageUrl = `https://${bucketName}.s3.amazonaws.com/${uploadParams.Key}`;
+        }
+
+        await connectToMongo(); // Ensure database connection
         const { token } = req.cookies;
 
-        // Verificer JWT-tokenet for at få brugeroplysninger
+        // Verify JWT token for user info
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
-                console.error('Error verifying token:', err);
-
-                if (err.name === 'TokenExpiredError') {
-                    return res.status(401).json({ error: 'Token expired' });
-                }
-
-                return res.status(500).json({ error: 'Internal Server Error' });
+                console.error("Error verifying token:", err);
+                return res.status(401).json({ error: "Unauthorized" });
             }
 
+            // Extract and parse request data
             const { title, desc, content, tags } = req.body;
+            console.log("Tags received:", tags);  // Log the tags for debugging
 
-            // Håndter billedupload, hvis der er en fil vedlagt
-            let imageUrl = null;
-            if (req.file) {
-                const bucketName = process.env.BUCKET_NAME;
-                const imageKey = `image_${Date.now()}_${Math.floor(Math.random() * 1000)}_${req.file.originalname}`;
-
-                // Funktion til at generere upload-parametre til S3
-                const generateUploadParams = async (fileBuffer, mimetype) => {
-                    const buffer = await sharp(fileBuffer)
-                        .resize({ height: 1000, width: 1920, fit: "cover" })
-                        .toBuffer();
-
-                    return {
-                        Bucket: bucketName,
-                        Key: imageKey,
-                        Body: buffer,
-                        ContentType: mimetype,
-                    };
-                };
-
-                // Upload billedet til S3 og opdater image URL
-                const uploadParams = await generateUploadParams(req.file.buffer, req.file.mimetype);
-                await s3Client.send(new PutObjectCommand(uploadParams));
-                imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageKey}`;
-            }
-
-            // Opret en ny blogpost i databasen
+            let tagsArray;
             try {
-                const newBlogPost = new Blog({
-                    title,
-                    desc,
-                    content,
-                    tags,
-                    author: info.id, // Tilføjer bruger-ID som author
-                    imageinfo: imageUrl,
-                });
-
-                await newBlogPost.save();
-                res.status(201).json(newBlogPost);
-            } catch (error) {
-                console.error('Error creating blog post:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
+                tagsArray = Array.isArray(tags) ? tags : JSON.parse(tags || "[]");
+            } catch (e) {
+                console.error("Error parsing tags:", e);  // Log the error
+                return res.status(400).json({ error: "Invalid tags format" });
             }
+
+            // Create and save the new blog post
+            const newBlogPost = new Blog({
+                title,
+                desc,
+                content,
+                tags: tagsArray,
+                author: info.id,
+                imageinfo: imageUrl,
+            });
+
+            const savedBlogPost = await newBlogPost.save();
+
+            res.status(201).json({
+                message: "Blog created successfully",
+                blog: savedBlogPost,
+                tokenInfo: {
+                    id: info.id,
+                    username: info.username,
+                },
+            });
         });
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -260,6 +267,8 @@ app.get("/api/blog/getbyuser", async (req, res) => {
 });
 
 
+// Delete blog in mongoDB & S3
+
 app.delete("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
     try {
@@ -267,10 +276,25 @@ app.delete("/api/blog/get/:id", async (req, res) => {
             return res.status(400).json({ error: 'Invalid blog ID' });
         }
 
+        // Retrieve and delete the blog document
         const deletedBlog = await Blog.findByIdAndDelete(id);
 
         if (!deletedBlog) {
             return res.status(404).json({ error: 'Blog not found' });
+        }
+
+        // Extract the S3 Key from the image URL
+        if (deletedBlog.imageinfo) {
+            const imageUrl = new URL(deletedBlog.imageinfo);
+            const s3Key = imageUrl.pathname.substring(1); // Extract key from URL path
+
+            const deleteParams = {
+                Bucket: process.env.BUCKET_NAME,
+                Key: s3Key,
+            };
+
+            // Send delete request to S3
+            await s3Client.send(new DeleteObjectCommand(deleteParams));
         }
 
         res.json({ message: 'Blog deleted successfully' });
@@ -524,7 +548,7 @@ app.put('/api/project/put/:id', upload.single('file'), async (req, res) => {
 });
 
 
-// Delete project
+// Delete project in MongoDB & S3
 
 app.delete("/api/project/get/:id", async (req, res) => {
     const { id } = req.params;
@@ -539,9 +563,22 @@ app.delete("/api/project/get/:id", async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
 
+        // Extract the S3 Key from the image URL, if available
+        if (deletedProject.imageinfo) {
+            const imageUrl = new URL(deletedProject.imageinfo);
+            const s3Key = imageUrl.pathname.substring(1); // Extract key from URL path
+
+            const deleteParams = {
+                Bucket: process.env.BUCKET_NAME,
+                Key: s3Key,
+            };
+
+            await s3Client.send(new DeleteObjectCommand(deleteParams));
+        }
+
         res.json({ message: 'Project deleted successfully' });
     } catch (error) {
-        console.error('Error deleting Project:', error);
+        console.error('Error deleting project:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -708,6 +745,7 @@ app.get("/api/podcast/getbyuser", async (req, res) => {
 });
 
 
+// Delete Podcast in MongoDB & S3
 
 app.delete("/api/podcast/get/:id", async (req, res) => {
     const { id } = req.params;
@@ -722,16 +760,38 @@ app.delete("/api/podcast/get/:id", async (req, res) => {
             return res.status(404).json({ error: 'Podcast not found' });
         }
 
+        // Delete the associated image file from S3 if it exists
+        if (deletedPodcast.imageinfo) {
+            const imageUrl = new URL(deletedPodcast.imageinfo);
+            const imageS3Key = imageUrl.pathname.substring(1);
+
+            const imageDeleteParams = {
+                Bucket: process.env.BUCKET_NAME,
+                Key: imageS3Key,
+            };
+
+            await s3Client.send(new DeleteObjectCommand(imageDeleteParams));
+        }
+
+        // Delete the associated audio file from S3 if it exists
+        if (deletedPodcast.audioinfo) {
+            const audioUrl = new URL(deletedPodcast.audioinfo);
+            const audioS3Key = audioUrl.pathname.substring(1);
+
+            const audioDeleteParams = {
+                Bucket: process.env.BUCKET_NAME,
+                Key: audioS3Key,
+            };
+
+            await s3Client.send(new DeleteObjectCommand(audioDeleteParams));
+        }
+
         res.json({ message: 'Podcast deleted successfully' });
     } catch (error) {
-        console.error('Error deleting Podcast:', error);
+        console.error('Error deleting podcast:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-
-
-
 
 
 // Preview
@@ -784,8 +844,6 @@ app.post("/api/auth/register", async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
-
 
 app.post("/api/auth/login", cache('20 minutes'), async (req, res) => {
     try {

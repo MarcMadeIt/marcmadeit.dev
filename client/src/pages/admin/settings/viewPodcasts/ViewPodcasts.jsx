@@ -44,7 +44,7 @@ function ViewPodcasts() {
       });
       if (response.ok) {
         setPodcasts((prevPodcasts) =>
-            prevPodcasts.filter((podcast) => podcast._id !== podcastId)
+          prevPodcasts.filter((podcast) => podcast._id !== podcastId)
         );
         setDeleteConfirmation(null);
       } else {
@@ -57,7 +57,7 @@ function ViewPodcasts() {
 
   const openDeleteConfirmation = (podcastId) => {
     setDeleteConfirmation({
-        podcastId,
+      podcastId,
       message: "Are you sure you want to delete this podcast?",
     });
   };

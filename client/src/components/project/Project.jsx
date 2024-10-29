@@ -8,9 +8,9 @@ function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 568); // Change 568 to your desired breakpoint
+      setIsMobile(window.innerWidth <= 650);
     };
-    handleResize(); // Call once to set initial state
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
