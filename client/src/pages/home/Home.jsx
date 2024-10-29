@@ -22,26 +22,26 @@ function Home() {
     ? blogs.slice(0, maxBlogsToShow)
     : [];
 
-    useEffect(() => {
-      setLoading(true);
-      setTimeout(() => {
-        fetch(`${apiUrl}/blog/get`)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((blogs) => {
-            setBlogs(blogs);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error("Error fetching blogs:", error);
-            setLoading(false);
-          });
-      }, 2000); // 2 seconds delay
-    }, []);
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      fetch(`${apiUrl}/blog/get`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((blogs) => {
+          setBlogs(blogs);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching blogs:", error);
+          setLoading(false);
+        });
+    }, 2000); // 2 seconds delay
+  }, []);
 
   const { userInfo, handleLogout } = useContext(UserContext);
 
@@ -66,23 +66,23 @@ function Home() {
       <div className="home-hero">
         <Hero />
       </div>
-      <div className="home-about">
+      <div className="home-about" id="contact">
         <About />
       </div>
-      <div className="section home-contact" id="contact">
+      <div className="section home-contact">
         <h2>Contact for business?</h2>
         <ContactPop />
       </div>
       <div className="home-blogs">
         <div className="home-blogs-title">
-          <h2>Latest Blog Post </h2>
+          <h2>Latest Blog</h2>
         </div>
         <div className="home-blogs-content">
-        {loading && (
-          <div className="loading-container loading-front">
-            <RingLoader loading={loading} color="#06F9EC" size={100} />
-          </div>
-        )}
+          {loading && (
+            <div className="loading-container loading-front">
+              <RingLoader loading={loading} color="#06F9EC" size={100} />
+            </div>
+          )}
           {limitedBlogs.length > 0 &&
             limitedBlogs.map((blog) => (
               <Blog

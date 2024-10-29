@@ -7,15 +7,18 @@ function Footer() {
   return (
     <div className="footer">
       <div className="footer-item footer-left">
-      <Link className="link" to="/blogs">
+        <Link className="link" to="/login">
+          <span>Admin</span>
+        </Link>
+        <Link className="link" to="/blogs">
           <span>Blogs</span>
         </Link>
         <Link className="link" to="/projects">
           <span>Projects</span>
         </Link>
-        <Link className="link" to="/podcasts">
+        {/* <Link className="link" to="/podcasts">
           <span>Podcast</span>
-        </Link>
+        </Link> */}
       </div>
       <div className="footer-item footer-center">
         <p>
