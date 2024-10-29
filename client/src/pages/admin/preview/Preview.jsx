@@ -10,77 +10,30 @@ function Preview() {
   const [projectCount, setProjectCount] = useState(null);
   const [podcastCount, setPodcastCount] = useState(null);
 
-
-  const fetchBlogCount = async () => {
+  const fetchCounts = async () => {
     try {
-      const response = await fetch(`${apiUrl}/blog/count`, {
+      const response = await fetch(`${apiUrl}/counts`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
-        const { blogCount } = data;
-        setBlogCount(blogCount);
+        setBlogCount(data.blogCount);
+        setProjectCount(data.projectCount);
+        setPodcastCount(data.podcastCount);
       } else {
-        console.error("Failed to fetch blog count");
+        console.error("Failed to fetch counts");
       }
     } catch (error) {
-      console.error("Error fetching blog count:", error);
+      console.error("Error fetching counts:", error);
     }
   };
 
-  fetchBlogCount();
-
-  const fetchProjectCount = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/project/count`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const { projectCount } = data;
-        setProjectCount(projectCount);
-      } else {
-        console.error("Failed to fetch project count");
-      }
-    } catch (error) {
-      console.error("Error fetching project count:", error);
-    }
-  };
-
-  fetchProjectCount();
-
-  const fetchPodcastCount = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/podcast/count`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const { podcastCount } = data;
-        setPodcastCount(podcastCount);
-      } else {
-        console.error("Failed to fetch podcast count");
-      }
-    } catch (error) {
-      console.error("Error fetching podcast count:", error);
-    }
-  };
-
-  fetchPodcastCount();
+  useEffect(() => {
+    fetchCounts();
+  }, []);
 
   return (
     <div className="preview">
@@ -88,17 +41,17 @@ function Preview() {
         <h3>Preview</h3>
       </div>
       <div className="pre-blogs">
-      <IoDocumentAttachOutline fontSize={25} />
+        <IoDocumentAttachOutline fontSize={25} />
         <p>Total Blogs</p>
         <span>{blogCount}</span>
       </div>
       <div className="pre-blogs">
-      <IoEaselOutline size={25} />
+        <IoEaselOutline size={25} />
         <p>Total Projects</p>
         <span>{projectCount}</span>
       </div>
       <div className="pre-blogs">
-      <FaPodcast fontSize={25} />
+        <FaPodcast fontSize={25} />
         <p>Total Podcasts</p>
         <span>{podcastCount}</span>
       </div>

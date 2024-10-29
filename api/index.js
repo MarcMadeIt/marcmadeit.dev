@@ -258,25 +258,6 @@ app.get("/api/blog/getbyuser", async (req, res) => {
 });
 
 
-//Preview counting the blog for a specific user
-app.get("/api/blog/count", async (req, res) => {
-
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) {
-            console.error('Error verifying token:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        try {
-            const blogCount = await Blog.countDocuments({ author: info.id });
-            res.status(200).json({ blogCount });
-        } catch (error) {
-            console.error('Error fetching blog count:', error);
-            res.status(500).json({ error: 'Failed to fetch blog count' });
-        }
-    });
-});
-
 app.delete("/api/blog/get/:id", async (req, res) => {
     const { id } = req.params;
     try {
@@ -482,23 +463,6 @@ app.delete("/api/project/get/:id", async (req, res) => {
     }
 });
 
-app.get("/api/project/count", async (req, res) => {
-
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) {
-            console.error('Error verifying token:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-        try {
-            const projectCount = await Project.countDocuments({ author: info.id });
-            res.status(200).json({ projectCount });
-        } catch (error) {
-            console.error('Error fetching project count:', error);
-            res.status(500).json({ error: 'Failed to fetch project count' });
-        }
-    });
-});
 
 
 // PODCAST ------------------------------------ PODCAST
@@ -682,21 +646,30 @@ app.delete("/api/podcast/get/:id", async (req, res) => {
     }
 });
 
-app.get("/api/podcast/count", async (req, res) => {
 
+
+
+
+
+// Preview
+
+app.get("/api/counts", async (req, res) => {
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
         if (err) {
-            console.error('Error verifying token:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
+            console.error("Error verifying token:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
         }
-
         try {
-            const podcastCount = await PodcastModel.countDocuments({ author: info.id });
-            res.status(200).json({ podcastCount });
+            const [blogCount, projectCount, podcastCount] = await Promise.all([
+                Blog.countDocuments({ author: info.id }),
+                Project.countDocuments({ author: info.id }),
+                PodcastModel.countDocuments({ author: info.id }),
+            ]);
+            res.status(200).json({ blogCount, projectCount, podcastCount });
         } catch (error) {
-            console.error('Error fetching podcast count:', error);
-            res.status(500).json({ error: 'Failed to fetch podcast count' });
+            console.error("Error fetching counts:", error);
+            res.status(500).json({ error: "Failed to fetch counts" });
         }
     });
 });
