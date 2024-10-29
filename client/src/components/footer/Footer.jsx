@@ -16,9 +16,9 @@ function Footer() {
         <Link className="link" to="/projects">
           <span>Projects</span>
         </Link>
-        {/* <Link className="link" to="/podcasts">
+        <Link className="link" to="/podcasts">
           <span>Podcast</span>
-        </Link> */}
+        </Link>
       </div>
       <div className="footer-item footer-center">
         <p>

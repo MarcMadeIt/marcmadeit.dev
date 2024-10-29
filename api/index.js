@@ -310,7 +310,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         await connectToMongo();
         const { id } = req.params;
         const { token } = req.cookies;
-        const bucketName = process.env.BUCKET_NAME; // Define bucketName here
+        const bucketName = process.env.BUCKET_NAME;
 
         if (!token) {
             return res.status(401).json({ error: 'No token provided' });
@@ -347,12 +347,17 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                     // Delete the existing image from S3 if it exists
                     if (blogDoc.imageinfo) {
                         const imageUrl = new URL(blogDoc.imageinfo);
-                        const s3Key = imageUrl.pathname.substring(1); // Extract S3 key from URL
+                        const s3Key = imageUrl.pathname.substring(1);
                         const deleteParams = {
                             Bucket: bucketName,
                             Key: s3Key,
                         };
-                        await s3Client.send(new DeleteObjectCommand(deleteParams));
+                        try {
+                            await s3Client.send(new DeleteObjectCommand(deleteParams));
+                        } catch (deleteError) {
+                            console.error('Error deleting image from S3:', deleteError);
+                            return res.status(500).json({ error: 'Failed to delete image from S3' });
+                        }
                     }
 
                     // Upload the new image to S3
@@ -367,8 +372,14 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                         Body: buffer,
                         ContentType: req.file.mimetype,
                     };
-                    await s3Client.send(new PutObjectCommand(uploadParams));
-                    blogDoc.imageinfo = `https://${bucketName}.s3.amazonaws.com/${newImageKey}`;
+
+                    try {
+                        await s3Client.send(new PutObjectCommand(uploadParams));
+                        blogDoc.imageinfo = `https://${bucketName}.s3.amazonaws.com/${newImageKey}`;
+                    } catch (uploadError) {
+                        console.error('Error uploading new image to S3:', uploadError);
+                        return res.status(500).json({ error: 'Failed to upload new image to S3' });
+                    }
                 }
 
                 // Update blog document fields
