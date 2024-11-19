@@ -33,6 +33,53 @@ body {
     box-sizing: border-box;
 }
 
+.btn {
+  display: inline-block;
+  padding: 10px 30px;
+  background-color: $background;
+  color: $primary;
+  border: 2px solid $primary;
+  border-radius: 6px;
+  outline: none;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: 400ms;
+  font-size: 15px;
+  font-weight: 700;
+
+
+    &:hover {
+        box-shadow: 0 0 7px 1px $primary;
+        transition: 400ms;
+      }
+
+
+}
+
+.btn-action {
+
+    display: inline-block;
+    padding: 10px 30px;
+    background-color: $primary;
+    color: $background;
+    border: 2px solid $primary;
+    border-radius: 6px;
+    outline: none;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 400ms;
+    font-size: 15px;
+    font-weight: 700;
+  
+  
+      &:hover {
+          box-shadow: 0 0 7px 1px $primary;
+          transition: 400ms;
+        }
+}
+
+
+
 .link {
     text-decoration: none;
     color: inherit;

@@ -473,7 +473,6 @@ app.get("/api/project/get", async (req, res) => {
     try {
         await connectToMongo();
 
-        // Fetch only the latest two blog posts, excluding the "content" field
         const projects = await ProjectModel.find().sort({ createdAt: -1 });
 
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');

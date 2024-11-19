@@ -11,6 +11,7 @@ import { IoLogOut } from "react-icons/io5";
 import { RingLoader } from "react-spinners";
 import Skills from "../../components/about/About.jsx";
 import About from "../../components/about/About.jsx";
+import { FaPhone } from "react-icons/fa6";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -69,10 +70,7 @@ function Home() {
       <div className="home-about" id="contact">
         <About />
       </div>
-      <div className="section home-contact">
-        <h2>Contact for business?</h2>
-        <ContactPop />
-      </div>
+
       <div className="home-blogs">
         <div className="home-blogs-title">
           <h2>Latest Blog</h2>
@@ -97,10 +95,17 @@ function Home() {
               />
             ))}
         </div>
+
         <div className="home-blogs-button">
           <Link to="/blogs">
-            <button>View All Posts</button>
+            <button className="btn">View All Posts</button>
           </Link>
+        </div>
+        <div className="section home-contact">
+          <h2>Make some work together?</h2>
+
+          <h3>Let me contact you</h3>
+          <ContactPop />
         </div>
       </div>
       <Footer />

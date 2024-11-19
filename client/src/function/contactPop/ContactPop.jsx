@@ -15,8 +15,8 @@ function ContactPop() {
 
   return (
     <div className="contact-popup">
-      <button className="contact-btn" onClick={handleButtonClick}>
-        Let's talk
+      <button className="btn" onClick={handleButtonClick}>
+        Let's Talk
       </button>
 
       {isPopupVisible && (

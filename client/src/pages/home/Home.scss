@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 15px;
-    gap: 60px;
+    gap: 100px;
 
     .admin {
         position: absolute;
@@ -72,30 +72,7 @@
         
         }
 
-        .home-blogs-button {
-
-            button {
-                display: inline-block;
-                padding: 10px 30px;
-                background-color: $background;
-                color: $primary;
-                border: 2px solid $primary;
-                border-radius: 6px;
-                outline: none;
-                margin-top: 15px;
-                cursor: pointer;
-                transition: 400ms;
-                font-size: 15px;
-                font-weight: 700;
-
-                @include desktop {
-                    &:hover {
-                        box-shadow: 0 0 7px 1px $primary;
-                        transition: 400ms;
-                      }
-                }
-            }
-        }
+    
     }
 
     .home-about {
@@ -107,13 +84,22 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin: 50px 0 150px 0;
+        margin: 200px 0 100px 0;
         gap: 15px;
 
         h2 {
-            color: $text;
-            text-align: center;
+            font-size: 35px;
+                font-weight: 200;
+                color: $primary;
         }
+
+        h3 {
+            font-weight: 500;
+            color: $text;
+        }
+
+        
+
 
     }
 

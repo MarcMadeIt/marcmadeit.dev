@@ -1,15 +1,17 @@
 import React from "react";
 import "./Footer.scss";
-import { FaGithub, FaInstagram, FaYoutube } from "react-icons/fa6";
+import {
+  FaGithub,
+  FaInstagram,
+  FaUserShield,
+  FaYoutube,
+} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 function Footer() {
   return (
     <div className="footer">
       <div className="footer-item footer-left">
-        <Link className="link" to="/login">
-          <span>Admin</span>
-        </Link>
         <Link className="link" to="/blogs">
           <span>Blogs</span>
         </Link>
