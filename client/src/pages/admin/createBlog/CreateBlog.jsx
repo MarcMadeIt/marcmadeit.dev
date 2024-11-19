@@ -10,12 +10,15 @@ function CreateBlog() {
   const options = [
     { value: "Tips & Tricks", label: "Tips & Tricks" },
     { value: "Inspiration", label: "Inspiration" },
+    { value: "New Trends", label: "New Trends" },
     { value: "CSS", label: "CSS" },
     { value: "Webdesign", label: "WD" },
     { value: "JavaScript", label: "JS" },
     { value: "TypeScript", label: "TS" },
     { value: "ReactJS", label: "ReactJS" },
-    { value: "NextJS", label: "ReactJS" },
+    { value: "NextJS", label: "NextJS" },
+    { value: "Backend", label: "Backend" },
+    { value: "Frontend", label: "Frontend" },
   ];
 
   const [tags, setTags] = useState([]);
