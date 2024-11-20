@@ -32,6 +32,7 @@ const corsOptions = {
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
@@ -153,23 +154,28 @@ app.get("/api/blog/getlimit", async (req, res) => {
     try {
         await connectToMongo();
         const { page = 1, limit = 3 } = req.query;
-        console.log('Requested Page:', page);
         const skip = (page - 1) * limit;
 
         const blogs = await Blog.find()
             .sort({ createdAt: -1 })
-            .populate('author', ['username']).select('-content')
+            .populate('author', ['username'])
+            .select('-content')
             .skip(skip)
-            .limit(parseInt(limit));
+            .limit(parseInt(limit)).explain('executionStats');
+
+        console.log(blogs)
 
         const totalCount = await Blog.countDocuments();
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+
+        // Tilføj Cache-Control for edge caching
+        res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=59');
         res.status(200).json({ blogs, totalCount });
     } catch (error) {
         console.error('Error fetching blogs:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 app.get("/api/blog/get", async (req, res) => {
@@ -227,7 +233,7 @@ app.get("/api/blog/get/:id", cache('20 minutes'), async (req, res) => {
             }
             try {
                 const userBlogs = await Blog.find({ author: info.id }).sort({ createdAt: -1 }).populate('author', ['username']);
-                res.setHeader('Cache-Control', 'public, max-age=3600');
+                res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=300');
                 res.json(userBlogs);
             } catch (error) {
                 res.status(500).json({ error: 'Internal Server Error' });
@@ -312,10 +318,12 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         const { token } = req.cookies;
         const bucketName = process.env.BUCKET_NAME;
 
+        // Check if token is provided
         if (!token) {
             return res.status(401).json({ error: 'No token provided' });
         }
 
+        // Verify JWT token
         jwt.verify(token, secret, {}, async (err, info) => {
             if (err) {
                 console.error('Error verifying token:', err);
@@ -330,21 +338,23 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
             const { title, desc, content, tags } = req.body;
 
             try {
+                // Find the blog by ID
                 const blogDoc = await Blog.findById(id);
 
                 if (!blogDoc) {
                     return res.status(404).json({ error: 'Blog post not found' });
                 }
 
+                // Check if the logged-in user is the author
                 const isAuthor = JSON.stringify(blogDoc.author) === JSON.stringify(info.id);
 
                 if (!isAuthor) {
-                    return res.status(403).json({ error: 'You are not the author' });
+                    return res.status(403).json({ error: 'You are not the author of this blog' });
                 }
 
-                // Check if a new file was uploaded
+                // Handle file upload if a new file is provided
                 if (req.file) {
-                    // Delete the existing image from S3 if it exists
+                    // Delete the old image from S3
                     if (blogDoc.imageinfo) {
                         const imageUrl = new URL(blogDoc.imageinfo);
                         const s3Key = imageUrl.pathname.substring(1);
@@ -352,6 +362,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                             Bucket: bucketName,
                             Key: s3Key,
                         };
+
                         try {
                             await s3Client.send(new DeleteObjectCommand(deleteParams));
                         } catch (deleteError) {
@@ -382,11 +393,13 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
                     }
                 }
 
-                // Update blog document fields
+                // Update blog fields
                 blogDoc.title = title;
                 blogDoc.desc = desc;
                 blogDoc.content = content;
-                blogDoc.tags = tags;
+                blogDoc.tags = Array.isArray(tags) ? tags : JSON.parse(tags);
+
+                // Save the updated blog
                 await blogDoc.save();
 
                 res.json(blogDoc);
@@ -400,6 +413,7 @@ app.put('/api/blog/put/:id', upload.single('file'), async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 // PROJECT --------------------------------------- PROJECT
@@ -669,7 +683,7 @@ app.post("/api/podcast/create", upload.fields([{ name: 'file', maxCount: 1 }, { 
         await s3Client.send(new PutObjectCommand(audioParams));
         const audioUrl = `https://${bucketName}.s3.amazonaws.com/${audioParams.Key}`;
 
-        // Podcast creation logic
+
         await connectToMongo();
         const { title, desc, tags, link } = req.body;
         const tagsArray = tags ? tags.split(',') : [];
@@ -687,8 +701,8 @@ app.post("/api/podcast/create", upload.fields([{ name: 'file', maxCount: 1 }, { 
                 desc,
                 tags: tagsArray,
                 author: info.id,
-                imageinfo: imageUrl, // Store the image URL
-                audioinfo: audioUrl, // Store the audio URL
+                imageinfo: imageUrl,
+                audioinfo: audioUrl,
             });
 
             const savedPodcast = await newPodcast.save();
@@ -715,21 +729,16 @@ app.get("/api/podcast/getlimit", async (req, res) => {
         const { page = 1, limit = 3 } = req.query;
         console.log('Requested Page:', page);
         const skip = (page - 1) * limit;
-
-        // Fetch podcasts from the database
         const podcasts = await PodcastModel.find()
             .sort({ createdAt: -1 })
             .populate('author', ['username'])
             .skip(skip)
             .limit(parseInt(limit));
 
-        // Get the total count of podcasts
         const totalCount = await PodcastModel.countDocuments();
 
-        // Set cache headers
         res.setHeader('Cache-Control', 'public, max-age=3600');
 
-        // Send the response
         res.status(200).json({ podcasts, totalCount });
     } catch (error) {
         console.error('Error fetching podcasts:', error);
@@ -887,7 +896,7 @@ app.post("/api/auth/register", async (req, res) => {
     }
 });
 
-app.post("/api/auth/login", cache('20 minutes'), async (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
     try {
         await connectToMongo();
         console.log('Before login process');
