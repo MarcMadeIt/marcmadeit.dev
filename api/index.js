@@ -183,7 +183,7 @@ app.get("/api/blog/get", async (req, res) => {
         // Fetch only the latest two blog posts, excluding the "content" field
         const blogs = await Blog.find().sort({ createdAt: -1 }).limit(2).populate('author', ['username']).select('-content');
 
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=300');
         res.status(200).json(blogs);
     } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -487,7 +487,7 @@ app.get("/api/project/get", async (req, res) => {
 
         const projects = await ProjectModel.find().sort({ createdAt: -1 });
 
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=300');
         res.status(200).json(projects);
     } catch (error) {
         console.error('Error fetching projects:', error);
@@ -735,7 +735,7 @@ app.get("/api/podcast/getlimit", async (req, res) => {
 
         const totalCount = await PodcastModel.countDocuments();
 
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=300');
 
         res.status(200).json({ podcasts, totalCount });
     } catch (error) {
@@ -759,7 +759,7 @@ app.get("/api/podcast/get/:id", async (req, res) => {
         if (!podcastDoc) {
             return res.status(404).json({ error: 'Podcast not found' });
         }
-
+        res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=300');
         res.json(podcastDoc);
     } catch (error) {
         console.error('Error fetching specific podcast:', error);
