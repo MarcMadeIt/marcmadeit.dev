@@ -161,9 +161,7 @@ app.get("/api/blog/getlimit", async (req, res) => {
             .populate('author', ['username'])
             .select('-content')
             .skip(skip)
-            .limit(parseInt(limit)).explain('executionStats');
-
-        console.log(blogs)
+            .limit(parseInt(limit));
 
         const totalCount = await Blog.countDocuments();
 
