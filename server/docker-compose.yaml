@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: . # Sti til backend-mappen
+      dockerfile: Dockerfile # Dockerfile i backend-mappen
+    ports:
+      - "3000:3000" # Backend kører på port 3000
+    environment:
+      MONGO_URI: ${MONGO_URI}
+    depends_on: [] # Ingen lokal MongoDB-container
