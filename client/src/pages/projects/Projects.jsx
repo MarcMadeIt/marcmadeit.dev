@@ -4,6 +4,7 @@ import "./Projects.scss";
 import Project from "../../components/project/Project";
 import Footer from "../../components/footer/Footer";
 import { RingLoader } from "react-spinners";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
