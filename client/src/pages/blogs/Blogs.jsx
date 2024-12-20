@@ -19,18 +19,21 @@ function Blogs() {
     const fetchPosts = async (page = currentPage) => {
       setLoading(true);
       try {
-        const response = await fetch(`${apiUrl}/blog/getlimit?page=${page}`);
+        const response = await fetch(
+          `${apiUrl}/blogs/limit?page=${page}&limit=${postsPerPage}`
+        );
         const data = await response.json();
         setBlogs(data.blogs);
         setTotalCount(data.totalCount);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching blogs:", error);
+        setLoading(false);
       }
     };
 
     fetchPosts();
-  }, [currentPage]);
+  }, [currentPage, postsPerPage]);
 
   const handlePagination = (pageNumber) => {
     setCurrentPage(pageNumber);
