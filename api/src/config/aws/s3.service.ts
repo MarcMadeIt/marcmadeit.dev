@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 @Injectable()
 export class S3Service {
@@ -15,7 +15,7 @@ export class S3Service {
 
   async uploadFile(fileBuffer: Buffer, mimetype: string): Promise<string> {
     const bucketName = process.env.BUCKET_NAME;
-    const fileKey = `${uuidv4()}.jpg`; // Always save images as .jpg
+    const fileKey = `${uuidv4()}.jpg`; 
   
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     if (!validTypes.includes(mimetype)) {
