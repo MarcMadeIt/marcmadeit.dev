@@ -15,7 +15,7 @@ function Projects() {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${apiUrl}/project/get`);
+        const response = await fetch(`${apiUrl}/projects`);
         if (!response.ok) {
           throw new Error("Failed to fetch projects");
         }
@@ -45,14 +45,14 @@ function Projects() {
         <div className="projects-content">
           {projects.map((project) => (
             <Project
-            key={project._id}
-            _id={project._id}
-            title={project.title}
-            desc={project.desc}
-            github={project.github}
-            tags={project.tags}
-            link={project.link}
-            imageinfo={project.imageinfo}
+              key={project._id}
+              _id={project._id}
+              title={project.title}
+              desc={project.desc}
+              github={project.github}
+              tags={project.tags}
+              link={project.link}
+              imageinfo={project.imageinfo}
             />
           ))}
         </div>
