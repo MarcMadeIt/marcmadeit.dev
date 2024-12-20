@@ -15,15 +15,12 @@ function Projects() {
     const fetchProjects = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${apiUrl}/projects`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-        const data = await response.json();
-        setProjects(data);
-        setLoading(false);
+        const response = await axios.get(`${apiUrl}/projects`);
+        setProjects(response.data);
       } catch (error) {
         console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
