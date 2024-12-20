@@ -17,7 +17,12 @@ function Projects() {
       setLoading(true);
       try {
         const response = await axios.get(`${apiUrl}/projects`);
-        setProjects(response.data);
+        if (Array.isArray(response.data)) {
+          setProjects(response.data);
+        } else {
+          console.error("Unexpected API response:", response.data);
+          setProjects([]);
+        }
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
