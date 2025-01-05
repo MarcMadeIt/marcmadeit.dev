@@ -140,26 +140,22 @@ export class PodcastsService {
 
     // Handle image upload
     if (files.image && files.image[0]) {
-      if (imageinfo) {
-        const imageS3Key = new URL(imageinfo).pathname.substring(1);
-        await this.s3Service.deleteFile(imageS3Key);
-      }
-      imageinfo = await this.s3Service.uploadFile(
+      imageinfo = await this.s3Service.updateFile(
+        podcast.imageinfo,
         files.image[0].buffer,
         files.image[0].mimetype,
+        'image'
       );
       console.log('Image uploaded to S3, URL:', imageinfo);
     }
 
     // Handle audio upload
     if (files.audio && files.audio[0]) {
-      if (audioinfo) {
-        const audioS3Key = new URL(audioinfo).pathname.substring(1);
-        await this.s3Service.deleteFile(audioS3Key);
-      }
-      audioinfo = await this.s3Service.uploadAudio(
+      audioinfo = await this.s3Service.updateFile(
+        podcast.audioinfo,
         files.audio[0].buffer,
         files.audio[0].mimetype,
+        'audio'
       );
       console.log('Audio uploaded to S3, URL:', audioinfo);
     }

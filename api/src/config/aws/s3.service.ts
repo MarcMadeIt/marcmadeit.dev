@@ -88,4 +88,24 @@ export class S3Service {
       throw new Error('Failed to delete file from S3');
     }
   }
+
+  async updateFile(
+    oldFileUrl: string | null,
+    newFileBuffer: Buffer,
+    newFileMimetype: string,
+    fileType: 'image' | 'audio'
+  ): Promise<string> {
+    if (oldFileUrl) {
+      const s3Key = new URL(oldFileUrl).pathname.substring(1);
+      await this.deleteFile(s3Key);
+    }
+
+    if (fileType === 'image') {
+      return this.uploadFile(newFileBuffer, newFileMimetype);
+    } else if (fileType === 'audio') {
+      return this.uploadAudio(newFileBuffer, newFileMimetype);
+    } else {
+      throw new Error('Invalid file type');
+    }
+  }
 }
