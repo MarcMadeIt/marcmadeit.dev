@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin:[ 'http://localhost:5173', 'https://marcmadeit.vercel.app' ],
+    origin:[ 'http://localhost:5173', 'https://marcmadeit.vercel.app','https://mmi.marccode.com' ],
     credentials: true,
     methods:['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],      
   });
