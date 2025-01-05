@@ -9,9 +9,11 @@ export class CreatePodcastsDto {
   @IsString()
   desc: string;
 
+  @IsOptional()
   @IsArray()
-  @Transform(({ value }) => JSON.parse(value))  
-  tags: string[];
+  @Transform(({ value }) => 
+    typeof value === 'string' ? JSON.parse(value) : value)
+  tags?: string[];
 
   @IsOptional()
   @IsString()

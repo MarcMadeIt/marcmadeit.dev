@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { S3Service } from 'src/config/aws/s3.service';
 import { CreatePodcastsDto } from './dto/create-podcasts.dto';
 import { Podcast, PodcastDocument } from './schema/podcasts.schema';
-import { UpdatePodcastsDto } from './dto/upload-podcasts.dto';
+import { UpdatePodcastsDto } from './dto/update-podcasts.dto';
 import { User } from 'src/users/schema/users.schema';
 
 @Injectable()
@@ -59,51 +59,128 @@ export class PodcastsService {
     return Podcast;
   }
 
+  //Get all podcasts by User
+
+  async findCurrentUserPodcasts(user: User): Promise<Podcast[]> {
+    return this.podcastModel
+      .find({ author: user._id })
+      .sort({ createdAt: -1 })
+      .populate('author', 'username')
+      .exec();
+  }
+
+  //Count all podcasts
+
+  async countPodcasts(): Promise<number> {
+    return this.podcastModel.countDocuments().exec();
+  }
+  
+
     // CREATE Podcast
 
     async createPodcast(
       createPodcastsDto: CreatePodcastsDto,
-      files: { image: Express.Multer.File[], audio: Express.Multer.File[] }, 
+      files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
       user: User,
     ): Promise<Podcast> {
       let imageinfo: string | null = null;
       let audioinfo: string | null = null;
-
+    
+      // Handle image upload
       if (files.image && files.image[0]) {
-        imageinfo = await this.s3Service.uploadFile(files.image[0].buffer, files.image[0].mimetype);
-        console.log("Image uploaded to S3, URL:", imageinfo);
+        imageinfo = await this.s3Service.uploadFile(
+          files.image[0].buffer,
+          files.image[0].mimetype,
+        );
+        console.log('Image uploaded to S3, URL:', imageinfo);
       }
     
+      // Handle audio upload
       if (files.audio && files.audio[0]) {
-        audioinfo = await this.s3Service.uploadAudio(files.audio[0].buffer, files.audio[0].mimetype);
-        console.log("Audio uploaded to S3, URL:", audioinfo);
+        audioinfo = await this.s3Service.uploadAudio(
+          files.audio[0].buffer,
+          files.audio[0].mimetype,
+        );
+        console.log('Audio uploaded to S3, URL:', audioinfo);
       }
-
+    
+      const tagsArray = Array.isArray(createPodcastsDto.tags)
+      ? createPodcastsDto.tags
+      : typeof createPodcastsDto.tags === 'string'
+        ? JSON.parse(createPodcastsDto.tags)
+        : [];
+    
       const podcastData = {
         ...createPodcastsDto,
-        imageinfo, 
-        audioinfo,  
-        author: user._id, 
+        tags: tagsArray,
+        imageinfo,
+        audioinfo,
+        author: user._id,
       };
-
+    
       const newPodcast = new this.podcastModel(podcastData);
       return newPodcast.save();
     }
     
-      
-      
-      
-      
-
-
+    
   // UPDATE Podcast
 
   async update(
     id: string,
     updatePodcastsDto: UpdatePodcastsDto,
+    files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
   ): Promise<Podcast> {
+    const podcast = await this.podcastModel.findById(id).exec();
+    if (!podcast) {
+      throw new NotFoundException('Podcast not found');
+    }
+
+    let imageinfo = podcast.imageinfo;
+    let audioinfo = podcast.audioinfo;
+
+    // Handle image upload
+    if (files.image && files.image[0]) {
+      if (imageinfo) {
+        const imageS3Key = new URL(imageinfo).pathname.substring(1);
+        await this.s3Service.deleteFile(imageS3Key);
+      }
+      imageinfo = await this.s3Service.uploadFile(
+        files.image[0].buffer,
+        files.image[0].mimetype,
+      );
+      console.log('Image uploaded to S3, URL:', imageinfo);
+    }
+
+    // Handle audio upload
+    if (files.audio && files.audio[0]) {
+      if (audioinfo) {
+        const audioS3Key = new URL(audioinfo).pathname.substring(1);
+        await this.s3Service.deleteFile(audioS3Key);
+      }
+      audioinfo = await this.s3Service.uploadAudio(
+        files.audio[0].buffer,
+        files.audio[0].mimetype,
+      );
+      console.log('Audio uploaded to S3, URL:', audioinfo);
+    }
+
+    const tagsArray = Array.isArray(updatePodcastsDto.tags)
+      ? updatePodcastsDto.tags
+      : typeof updatePodcastsDto.tags === 'string'
+        ? JSON.parse(updatePodcastsDto.tags)
+        : [];
+
     const updatedPodcast = await this.podcastModel
-      .findByIdAndUpdate(id, updatePodcastsDto, { new: true })
+      .findByIdAndUpdate(
+        id,
+        {
+          ...updatePodcastsDto,
+          tags: tagsArray,
+          imageinfo,
+          audioinfo,
+        },
+        { new: true },
+      )
       .exec();
 
     if (!updatedPodcast) {

@@ -7,4 +7,7 @@ export class CreateUserRequest {
 
     @IsStrongPassword()
     password: string;
+
+    @IsString()
+    _id: string;
 }

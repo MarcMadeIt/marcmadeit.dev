@@ -1,34 +1,29 @@
 import React, { useState, useEffect } from "react";
 import "./AccountSet.scss";
-import PasswordPop from "../../../../function/passwordPop/PasswordPop.jsx";
 import { IoLockClosed } from "react-icons/io5";
-import { useParams } from "react-router-dom";
+import axios from "axios";
+import ChangePassword from "../../../../function/changePassword/ChangePassword.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function AccountSet() {
-  const { id } = useParams();
+  const [userId, setUserId] = useState(null); // <-- store _id from /me
   const [username, setUsername] = useState("");
   const [showPasswordPop, setShowPasswordPop] = useState(false);
   const [message, setMessage] = useState("");
   const [usernameLength, setUsernameLength] = useState(0);
 
   useEffect(() => {
-    fetch(`${apiUrl}/user/getusername`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // Update the username state
-        setUsername(data.username);
-        setUsernameLength(data.username.length);
+    axios
+      .get(`${apiUrl}/users/me`, { withCredentials: true })
+      .then((response) => {
+        const currentUser = response.data;
+        setUserId(currentUser._id); // set the user ID
+        setUsername(currentUser.username);
+        setUsernameLength(currentUser.username.length);
       })
       .catch((error) => {
-        console.error("Error fetching username:", error);
+        console.error("Error fetching current user:", error);
       });
   }, []);
 
@@ -41,49 +36,26 @@ function AccountSet() {
   };
 
   const handleUsernameChange = (e) => {
-    // Update the username state on input change
     const newUsername = e.target.value;
     setUsername(newUsername);
     setUsernameLength(newUsername.length);
   };
 
   const isUsernameValid = () => {
-    // Check if the username length is between 4 and 17
     return usernameLength >= 4 && usernameLength <= 20;
   };
 
   const handleUpdateUser = async () => {
     try {
-      if (!isUsernameValid()) {
-        setMessage("Username must be between 4 and 20 characters");
-        return;
-      }
-
-      const response = await fetch(`${apiUrl}/user/updateUsername/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          newUsername: username,
-        }),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        // Update was successful
-        console.log("Username updated successfully");
-        setMessage("Username updated successfully");
-      } else {
-        // Handle errors
-        console.error("Error updating username:", responseData.error);
-        setMessage("Internal Server Error");
-      }
+      const response = await axios.patch(
+        `${apiUrl}/users/me/username`,
+        { username },
+        { withCredentials: true }
+      );
+      const updatedUser = response.data;
+      setMessage(`Username updated successfully to ${updatedUser.username}`);
     } catch (error) {
-      console.error("Error updating username:", error);
-      setMessage("Internal Server Error");
+      setMessage("Something went wrong!");
     }
   };
 
@@ -102,9 +74,10 @@ function AccountSet() {
             Change Password
           </button>
         </label>
-        <label>
+        <label htmlFor="username">
           Username
           <input
+            id="username"
             type="text"
             value={username}
             onChange={handleUsernameChange}
@@ -123,7 +96,10 @@ function AccountSet() {
         </button>
       </div>
       {message && <p>{message}</p>}
-      <PasswordPop
+
+      {/* Pass the userId as a prop to ChangePassword */}
+      <ChangePassword
+        userId={userId}
         showPasswordPop={showPasswordPop}
         handleClosePasswordPop={handleClosePasswordPop}
       />

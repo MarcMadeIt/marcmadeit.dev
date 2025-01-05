@@ -25,7 +25,9 @@ function Podcasts() {
     const fetchPodcasts = async (page = currentPage) => {
       setLoading(true);
       try {
-        const response = await fetch(`${apiUrl}/podcast/getlimit?page=${page}&limit=${postsPerPage}`);
+        const response = await fetch(
+          `${apiUrl}/podcasts/limit?page=${page}&limit=${postsPerPage}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -34,7 +36,7 @@ function Podcasts() {
         setTotalCount(data.totalCount);
         setFilteredPodcasts(data.podcasts || []);
       } catch (error) {
-        console.error('Error fetching podcasts:', error);
+        console.error("Error fetching podcasts:", error);
       } finally {
         setLoading(false);
       }
@@ -70,9 +72,10 @@ function Podcasts() {
       filtered = filtered.filter((podcast) => podcast.tags.includes(filter));
     }
     if (searchTerm) {
-      filtered = filtered.filter((podcast) => 
-        podcast.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        podcast.desc.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (podcast) =>
+          podcast.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          podcast.desc.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     setFilteredPodcasts(filtered);

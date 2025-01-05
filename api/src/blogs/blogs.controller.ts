@@ -24,10 +24,11 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class BlogsController {
   constructor(private readonly blogsService: BlogsService) {}
 
-  @Get() // GET /api/blogs
-  async findAll(@Query('tags') tags?: string) {
-    const parsedTags = tags ? tags.split(',') : undefined;
-    const blogs = await this.blogsService.findAll(parsedTags);
+
+  @Get('latest') // GET /api/blogs/latest
+  async findLatest() {
+    const limit = 2;
+    const blogs = await this.blogsService.findLatest(limit);
     return blogs;
   }
 
@@ -46,19 +47,34 @@ export class BlogsController {
     return blogs;
   }
 
-  @Get('latest') // GET /api/blogs/latest
-  async findLatest() {
-    const limit = 2; // Fetch the two latest blogs
-    const blogs = await this.blogsService.findLatest(limit);
+  @Get('user') // GET /api/blogs/user
+  @UseGuards(JwtAuthGuard)
+  async findCurrentUserBlogs(@CurrentUser() user: User) {
+    if (!user) {
+      throw new UnauthorizedException('User is not authenticated');
+    }
+    return await this.blogsService.findCurrentUserBlogs(user);
+  }
+
+
+  @Get() // GET /api/blogs
+  async findAll(@Query('tags') tags?: string) {
+    const parsedTags = tags ? tags.split(',') : undefined;
+    const blogs = await this.blogsService.findAll(parsedTags);
     return blogs;
   }
 
+  @Get('count') // GET /api/blogs/count
+  async countBlogs() {
+    return await this.blogsService.countBlogs();
+  }
+
   @Get(':id') // GET /api/blogs/:id
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.blogsService.findOne(id);
   }
 
-  @Post('create') // GET /api/blogs/create
+  @Post('create') // POST /api/blogs/create
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async createBlog(
@@ -74,11 +90,16 @@ export class BlogsController {
   }
 
   @Patch(':id') // PATCH /api/blogs/:id
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogsDto) {
-    return this.blogsService.update(id, updateBlogDto);
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @Param('id') id: string,
+    @Body() updateBlogDto: UpdateBlogsDto,
+    @UploadedFile() file: Express.Request['file'],
+  ) {
+    return this.blogsService.update(id, updateBlogDto, file);
   }
 
-  @Delete(':id') // Forventet endpoint
+  @Delete(':id') // DELETE /api/blogs/:id
   async deleteBlog(@Param('id') id: string) {
     return this.blogsService.delete(id);
   }

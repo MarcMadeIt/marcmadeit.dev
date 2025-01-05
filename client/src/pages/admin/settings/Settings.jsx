@@ -7,33 +7,32 @@ import {
   IoEaselOutline,
   IoFileTrayFullOutline,
   IoPersonOutline,
-  IoRadioOutline,
 } from "react-icons/io5";
 import AccountSet from "./accountSet/AccountSet.jsx";
 import ViewBlogs from "./viewBlogs/ViewBlogs.jsx";
 import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
-import Extra from "./extra/Exstra.jsx";
-import { UserContext } from "../../../data/userContext";
 import ViewProjects from "./viewProjects/ViewProjects.jsx";
 import ViewPodcasts from "./viewPodcasts/ViewPodcasts.jsx";
 import { FaPodcast } from "react-icons/fa6";
+import { AuthContext } from "../../../context/AuthContext.jsx";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 function Settings() {
-  const { userInfo, setUserInfo } = useContext(UserContext);
-
-  function logout() {
-    fetch(`${apiUrl}/user/logout`, {
-      credentials: "include",
-      method: "POST",
-    });
-    setUserInfo(null);
-  }
+  const { user, handleLogout } = useContext(AuthContext);
 
   const [currentLayout, setCurrentLayout] = useState("mainMenu");
 
   const switchLayout = (layout) => {
     setCurrentLayout(layout);
+  };
+
+  const onLogout = async () => {
+    try {
+      await handleLogout();
+      console.log("Bruger er logget ud!");
+    } catch (error) {
+      console.error("Fejl under logout:", error);
+    }
   };
 
   return (
@@ -56,7 +55,7 @@ function Settings() {
               onClick={() => switchLayout("viewBlogs")}
             >
               <div className="set-item-left">
-              <IoDocumentAttachOutline fontSize={20} />
+                <IoDocumentAttachOutline fontSize={20} />
                 <span>View & Edit Blogs</span>
               </div>
               <IoChevronForward fontSize={25} />
@@ -91,14 +90,8 @@ function Settings() {
               </div>
               <IoChevronForward fontSize={25} />
             </button>
-            <button className="set-item" onClick={() => switchLayout("extra")}>
-              <div className="set-item-left">
-                <IoRadioOutline fontSize={20} />
-                <span>New</span>
-              </div>
-              <IoChevronForward fontSize={25} />
-            </button>
-            <button className="btn-setting-logout" onClick={logout}>
+
+            <button className="btn-setting-logout" onClick={onLogout}>
               Log out
             </button>
           </div>
@@ -114,7 +107,6 @@ function Settings() {
           {currentLayout === "viewProjects" && <ViewProjects />}
           {currentLayout === "viewPodcasts" && <ViewPodcasts />}
           {currentLayout === "viewLibrary" && <ViewLibrary />}
-          {currentLayout === "extra" && <Extra />}
         </div>
       </div>
     </>

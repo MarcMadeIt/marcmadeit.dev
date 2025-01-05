@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class S3Service {
@@ -30,8 +32,8 @@ export class S3Service {
     try {
       // Resize the image using sharp
       const resizedBuffer = await sharp(fileBuffer)
-        .resize({ height: 1000, width: 1920, fit: 'cover' })
-        .toBuffer();
+      .resize({ height: 1000, width: 1920, fit: 'cover' })
+      .toBuffer();
   
       const uploadParams = {
         Bucket: bucketName,

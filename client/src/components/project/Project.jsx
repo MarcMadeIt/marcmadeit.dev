@@ -8,7 +8,7 @@ function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 650);
+      setIsMobile(window.innerWidth <= 800);
     };
     handleResize();
     window.addEventListener("resize", handleResize);

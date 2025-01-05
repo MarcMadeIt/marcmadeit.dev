@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./PasswordPop.scss";
+import "./ChangePassword.scss";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
+function ChangePassword({ showPasswordPop, handleClosePasswordPop }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -13,33 +13,32 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if New Password and Confirm New Password match
     if (newPassword !== confirmPassword) {
       setPasswordsMatchError("Passwords do not match");
-      setMessage(""); // Clear other message
+      setMessage("");
       return;
     }
 
     try {
-      const response = await fetch(`${apiUrl}/${userId}`, {
-        method: "PUT",
+      const response = await fetch(`${apiUrl}/users/me/password`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ newPassword, currentPassword }),
+        body: JSON.stringify({ currentPassword, newPassword }),
       });
 
-      const data = await response.json();
-
-      setMessage(data.message);
-
-      if (data.success) {
-        // Optionally, you can handle success actions
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error updating password");
       }
+
+      const data = await response.json();
+      setMessage("Password updated successfully!");
     } catch (error) {
       console.error("Error updating password:", error);
-      setMessage("Internal Server Error");
+      setMessage(error.message || "Internal Server Error");
     }
 
     setNewPassword("");
@@ -49,13 +48,13 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
 
   return (
     <div className={`password-model ${showPasswordPop ? "show" : ""}`}>
-      <h3>Change Password</h3>
       <div className="password-model-cont">
         <span className="close" onClick={handleClosePasswordPop}>
           &times;
         </span>
+        <h3>Change Password</h3>
         <form onSubmit={handleSubmit}>
-          <label for="current-password">
+          <label htmlFor="current-password">
             <input
               type="password"
               name="current-password"
@@ -66,7 +65,7 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
           </label>
-          <label for="new-password">
+          <label htmlFor="new-password">
             <input
               type="password"
               name="new-password"
@@ -77,7 +76,7 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </label>
-          <label for="confirm-password">
+          <label htmlFor="confirm-password">
             <input
               type="password"
               name="confirm-password"
@@ -92,7 +91,9 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
             />
             {passwordsMatchError && <p>{passwordsMatchError}</p>}
           </label>
-          <button type="submit">Update Password</button>
+          <button type="submit" className="btn">
+            Update
+          </button>
         </form>
         {message && <p>{message}</p>}
       </div>
@@ -100,4 +101,4 @@ function PasswordPop({ showPasswordPop, handleClosePasswordPop, userId }) {
   );
 }
 
-export default PasswordPop;
+export default ChangePassword;

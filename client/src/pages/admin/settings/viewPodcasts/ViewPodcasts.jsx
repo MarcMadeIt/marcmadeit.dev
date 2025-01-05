@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/Image.jsx";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,16 +19,10 @@ function ViewPodcasts() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/podcast/getbyuser`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((podcasts) => {
-        setPodcasts(podcasts);
+    axios
+      .get(`${apiUrl}/podcasts`, { withCredentials: true })
+      .then((response) => {
+        setPodcasts(response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -38,11 +33,10 @@ function ViewPodcasts() {
 
   const handleDelete = async (podcastId) => {
     try {
-      const response = await fetch(`${apiUrl}/podcast/get/${podcastId}`, {
-        method: "DELETE",
-        credentials: "include",
+      const response = await axios.delete(`${apiUrl}/podcasts/${podcastId}`, {
+        withCredentials: true,
       });
-      if (response.ok) {
+      if (response.status === 200) {
         setPodcasts((prevPodcasts) =>
           prevPodcasts.filter((podcast) => podcast._id !== podcastId)
         );
@@ -66,56 +60,53 @@ function ViewPodcasts() {
     <div className="viewpodcasts">
       <div className="viewpodcasts-title">
         <h3>Overview</h3>
-        <p>Projects</p>
+        <p>Podcasts</p>
       </div>
 
       <div className="viewpodcasts-cont">
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : podcasts && podcasts.length > 0 ? (
           <ul>
-            {Array.isArray(podcasts) ? (
-              podcasts.map((podcastInfo) => (
-                <li key={podcastInfo._id}>
-                  <div className="viewpodcasts-details">
-                    <div className="viewpodcasts-img">
-                      <ImageBlog src={podcastInfo.imageinfo} />
-                    </div>
-                    <div className="viewpodcasts-desc">
-                      <p>{truncateText(podcastInfo.title, 4)}</p>
-                      <span>
-                        {format(
-                          new Date(podcastInfo.createdAt),
-                          "dd. MMM yyyy"
-                        )}
-                      </span>
-                    </div>
+            {podcasts.map((podcastInfo) => (
+              <li key={podcastInfo._id}>
+                <div className="viewpodcasts-details">
+                  <div className="viewpodcasts-img">
+                    <ImageBlog src={podcastInfo.imageinfo} />
                   </div>
-                  <div className="viewpodcasts-buttons">
-                    <Link
-                      className="podcasts-edit"
-                      to={`/edit/${podcastInfo._id}`}
-                    >
-                      <button>
-                        <FaPencilAlt />
-                      </button>
-                    </Link>
-
-                    <button
-                      className="delete-btn"
-                      onClick={() => openDeleteConfirmation(podcastInfo._id)}
-                    >
-                      <FaRegTrashAlt />
+                  <div className="viewpodcasts-desc">
+                    <p>{truncateText(podcastInfo.title, 4)}</p>
+                    <span>
+                      {format(new Date(podcastInfo.createdAt), "dd. MMM yyyy")}
+                    </span>
+                  </div>
+                </div>
+                <div className="viewpodcasts-buttons">
+                  <Link
+                    className="podcasts-edit"
+                    to={`/podcast/edit/${podcastInfo._id}`}
+                  >
+                    <button>
+                      <FaPencilAlt />
                     </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p>No podcasts available</p>
-            )}
+                  </Link>
+                  <button
+                    className="delete-btn"
+                    onClick={() => openDeleteConfirmation(podcastInfo._id)}
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
+        ) : (
+          <div className="no-content">
+            <p>No Podcasts, create one!</p>
+          </div>
         )}
       </div>
+
       {deleteConfirmation && (
         <div className="delete-popup">
           <div className="delete-content">

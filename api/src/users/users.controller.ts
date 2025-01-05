@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UnauthorizedException,
@@ -32,25 +34,43 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
-  @Get('getusername') // GET /api/users/getusername
-@UseGuards(JwtAuthGuard)
-async getUser(@CurrentUser() user: User): Promise<{ _id: string; username: string }> {
-  if (!user || !user._id) {
-    throw new UnauthorizedException('User not found or unauthorized');
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getCurrentUser(@CurrentUser() user: User) {
+    return user;
   }
 
-  return { _id: user._id.toString(), username: user.username }; // Convert ObjectId to string
-}
-
-
-  @Put(':id') // PUT /api/users/:id
-  @UseGuards(JwtAuthGuard) // Protect the route with JWT guard
-  async updateUser(
-    @Param('id') id: string,
-    @Body() updates: UpdateUserRequest,
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/username')
+  async updateCurrentUserUsername(
+  @CurrentUser() user: User,
+  @Body() body: UpdateUserRequest,
   ) {
-    return await this.usersService.updateUser(id, updates);
+    return this.usersService.updateUser(
+      { _id: user._id },
+      { $set: { username: body.username } }
+    );
   }
+
+  @UseGuards(JwtAuthGuard)
+    @Patch('me/password')
+  async updateCurrentUserPassword(
+    @CurrentUser() user: User,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
+  const { currentPassword, newPassword } = body;
+
+  if (!currentPassword || !newPassword) {
+    throw new BadRequestException('currentPassword and newPassword are required');
+  }
+
+  return this.usersService.updateUserPassword(
+    user._id.toString(), 
+    currentPassword,
+    newPassword,
+  );
+  } 
+
 
 
 }

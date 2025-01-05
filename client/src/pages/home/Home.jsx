@@ -5,19 +5,20 @@ import ContactPop from "../../function/contactPop/ContactPop.jsx";
 import Footer from "../../components/footer/Footer.jsx";
 import Hero from "../../components/hero/Hero.jsx";
 import { Link } from "react-router-dom";
-import { UserContext } from "../../data/userContext.jsx";
 import { FaUserLock } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { RingLoader } from "react-spinners";
-import Skills from "../../components/about/About.jsx";
 import About from "../../components/about/About.jsx";
-import { FaPhone } from "react-icons/fa6";
+import axios from "axios";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import { FaHandshake } from "react-icons/fa6";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 function Home() {
   const [loading, setLoading] = useState(false);
   const [blogs, setBlogs] = useState([]);
+  const { user, handleLogout } = useContext(AuthContext);
   const maxBlogsToShow = 2;
   const limitedBlogs = Array.isArray(blogs)
     ? blogs.slice(0, maxBlogsToShow)
@@ -25,32 +26,31 @@ function Home() {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      fetch(`${apiUrl}/blog/get`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((blogs) => {
-          setBlogs(blogs);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching blogs:", error);
-          setLoading(false);
-        });
-    }, 2000); // 2 seconds delay
+    axios
+      .get(`${apiUrl}/blogs`)
+      .then((response) => {
+        setBlogs(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching blogs:", error);
+        setLoading(false);
+      });
   }, []);
 
-  const { userInfo, handleLogout } = useContext(UserContext);
-
-  const username = userInfo?.username;
+  const onLogout = async () => {
+    try {
+      await handleLogout();
+      console.log("Bruger er logget ud!");
+    } catch (error) {
+      console.error("Fejl under logout:", error);
+    }
+  };
 
   return (
     <div className="home">
-      {username && (
+      {/* Admin Section */}
+      {user && (
         <div className="admin">
           <Link to="/admin">
             <button>
@@ -58,19 +58,24 @@ function Home() {
               Admin
             </button>
           </Link>
-          <button onClick={handleLogout}>
+          <button onClick={onLogout}>
             <IoLogOut size={17} />
             Logout
           </button>
         </div>
       )}
+
+      {/* Hero Section */}
       <div className="home-hero">
         <Hero />
       </div>
-      <div className="home-about" id="contact">
+
+      {/* About Section */}
+      <div className="home-about">
         <About />
       </div>
 
+      {/* Blogs Section */}
       <div className="home-blogs">
         <div className="home-blogs-title">
           <h2>Latest Blog</h2>
@@ -96,18 +101,25 @@ function Home() {
             ))}
         </div>
 
-        <div className="home-blogs-button">
+        {/* View All Posts */}
+        <div className="home-blogs-button" id="contact">
           <Link to="/blogs">
             <button className="btn">View All Posts</button>
           </Link>
         </div>
-        <div className="section home-contact">
-          <h2>Make some work together?</h2>
 
-          <h3>Let me contact you</h3>
+        {/* Contact Section */}
+        <div className="section home-contact">
+          <FaHandshake className="icon-contact" />
+          <div className="home-contact-content">
+            <h2>Make some work together?</h2>
+            <h3>Let me contact you</h3>
+          </div>
           <ContactPop />
         </div>
       </div>
+
+      {/* Footer */}
       <Footer />
     </div>
   );

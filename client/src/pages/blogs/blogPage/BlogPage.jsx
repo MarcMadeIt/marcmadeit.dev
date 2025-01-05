@@ -22,7 +22,7 @@ function BlogPage() {
     if (id) {
       setLoading(true);
 
-      fetch(`${apiUrl}/blog/get/${id}`)
+      fetch(`${apiUrl}/blogs/${id}`)
         .then((response) => {
           console.log(response);
           if (!response.ok) {

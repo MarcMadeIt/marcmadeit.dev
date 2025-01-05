@@ -18,13 +18,11 @@ import { FileFieldsInterceptor} from '@nestjs/platform-express';
 import { User } from 'src/users/schema/users.schema';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UpdatePodcastsDto } from './dto/upload-podcasts.dto';
+import { UpdatePodcastsDto } from './dto/update-podcasts.dto';
 
 @Controller('podcasts')
 export class PodcastsController {
   constructor(private readonly podcastsService: PodcastsService) {}
-
-
 
   @Get() // GET /api/podcasts
   async findAll(@Query('tags') tags?: string) {
@@ -48,15 +46,36 @@ export class PodcastsController {
     return podcasts;
   }
 
+  @Get('user') // GET /api/podcasts/user
+  @UseGuards(JwtAuthGuard)
+  async findCurrentUserPodcasts(@CurrentUser() user: User) {
+    if (!user) {
+      throw new UnauthorizedException('User is not authenticated');
+    }
+    return await this.podcastsService.findCurrentUserPodcasts(user);
+  }
+
+  @Get('count') // GET /api/podcasts/count
+  async countPodcasts() {
+    return await this.podcastsService.countPodcasts();
+  }
+  
+  @Get(':id') // GET /api/podcasts/:id
+  async findOne(@Param('id') id: string) {
+    return this.podcastsService.findOne(id);
+  }
+
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'image', maxCount: 1 },
-    { name: 'audio', maxCount: 1 },
-  ]))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
   async createPodcast(
     @Body() createPodcastsDto: CreatePodcastsDto,
-    @UploadedFiles() files: { image: Express.Multer.File[], audio: Express.Multer.File[] }, // Handle multiple files
+    @UploadedFiles() files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
     @CurrentUser() user: User,
   ) {
     if (!user) {
@@ -65,17 +84,24 @@ export class PodcastsController {
   
     return this.podcastsService.createPodcast(createPodcastsDto, files, user);
   }
-
-
-  @Patch(':id') 
-  update(
+  
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
+  async update(
     @Param('id') id: string,
     @Body() updatePodcastsDto: UpdatePodcastsDto,
+    @UploadedFiles() files: { image?: Express.Multer.File[]; audio?: Express.Multer.File[] },
   ) {
-    return this.podcastsService.update(id, updatePodcastsDto);
+    return this.podcastsService.update(id, updatePodcastsDto, files);
   }
 
-  @Delete(':id') // Forventet endpoint
+  @Delete(':id')
   async deleteBlog(@Param('id') id: string) {
     return this.podcastsService.delete(id);
   }

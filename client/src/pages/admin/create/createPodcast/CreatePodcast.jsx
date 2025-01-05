@@ -36,17 +36,17 @@ function CreatePodcast() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("desc", desc);
-      formData.append("tags", tags.map((tag) => tag.value).join(","));
+      formData.append("tags", JSON.stringify(tags.map((tag) => tag.value)));
       if (imageFile) formData.append("image", imageFile);
-      if (audioFile) formData.append("file", audioFile);
+      if (audioFile) formData.append("audio", audioFile);
 
-      const response = await fetch(`${apiUrl}/podcast/create`, {
+      const response = await fetch(`${apiUrl}/podcasts/create`, {
         method: "POST",
         body: formData,
         credentials: "include",
       }).catch((error) => {
         console.error("Fetch Error:", error);
-        throw error; // Rethrow the error to continue handling it outside the fetch block
+        throw error;
       });
 
       if (response.ok) {
@@ -84,7 +84,7 @@ function CreatePodcast() {
             onChange={(selectedOptions) => setTags(selectedOptions)}
           />
           <input
-            className="title-blog"
+            className="title-podcast"
             name="title"
             type="title"
             placeholder="Title on podcast..."
@@ -92,7 +92,7 @@ function CreatePodcast() {
             onChange={(ev) => setTitle(ev.target.value)}
           />
           <textarea
-            className="desc-blog"
+            className="desc-podcast"
             placeholder="Description of the podcast.."
             name="desc"
             id=""

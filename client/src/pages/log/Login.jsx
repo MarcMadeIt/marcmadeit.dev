@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../data/userContext.jsx";
+import { AuthContext } from "../../context/AuthContext.jsx";
 import "./Login.scss";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -9,55 +9,32 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { setUserInfo } = useContext(UserContext);
-  const navigate = useNavigate(); // Brug useNavigate-hooket til at navigere til andre ruter
+  const { handleLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  async function login(ev) {
-    ev.preventDefault();
-
-    // Validation
-    if (!username || !password) {
-      setError("Please enter both username and password.");
-      return;
-    }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
 
-    let requestBody;
-
     try {
-      requestBody = JSON.stringify({ username, password });
-
-      const response = await fetch(`${apiUrl}/auth/login`, {
-        method: "POST",
-        body: requestBody,
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
-      const data = await response.json();
-      console.log("Server Response:", data);
-
-      setUserInfo(data);
-      localStorage.setItem("token", data.token);
+      console.log("Attempting login for:", username);
+      await handleLogin(username, password);
+      console.log("Login successful!");
       navigate("/");
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError(error.message || "An error occurred. Please try again.");
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError(
+        err.message || "An unexpected error occurred. Please try again."
+      );
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="login">
-      <form onSubmit={login}>
+      <form onSubmit={handleSubmit}>
         <h3>Admin Login</h3>
         <div>
           <input

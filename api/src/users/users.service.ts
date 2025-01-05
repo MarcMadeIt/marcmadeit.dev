@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schema/users.schema';
+import {  User } from './schema/users.schema';
 import { FilterQuery, isValidObjectId, Model, UpdateQuery } from 'mongoose';
 import { CreateUserRequest } from './dto/create-user.request';
-import { hash } from 'bcryptjs';
-import * as bcryptjs from 'bcryptjs';
-import { UpdateUserRequest } from './dto/upload-user.request';
+import { compare, hash } from 'bcryptjs';
+
 
 @Injectable()
 export class UsersService {
@@ -32,49 +31,65 @@ export class UsersService {
   }
 
   async getUser(query: FilterQuery<User>): Promise<User> {
+    console.log('Query for getUser:', query);
     const user = await this.userModel.findOne(query);
+    console.log('Result from getUser', user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
     return user;
   }
 
-  async updateUser(id: string, updates: UpdateUserRequest): Promise<User> {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException('Invalid user ID format');
-    }
-  
-    const user = await this.userModel.findById(id);
-  
+  async getCurrentUser(userId: string): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
-    if (updates.username) {
-      user.username = updates.username;
-    }
-  
-    if (updates.password) {
-      const { currentPassword, newPassword } = updates.password;
-  
-      if (!currentPassword || !newPassword) {
-        throw new BadRequestException(
-          'Both current and new passwords are required',
-        );
-      }
-  
-      const isPasswordValid = await bcryptjs.compare(currentPassword, user.password);
-  
-      if (!isPasswordValid) {
-        throw new BadRequestException('Incorrect current password');
-      }
-  
-      user.password = await bcryptjs.hash(newPassword, 10);
-    }
-  
-    await user.save();
+
     return user;
   }
-  
+
+  async updateUser(
+    filter: FilterQuery<User>, 
+    update: UpdateQuery<User>
+  ): Promise<User> {
+    // Return the updated user
+    const updatedUser = await this.userModel.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return updatedUser;
+  }
+
+  async updateUserPassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<User> {
+    // 1) Find the user
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // 2) Compare the current password with the stored (hashed) password
+    const isMatch = await compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+
+    // 3) Hash the new password and save
+    user.password = await hash(newPassword, 10);
+    const updatedUser = await user.save();
+
+    // (Optionally remove the password field from the returned document)
+    updatedUser.password = undefined;
+    return updatedUser;
+  }
 
 }

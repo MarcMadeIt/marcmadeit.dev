@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/Image.jsx";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,31 +19,24 @@ function ViewProjects() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/project/getbyuser`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((projects) => {
-        setProjects(projects);
+    axios
+      .get(`${apiUrl}/projects/user`, { withCredentials: true })
+      .then((response) => {
+        setProjects(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching blogs:", error);
+        console.error("Error fetching projects:", error);
         setLoading(false);
       });
   }, []);
 
   const handleDelete = async (projectId) => {
     try {
-      const response = await fetch(`${apiUrl}/project/get/${projectId}`, {
-        method: "DELETE",
-        credentials: "include",
+      const response = await axios.delete(`${apiUrl}/projects/${projectId}`, {
+        withCredentials: true,
       });
-      if (response.ok) {
+      if (response.status === 200) {
         setProjects((prevProjects) =>
           prevProjects.filter((project) => project._id !== projectId)
         );
@@ -72,50 +66,48 @@ function ViewProjects() {
       <div className="viewprojects-cont">
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : projects && projects.length > 0 ? (
           <ul>
-            {Array.isArray(projects) ? (
-              projects.map((projectInfo) => (
-                <li key={projectInfo._id}>
-                  <div className="viewprojects-details">
-                    <div className="viewprojects-img">
-                      <ImageBlog src={projectInfo.imageinfo} />
-                    </div>
-                    <div className="viewprojects-desc">
-                      <p>{truncateText(projectInfo.title, 4)}</p>
-                      <span>
-                        {format(
-                          new Date(projectInfo.createdAt),
-                          "dd. MMM yyyy"
-                        )}
-                      </span>
-                    </div>
+            {projects.map((projectInfo) => (
+              <li key={projectInfo._id}>
+                <div className="viewprojects-details">
+                  <div className="viewprojects-img">
+                    <ImageBlog src={projectInfo.imageinfo} />
                   </div>
-                  <div className="viewprojects-buttons">
-                    <Link
-                      className="podcasts-edit"
-                      to={`/project/edit/${projectInfo._id}`}
-                    >
-                      <button>
-                        <FaPencilAlt />
-                      </button>
-                    </Link>
-
-                    <button
-                      className="delete-btn"
-                      onClick={() => openDeleteConfirmation(projectInfo._id)}
-                    >
-                      <FaRegTrashAlt />
+                  <div className="viewprojects-desc">
+                    <p>{truncateText(projectInfo.title, 4)}</p>
+                    <span>
+                      {format(new Date(projectInfo.createdAt), "dd. MMM yyyy")}
+                    </span>
+                  </div>
+                </div>
+                <div className="viewprojects-buttons">
+                  <Link
+                    className="podcasts-edit"
+                    to={`/project/edit/${projectInfo._id}`}
+                  >
+                    <button>
+                      <FaPencilAlt />
                     </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p>No projects available</p>
-            )}
+                  </Link>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => openDeleteConfirmation(projectInfo._id)}
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
+        ) : (
+          <div className="no-content">
+            <p>No Projects, create one!</p>
+          </div>
         )}
       </div>
+
       {deleteConfirmation && (
         <div className="delete-popup">
           <div className="delete-content">

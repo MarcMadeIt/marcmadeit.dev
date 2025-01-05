@@ -1,6 +1,6 @@
-@import "../../../App.scss";
+@import "../../../../App.scss";
 
-.create-blog {
+.create-project {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +26,7 @@
             align-items: center;
             width: 100%;
 
-            .title-blog {
+            .title-project {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;
@@ -44,6 +44,26 @@
                 &:focus {
                     box-shadow: 0 0 4px 1px $primary;
                 }
+            }
+
+            .link-project {
+                border-radius: 6px;
+                padding: 10px;
+                outline: none;
+                border: none;
+                border: 1.5px solid $primary;
+                font-size: $fs-small;
+                color: $text;
+                background-color: transparent;
+                width: 90%;
+                
+                &::placeholder {
+                    color: $placeholder;
+                }
+
+                &:focus {
+                    box-shadow: 0 0 4px 1px $primary;
+                }  
             }
 
             .file-input-label {
@@ -73,7 +93,7 @@
             
             }
 
-            .desc-blog {
+            .desc-project {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;
@@ -115,7 +135,7 @@
                 }
             }
  
-                .react-select-container {
+            .react-select-container {
                     width: auto;
                     font-size: $fs-small;
                     display: flex;
@@ -123,9 +143,9 @@
                     justify-content: center;
                     
                     .react-select__placeholder {
-                        color: $placeholder;
+                        color: $primary;
                     }
-                   
+                    
                     .react-select__indicator-separator {
                         background-color: $primary;
                     }
@@ -137,7 +157,6 @@
                     .css-t3ipsp-control{
                         box-shadow: 0 0 5px 1px $primary;
                     }
-
                     .react-select__indicator {
                         svg {
                             fill: $primary;

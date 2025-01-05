@@ -10,8 +10,7 @@ import { User } from 'src/users/schema/users.schema';
 
 @Injectable()
 export class BlogsService {
-  constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>, private readonly s3Service: S3Service) {
-  }
+  constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>, private readonly s3Service: S3Service) {}
 
   // GET ALL BLOGS
 
@@ -59,6 +58,16 @@ export class BlogsService {
       .exec();
   }
 
+  // GET ALL BLOGS BY USER
+
+  async findCurrentUserBlogs(user: User): Promise<Blog[]> {
+    return this.blogModel
+      .find({ author: user._id })
+      .sort({ createdAt: -1 })
+      .populate('author', 'username')
+      .exec();
+  }
+
   // GET ONE BLOG WITH ID
 
   async findOne(id: string): Promise<Blog> {
@@ -69,6 +78,11 @@ export class BlogsService {
     return blog;
   }
 
+  // GET BLOG COUNT
+  async countBlogs(): Promise<number> {
+    return this.blogModel.countDocuments().exec();
+  }
+  
   // CREATE BLOG
 
   async createBlog(
@@ -101,15 +115,32 @@ export class BlogsService {
   
   
 
-  async update(id: string, updateBlogsDto: UpdateBlogsDto): Promise<Blog> {
-    const updatedBlog = await this.blogModel
-      .findByIdAndUpdate(id, updateBlogsDto, { new: true })
-      .exec();
-
-    if (!updatedBlog) {
+  async update(
+    id: string,
+    updateBlogsDto: UpdateBlogsDto,
+    file?: Express.Request['file'],
+  ): Promise<Blog> {
+    const existingBlog = await this.blogModel.findById(id).exec();
+    if (!existingBlog) {
       throw new NotFoundException('Blog not found');
     }
-    return updatedBlog;
+
+    if (file) {
+      const imageinfo = await this.s3Service.uploadFile(file.buffer, file.mimetype);
+      updateBlogsDto.imageinfo = imageinfo;
+    }
+
+    if (updateBlogsDto.tags) {
+      const tagsArray = Array.isArray(updateBlogsDto.tags)
+        ? updateBlogsDto.tags
+        : typeof updateBlogsDto.tags === 'string'
+          ? JSON.parse(updateBlogsDto.tags)
+          : [];
+      updateBlogsDto.tags = tagsArray;
+    }
+
+    Object.assign(existingBlog, updateBlogsDto);
+    return existingBlog.save();
   }
 
   async delete(id: string): Promise<Blog> {
@@ -126,10 +157,5 @@ export class BlogsService {
   
     return blogToDelete;
   }
-  
-  
-
-  
-  
   
 }

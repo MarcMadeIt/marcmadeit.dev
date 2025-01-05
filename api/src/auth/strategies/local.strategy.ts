@@ -7,7 +7,7 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
-    super({ usernameField: 'username' }); // Brug "username" som felt
+    super({ usernameField: 'username' });
   }
 
   async validate(username: string, password: string): Promise<User> {
@@ -15,6 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return user; // Dette bliver til `request.user`
+    return user; 
   }
 }

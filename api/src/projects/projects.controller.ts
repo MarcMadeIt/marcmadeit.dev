@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UnauthorizedException,
@@ -11,13 +12,14 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { S3Service } from 'src/config/aws/s3.service';
 import { ProjectsService } from './projects.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateProjectsDto } from './dto/create-projects.dto';
+
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { User } from 'src/users/schema/users.schema';
+import { UpdateProjectsDto } from './dto/update-projects.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -32,10 +34,25 @@ export class ProjectsController {
     return projects;
   }
 
+  @Get('user') // GET /api/projects/user
+  @UseGuards(JwtAuthGuard)
+  async findCurrentUserProjects(@CurrentUser() user: User) {
+    if (!user) {
+      throw new UnauthorizedException('User is not authenticated');
+    }
+    return await this.projectsService.findCurrentUserProjects(user);
+  }
+
+
+  @Get('count') // GET /api/projects/count
+  async countProjects() {
+    return await this.projectsService.countProjects();
+  }
+
   @Post('create')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async createBlog(
+  async createProject(
     @Body() createProjectsDto: CreateProjectsDto,
     @UploadedFile() file: Express.Request['file'],
     @CurrentUser() user: User,
@@ -50,6 +67,16 @@ export class ProjectsController {
   @Get(':id') // GET /projects/:id
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);
+  }
+
+  @Patch(':id') // PATCH /api/projects/:id
+  @UseInterceptors(FileInterceptor('file'))
+  async update(
+    @Param('id') id: string,
+    @Body() updateProjectsDto: UpdateProjectsDto,
+    @UploadedFile() file: Express.Request['file'],
+  ) {
+    return this.projectsService.update(id, updateProjectsDto, file);
   }
 
   @Delete(':id') // Forventet endpoint

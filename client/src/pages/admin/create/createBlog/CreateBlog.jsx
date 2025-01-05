@@ -2,7 +2,8 @@ import Select from "react-select";
 import "./CreateBlog.scss";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
-import Editor from "../../../components/editor/Editor";
+import Editor from "../../../../components/editor/Editor";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -28,14 +29,12 @@ function CreateBlog() {
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const createNewBlog = async (ev) => {
     ev.preventDefault();
-
     setLoading(true);
-
-    const token = localStorage.getItem("token");
-
+    setError(null);
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -44,32 +43,29 @@ function CreateBlog() {
       formData.append("tags", JSON.stringify(tags.map((tag) => tag.value)));
       formData.append("file", file[0]);
 
-      const response = await fetch(`${apiUrl}/blog/create`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      }).catch((error) => {
-        console.error("Fetch Error:", error);
-        throw error; // Rethrow the error to continue handling it outside the fetch block
+      const response = await axios.post(`${apiUrl}/blogs/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
       });
 
-      if (response.ok) {
-        const createdBlog = await response.json();
-        console.log("Created Blog:", createdBlog);
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Created Blog:", response.data);
         setRedirect(true);
       } else {
-        const errorMessage = await response.text();
-        console.error("Failed to create blog:", errorMessage);
-        // Display an error message to the user
+        console.error("Failed to create blog:", response.data);
       }
     } catch (error) {
+      setError("Failed to create the blog. Please try again.");
       console.error("Error creating blog:", error);
     } finally {
       setLoading(false);
     }
   };
+
   if (redirect) {
-    return <Navigate to={"/"} />;
+    return <Navigate to="/" replace={true} />;
   }
 
   return (
@@ -118,9 +114,10 @@ function CreateBlog() {
           <span className="file-info">
             {file.length > 0 ? file[0].name : "No file selected"}
           </span>
-          <button className="submit-button" type="submit">
-            Create Blog
+          <button className="submit-button" type="submit" disabled={loading}>
+            {loading ? "Creating..." : "Create Blog"}
           </button>
+          {error && <p className="error">{error}</p>}
         </form>
       </div>
     </div>

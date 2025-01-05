@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { MinLength } from 'class-validator';
-import { HydratedDocument, Schema as MongooseSchema, SchemaType, SchemaTypes, Types } from 'mongoose';
+import { HydratedDocument, Schema as SchemaTypes, Types } from 'mongoose';
 
-export type UsersDocument = HydratedDocument<User>;
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({ collection: 'users', timestamps: true })
 export class User {

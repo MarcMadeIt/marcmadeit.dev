@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin:[ 'http://localhost:5173', 'https://marcmadeit.vercel.app' ],
     credentials: true,
-    methods:['GET', 'POST', 'DELETE', 'PUT'],      
+    methods:['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],      
   });
   app.useGlobalPipes(new ValidationPipe())
   app.setGlobalPrefix('api')

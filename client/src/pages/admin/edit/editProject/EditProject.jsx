@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./EditProject.scss";
 import { useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -12,14 +12,22 @@ function EditProject() {
     { value: "CSS", label: "CSS" },
     { value: "JavaScript", label: "JavaScript" },
     { value: "TypeScript", label: "TypeScript" },
+    { value: "Redux", label: "Redux" },
     { value: "ReactJS", label: "ReactJS" },
     { value: "NodeJS", label: "NodeJS" },
     { value: "NextJS", label: "NextJS" },
+    { value: "NestJS", label: "NestJS" },
+    { value: "Django", label: "Django" },
     { value: "ExpressJS", label: "ExpressJS" },
     { value: "MongoDB", label: "MongoDB" },
+    { value: "NeonDB", label: "NeonDB" },
     { value: "AWS S3", label: "AWS S3" },
+    { value: "Azure", label: "Azure" },
     { value: "MySQL", label: "MySQL" },
+    { value: "Prisma", label: "Prisma" },
+    { value: "GraphQL", label: "GraphQL" },
     { value: "PostgreSQL", label: "PostgreSQL" },
+    { value: "MySQL", label: "MySQL" },
   ];
 
   const { id } = useParams();
@@ -30,9 +38,11 @@ function EditProject() {
   const [link, setLink] = useState("");
   const [github, setGithub] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const fetchProjectInfo = () => {
-    fetch(`${apiUrl}/project/get/${id}`)
+    fetch(`${apiUrl}/projects/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -82,8 +92,8 @@ function EditProject() {
     console.log("FormData:", data);
 
     try {
-      const response = await fetch(`${apiUrl}/project/put/${id}`, {
-        method: "PUT",
+      const response = await fetch(`${apiUrl}/projects/${id}`, {
+        method: "PATCH",
         body: data,
         credentials: "include",
       });
@@ -93,19 +103,26 @@ function EditProject() {
         setRedirect(true);
       } else {
         console.error("Failed to update project");
+        setMessage("Failed to update project");
       }
     } catch (error) {
       console.error("Error updating project:", error);
+      setMessage("Error updating project: " + error.message);
     }
   };
+
+  const cancelUpdate = () => {
+    navigate(-1); // Navigate back to the previous page
+  };
+
   // Check if redirect is true and id is available before navigating
   if (redirect && id) {
-    return <Navigate to={"/project/" + id} />;
+    return <Navigate to={"/projects"} />;
   }
 
   return (
     <div className="edit-project">
-      <h3>Update the Project</h3>
+      <h3>Update Project</h3>
       <div className="form-edit">
         <form onSubmit={updateProject}>
           <Select
@@ -159,11 +176,15 @@ function EditProject() {
             Choose file
           </label>
           <span className="file-info">
-            {file && file.length > 0 ? file[0].name : "No file selected"}
+            {file && file.length > 0 ? file[0].name : "No image file selected"}
           </span>
           <button className="submit-button" type="submit">
             Update Project
           </button>
+          <button type="button" className="btn" onClick={cancelUpdate}>
+            Cancel
+          </button>
+          {message && <div className="error-message">{message}</div>}
         </form>
       </div>
     </div>

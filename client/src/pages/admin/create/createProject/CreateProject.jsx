@@ -2,6 +2,7 @@ import Select from "react-select";
 import "./CreateProject.scss";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 function CreateProject() {
   const options = [
@@ -9,14 +10,22 @@ function CreateProject() {
     { value: "CSS", label: "CSS" },
     { value: "JavaScript", label: "JavaScript" },
     { value: "TypeScript", label: "TypeScript" },
+    { value: "Redux", label: "Redux" },
     { value: "ReactJS", label: "ReactJS" },
     { value: "NodeJS", label: "NodeJS" },
     { value: "NextJS", label: "NextJS" },
+    { value: "NestJS", label: "NestJS" },
+    { value: "Django", label: "Django" },
     { value: "ExpressJS", label: "ExpressJS" },
     { value: "MongoDB", label: "MongoDB" },
+    { value: "NeonDB", label: "NeonDB" },
     { value: "AWS S3", label: "AWS S3" },
+    { value: "Azure", label: "Azure" },
     { value: "MySQL", label: "MySQL" },
+    { value: "Prisma", label: "Prisma" },
+    { value: "GraphQL", label: "GraphQL" },
     { value: "PostgreSQL", label: "PostgreSQL" },
+    { value: "MySQL", label: "MySQL" },
   ];
 
   const [tags, setTags] = useState([]);
@@ -32,39 +41,35 @@ function CreateProject() {
   const createNewProject = async (ev) => {
     ev.preventDefault();
     setLoading(true);
-    const token = localStorage.getItem("token");
     try {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("desc", desc);
       formData.append("link", link);
       formData.append("github", github);
-      formData.append("tags", tags.map((tag) => tag.value).join(","));
+      formData.append("tags", JSON.stringify(tags.map((tag) => tag.value)));
       formData.append("file", file[0]);
 
-      const response = await fetch(`${apiUrl}/project/create`, {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      }).catch((error) => {
-        console.error("Fetch Error:", error);
-        throw error;
+      const response = await axios.post(`${apiUrl}/projects/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
       });
 
-      if (response.ok) {
-        const createdProject = await response.json();
-        console.log("Created project:", createdProject);
+      if (response.status === 200 || response.status === 201) {
+        console.log("Created project:", response.data);
         setRedirect(true);
       } else {
-        const errorMessage = await response.text();
-        console.error("Failed to create project:", errorMessage);
+        console.error("Failed to create project:", response.statusText);
       }
     } catch (error) {
-      console.error("Error creating blog:", error);
+      console.error("Error creating project:", error);
     } finally {
       setLoading(false);
     }
   };
+
   if (redirect) {
     return <Navigate to={"/"} />;
   }

@@ -10,98 +10,196 @@ import { TokenPayload } from './token-payload.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(user: User, response: Response) {
-    if (!user) {
-      throw new UnauthorizedException('User is not authenticated');
-    }
-
-    return this.refreshTokens(user, response);
-  }
-
-  async refreshTokens(user: User, response: Response): Promise<{ accessToken: string }> {
-    const accessTokenExpirationMs = parseInt(
-      this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_EXPIRATION_MS'),
+  // Login method, generates and sets the access and refresh tokens
+  async login(user: User, response: Response, redirect = false) {
+    const expiresAccessToken = new Date();
+    expiresAccessToken.setMilliseconds(
+      expiresAccessToken.getTime() +
+        parseInt(
+          this.configService.getOrThrow<string>(
+            'JWT_ACCESS_TOKEN_EXPIRATION_MS',
+          ),
+        ),
     );
-    const refreshTokenExpirationMs = parseInt(
-      this.configService.getOrThrow<string>('JWT_REFRESH_TOKEN_EXPIRATION_MS'),
+
+    const expiresRefreshToken = new Date();
+    expiresRefreshToken.setMilliseconds(
+      expiresRefreshToken.getTime() +
+        parseInt(
+          this.configService.getOrThrow<string>(
+            'JWT_REFRESH_TOKEN_EXPIRATION_MS',
+          ),
+        ),
     );
 
     const tokenPayload: TokenPayload = {
       userId: user._id.toHexString(),
     };
 
-    // Generate new tokens
+    // Generate access token
     const accessToken = this.jwtService.sign(tokenPayload, {
       secret: this.configService.getOrThrow('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${accessTokenExpirationMs}ms`,
+      expiresIn: `${this.configService.getOrThrow(
+        'JWT_ACCESS_TOKEN_EXPIRATION_MS',
+      )}ms`,
     });
 
+    // Generate refresh token
     const refreshToken = this.jwtService.sign(tokenPayload, {
       secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn: `${refreshTokenExpirationMs}ms`,
+      expiresIn: `${this.configService.getOrThrow(
+        'JWT_REFRESH_TOKEN_EXPIRATION_MS',
+      )}ms`,
     });
 
-    // // Hash and update the refresh token in the database
-    // await this.userService.updateUser(
-    //   { _id: user._id },
-    //   { $set: { refreshToken: await hash(refreshToken, 10) } },
-    // );
+    // Hash and store refresh token in the database
+    await this.usersService.updateUser(
+      { _id: user._id },
+      { $set: { refreshToken: await hash(refreshToken, 10) } },
+    );
 
-    
-
-    // Set cookies
+    // Set the access token in a cookie
     response.cookie('Authentication', accessToken, {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      maxAge: accessTokenExpirationMs,
+      expires: expiresAccessToken,
     });
 
+    // Set the refresh token in a cookie
     response.cookie('Refresh', refreshToken, {
       httpOnly: true,
       secure: this.configService.get('NODE_ENV') === 'production',
-      maxAge: refreshTokenExpirationMs,
+      expires: expiresRefreshToken,
     });
 
-    return { accessToken };
+    if (redirect) {
+      response.redirect(this.configService.getOrThrow('AUTH_UI_REDIRECT'));
+    }
   }
 
-  async verifyUser(username: string, password: string): Promise<User> {
-    const user = await this.userService.getUser({ username });
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    const isPasswordValid = await compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    return user;
-  }
-
-
-  
-
-  async verifyUserRefreshToken(refreshToken: string, userId: string): Promise<User> {
+  // Verify user credentials (for login)
+  async verifyUser(username: string, password: string) {
     try {
-      const user = await this.userService.getUser({ _id: userId });
+      const user = await this.usersService.getUser({
+        username,
+      });
+      const authenticated = await compare(password, user.password);
+      if (!authenticated) {
+        throw new UnauthorizedException();
+      }
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException('Credentials are not valid.');
+    }
+  }
+
+  // Verify refresh token validity
+  async veryifyUserRefreshToken(refreshToken: string, userId: string) {
+    try {
+      const user = await this.usersService.getUser({ _id: userId });
+      const authenticated = await compare(refreshToken, user.refreshToken);
+      if (!authenticated) {
+        throw new UnauthorizedException();
+      }
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException('Refresh token is not valid.');
+    }
+  }
+
+  // Refresh the access token using a valid refresh token
+  async refreshToken(refreshToken: string, response: Response) {
+    try {
+      // Verifying the refresh token
+      const decoded = this.jwtService.verify(refreshToken, {
+        secret: this.configService.getOrThrow('JWT_REFRESH_TOKEN_SECRET'),
+      });
+
+      // Find the user based on the decoded userId
+      const user = await this.usersService.getUser({ _id: decoded.userId });
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
 
-      const isTokenValid = await compare(refreshToken, user.refreshToken);
-      if (!isTokenValid) {
-        throw new UnauthorizedException('Invalid refresh token');
-      }
+      // Generate a new access token
+      const tokenPayload: TokenPayload = { userId: user._id.toHexString() };
+      const accessToken = this.jwtService.sign(tokenPayload, {
+        secret: this.configService.getOrThrow('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: `${this.configService.getOrThrow('JWT_ACCESS_TOKEN_EXPIRATION_MS')}ms`,
+      });
 
-      return user;
+      // Calculate the expiration date of the access token
+      const expiresAccessToken = new Date();
+      expiresAccessToken.setMilliseconds(
+        expiresAccessToken.getTime() +
+          parseInt(this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_EXPIRATION_MS')),
+      );
+
+      // Set the new access token as a cookie
+      response.cookie('Authentication', accessToken, {
+        httpOnly: true,
+        secure: this.configService.get('NODE_ENV') === 'production', // Set the secure flag for production
+        expires: expiresAccessToken,
+      });
+
+      return { accessToken }; // Return the new access token
     } catch (error) {
-      throw new UnauthorizedException('Refresh token is not valid');
+      // If the refresh token is invalid or expired
+      throw new UnauthorizedException('Invalid or expired refresh token');
     }
   }
-}
+
+  // Get the current user based on the token provided
+  async getCurrentUserFromToken(token: string): Promise<User> {
+    try {
+      const decoded = this.jwtService.verify(token);
+      const user = await this.usersService.getUser({ _id: decoded.userId });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  async logout(userId: string | undefined, response: Response) {
+    // Fjern cookies uanset om vi har et userId eller ej
+    response.cookie('Authentication', '', {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      expires: new Date(0),
+    });
+  
+    response.cookie('Refresh', '', {
+      httpOnly: true,
+      secure: this.configService.get('NODE_ENV') === 'production',
+      expires: new Date(0),
+    });
+  
+    if (!userId) {
+      // Hvis vi ikke har et userId, fx. hvis token var udløbet/ugyldig
+      // så kan vi stadig returnere 200 for at signalere at brugeren er "logget ud"
+      response.status(200).json({ message: 'No user to log out, but cookies cleared' });
+      return;
+    }
+  
+    try {
+      // Hvis vi har et userId, fjern refreshToken i DB
+      await this.usersService.updateUser(
+        { _id: userId },
+        { $unset: { refreshToken: '' } },
+      );
+  
+      response.status(200).json({ message: 'Logged out successfully' });
+    } catch (err) {
+      throw new UnauthorizedException('Logout failed');
+    }
+  }
+  
+}  

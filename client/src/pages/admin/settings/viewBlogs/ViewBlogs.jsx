@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/Image.jsx";
+import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -18,16 +19,10 @@ function ViewBlogs() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/blog/getbyuser`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((blogs) => {
-        setBlogs(blogs);
+    axios
+      .get(`${apiUrl}/blogs/user`, { withCredentials: true })
+      .then((response) => {
+        setBlogs(response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -38,11 +33,11 @@ function ViewBlogs() {
 
   const handleDelete = async (blogId) => {
     try {
-      const response = await fetch(`${apiUrl}/blog/get/${blogId}`, {
-        method: "DELETE",
-        credentials: "include",
+      const response = await axios.delete(`${apiUrl}/blogs/${blogId}`, {
+        withCredentials: true,
       });
-      if (response.ok) {
+
+      if (response.status === 200) {
         setBlogs((prevBlogs) =>
           prevBlogs.filter((blog) => blog._id !== blogId)
         );
@@ -72,47 +67,47 @@ function ViewBlogs() {
       <div className="viewblogs-cont">
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : blogs && blogs.length > 0 ? (
           <ul>
-            {Array.isArray(blogs) ? (
-              blogs.map((blogInfo) => (
-                <li key={blogInfo._id}>
-                  <div className="viewblogs-details">
-                    <div className="viewblogs-img">
-                      <ImageBlog src={blogInfo.imageinfo} />
-                    </div>
-                    <div className="viewblogs-desc">
-                      <p>{truncateText(blogInfo.title, 4)}</p>
-                      <span>
-                        {format(new Date(blogInfo.createdAt), "dd. MMM yyyy")}
-                      </span>
-                    </div>
+            {blogs.map((blogInfo) => (
+              <li key={blogInfo._id}>
+                <div className="viewblogs-details">
+                  <div className="viewblogs-img">
+                    <ImageBlog src={blogInfo.imageinfo} />
                   </div>
-                  <div className="viewblogs-buttons">
-                    <Link
-                      className="blodpage-edit"
-                      to={`/blog/edit/${blogInfo._id}`}
-                    >
-                      <button>
-                        <FaPencilAlt />
-                      </button>
-                    </Link>
-
-                    <button
-                      className="delete-btn"
-                      onClick={() => openDeleteConfirmation(blogInfo._id)}
-                    >
-                      <FaRegTrashAlt />
+                  <div className="viewblogs-desc">
+                    <p>{truncateText(blogInfo.title, 4)}</p>
+                    <span>
+                      {format(new Date(blogInfo.createdAt), "dd. MMM yyyy")}
+                    </span>
+                  </div>
+                </div>
+                <div className="viewblogs-buttons">
+                  <Link
+                    className="blodpage-edit"
+                    to={`/blog/edit/${blogInfo._id}`}
+                  >
+                    <button>
+                      <FaPencilAlt />
                     </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p>No blogs available</p>
-            )}
+                  </Link>
+                  <button
+                    className="delete-btn"
+                    onClick={() => openDeleteConfirmation(blogInfo._id)}
+                  >
+                    <FaRegTrashAlt />
+                  </button>
+                </div>
+              </li>
+            ))}
           </ul>
+        ) : (
+          <div className="no-content">
+            <p>No Blogs, create one!</p>
+          </div>
         )}
       </div>
+
       {deleteConfirmation && (
         <div className="delete-popup">
           <div className="delete-content">

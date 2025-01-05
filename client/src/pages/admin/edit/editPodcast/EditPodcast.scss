@@ -1,24 +1,27 @@
-@import "../../../App.scss";
+@import "../../../../App.scss";
 
-.create-podcast {
+.edit-podcast {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 20px;
     width: 100%;
+    margin-top: 50px;
     h3 {
         color: $primary;
         font-weight: 500;
     }
 
-    @include desktop {
-        max-width: 800px;
-       } 
-
-
-     .form-create {
+     .form-edit {
         width: 90%;
         margin-bottom: 50px;
+
+
+    @include desktop {
+        max-width: 600px;
+       } 
+
         form {
             display: flex;
             flex-direction: column;
@@ -26,7 +29,7 @@
             align-items: center;
             width: 100%;
 
-            .title-blog {
+            .title-podcast {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;
@@ -73,7 +76,7 @@
             
             }
 
-            .desc-blog {
+            .desc-podcast {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;

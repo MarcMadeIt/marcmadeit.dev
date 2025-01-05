@@ -80,24 +80,48 @@
     }
 
     .home-contact {
-        display: flex;
+        display: flex; 
+        text-align: center;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         margin: 200px 0 100px 0;
         gap: 15px;
 
-        h2 {
-            font-size: 35px;
+
+        .icon-contact {
+          font-size: 150px;
+          color: $background;
+          filter: drop-shadow(2px 2px 3.5px $primary);
+          display: flex;
+
+          @include mini-tablet {
+            display: none;
+        }
+        }
+
+        .home-contact-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            
+            h2 {
+                font-size: 28px;
                 font-weight: 200;
                 color: $primary;
+                
+                @include mini-tablet {
+                    font-size: 35px;
+                }
+            }
+            
+            h3 {
+                font-weight: 500;
+                color: $text;
+            }
+            
         }
-
-        h3 {
-            font-weight: 500;
-            color: $text;
-        }
-
         
 
 

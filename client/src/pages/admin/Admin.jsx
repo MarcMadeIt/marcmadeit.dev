@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Admin.scss";
-import CreateBlog from "./createBlog/CreateBlog.jsx";
-import CreateProject from "./createProject/CreateProject.jsx";
-import CreatePodcast from "./createPodcast/CreatePodcast.jsx";
+import CreateBlog from "./create/createBlog/CreateBlog.jsx";
+import CreateProject from "./create/createProject/CreateProject.jsx";
+import CreatePodcast from "./create/createPodcast/CreatePodcast.jsx";
 import Settings from "./settings/Settings.jsx";
 import Preview from "./preview/Preview.jsx";
 import { Link } from "react-router-dom";

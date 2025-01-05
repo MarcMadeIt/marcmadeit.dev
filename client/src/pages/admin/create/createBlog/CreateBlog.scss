@@ -1,30 +1,24 @@
-@import "../../../App.scss";
+@import "../../../../App.scss";
 
-.edit-project {
+.create-blog {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 20px;
     width: 100%;
-    margin-top: 50px;
     h3 {
         color: $primary;
         font-weight: 500;
-        font-size: 25px;
-        margin-bottom: 15px;
     }
 
+    @include desktop {
+        max-width: 800px;
+       } 
 
 
-     .form-edit {
+     .form-create {
         width: 90%;
         margin-bottom: 50px;
-
-        @include desktop {
-            max-width: 800px;
-           } 
-    
         form {
             display: flex;
             flex-direction: column;
@@ -32,31 +26,7 @@
             align-items: center;
             width: 100%;
 
-            .title-project{
-                border-radius: 6px;
-                padding: 10px;
-                outline: none;
-                border: none;
-                border: 1.5px solid $primary;
-                font-size: 13px;
-                color: $text;
-                background-color: transparent;
-                width: 90%;
-
-                @include tablet {
-                    font-size: 16px;
-                   } 
-                
-                &::placeholder {
-                    color: $placeholder;
-                }
-
-                &:focus {
-                    box-shadow: 0 0 4px 1px $primary;
-                }
-            }
-
-            .link-project {
+            .title-blog {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;
@@ -73,7 +43,7 @@
 
                 &:focus {
                     box-shadow: 0 0 4px 1px $primary;
-                }  
+                }
             }
 
             .file-input-label {
@@ -83,13 +53,9 @@
                 padding: 6px 18px;
                 border-radius: 6px;
                 cursor: pointer;
-                font-size: 12px;
+                font-size: $fs-small;
                 font-weight: 600;
                 transition: 300ms;
-
-                @include tablet {
-                    font-size: 15px;
-                   } 
 
                 &:hover {
                     box-shadow: 0 0 5px 1px $primary;
@@ -104,10 +70,10 @@
             .file-info {
                 color: $primary;
                 font-size: 12px;
-            }
             
+            }
 
-            .desc-project {
+            .desc-blog {
                 border-radius: 6px;
                 padding: 10px;
                 outline: none;
@@ -115,14 +81,10 @@
                 border: 1.5px  solid $primary;
                 color: $text;
                 font-family: 'Poppins', sans-serif;
+                font-size: $fs-small;
                 width: 90%;
                 height: 150px;
-                font-size: 12px;
                 resize: none;
-
-                @include tablet {
-                    font-size: 15px;
-                   } 
 
                 &::placeholder {
                     color: $placeholder;
@@ -155,7 +117,7 @@
  
                 .react-select-container {
                     width: auto;
-                    font-size: 14px;
+                    font-size: $fs-small;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -176,11 +138,16 @@
                         box-shadow: 0 0 5px 1px $primary;
                     }
 
+                    .react-select__indicator {
+                        svg {
+                            fill: $primary;
+                        }
+                    }
+
                     .react-select__control {
                         background-color: transparent;
                         border: 1.5px solid $primary;
                         border-radius: 6px;
-
                        
                         .react-select__multi-value {
                         background-color: $primary;
@@ -197,9 +164,7 @@
                         background-color: $background;
                         color: $primary;
                         border-radius: 6px;
-                        border: 1.5px solid $text-low ;
-
-                
+                        border: 1px solid $text-low ;
                         
                         .react-select__menu-list {
                             border-radius: 6px;

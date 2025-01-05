@@ -17,7 +17,7 @@
         }
     }
 
-    .pre-blogs {
+    .pre-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -29,8 +29,8 @@
         font-weight: 600;
 
         span {
-            font-weight: 700;
-            font-size: 25px;
+            font-weight: 600;
+            font-size: 23px;
         }
     }
 }

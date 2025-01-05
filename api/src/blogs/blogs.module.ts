@@ -10,6 +10,7 @@ import { S3Service } from 'src/config/aws/s3.service';
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
   ],
   providers: [BlogsService, S3Service],
-  controllers: [BlogsController]
+  controllers: [BlogsController],
+  exports: [BlogsService]
 })
 export class BlogsModule {}

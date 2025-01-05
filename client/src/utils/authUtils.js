@@ -1,64 +1,101 @@
-export const apiUrl = import.meta.env.VITE_API_BASE_URL;
+import axios from "axios";
 
+
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+const instance = axios.create({
+    baseURL: apiUrl,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    withCredentials: true, // Allow cookies to be included in requests
+});
+
+// Login function using the custom Axios instance
 export async function login(username, password) {
     try {
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-            credentials: "include",
+        const response = await instance.post("/auth/login", {
+            username,
+            password,
         });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Login failed");
-        }
-
-        const data = await response.json();
-
-        if (data.accessToken) {
-            console.log("Login successful:", data.accessToken);
-            localStorage.setItem("access_token", data.accessToken);
-        } else {
-            throw new Error("No access token received");
-        }
-
-        return data;
+        return response.data || null;
     } catch (error) {
-        console.error("Error during login:", error.message);
-        throw error;
+
+        console.error("Error during login:", error.response?.data || error.message);
+        throw new Error(error.response?.data || "Login failed");
     }
 }
 
-
+// Refresh token function
 export async function refreshToken() {
     try {
-        const response = await fetch(`${apiUrl}/api/auth/refresh`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include", // Ensure cookies are sent with the request
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to refresh token");
-        }
-
-        const data = await response.json();
-
-        if (data.accessToken) {
-            console.log("Token refreshed:", data.accessToken); // Logging for verification
-            localStorage.setItem("access_token", data.accessToken);
-        } else {
-            throw new Error("No access token received from refresh");
-        }
-
-        return data.accessToken; // Return the refreshed access token
+        const response = await instance.post("/auth/refresh");
+        return response.data?.accessToken || null;
     } catch (error) {
-        console.error("Error refreshing token:", error);
-        throw error;
+        console.error("Error refreshing token:", error.response?.data || error.message);
+        throw new Error(error.response?.data || "Failed to refresh token");
     }
 }
+
+export async function getCurrentUser() {
+    try {
+        const response = await instance.get("/auth/me");
+
+        return response.data || null;
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            // Hvis brugeren ikke er logget ind, returnér null
+            console.error("User is not authenticated or session expired.");
+            throw new Error("Unauthorized: User is not logged in.");
+        }
+        console.error("Error fetching current user:", error.response?.data || error.message);
+        throw new Error(error.response?.data || "Failed to fetch current user");
+    }
+}
+
+
+// Logout function
+export async function logout() {
+    try {
+
+        const response = await instance.post("/auth/logout");
+
+
+        return response.data || null;
+    } catch (error) {
+
+        console.error("Error during logout:", error.response?.data || error.message);
+        throw new Error(error.response?.data || "Failed to logout");
+    }
+}
+
+instance.interceptors.response.use(
+    (response) => response, // Pass through successful responses
+    async (error) => {
+        const originalRequest = error.config;
+
+        // Skip interceptor for the refresh token endpoint
+        if (originalRequest.url.includes("/auth/refresh")) {
+            return Promise.reject(error);
+        }
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true; // Prevent infinite retries
+            try {
+                const newAccessToken = await refreshToken(); // Attempt to refresh the token
+                if (newAccessToken) {
+                    // Update the Authorization header dynamically for this request
+                    originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                    return instance(originalRequest); // Retry the original request
+                }
+            } catch (refreshError) {
+                console.error("Failed to refresh token:", refreshError);
+                // Log the user out if the refresh fails
+                localStorage.removeItem("isAuthenticated");
+                return Promise.reject(refreshError);
+            }
+        }
+
+        return Promise.reject(error); // Reject other errors
+    }
+);
