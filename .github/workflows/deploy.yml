@@ -26,7 +26,7 @@ jobs:
         run: |
           echo "⚠️ Installing dependencies for Client..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
-          npm install --legacy-peer-deps || { echo "❌ npm install failed"; exit 1; }
+          npm ci || { echo "❌ npm install failed"; exit 1; }
 
       - name: 📦 Install dependencies (API)
         run: |
