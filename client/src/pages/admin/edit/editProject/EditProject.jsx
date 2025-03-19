@@ -23,6 +23,8 @@ function EditProject() {
     { value: "NeonDB", label: "NeonDB" },
     { value: "AWS S3", label: "AWS S3" },
     { value: "Azure", label: "Azure" },
+    { value: "Supabase", label: "Supabase" },
+    { value: "Tailwind", label: "Tailwind" },
     { value: "MySQL", label: "MySQL" },
     { value: "Prisma", label: "Prisma" },
     { value: "GraphQL", label: "GraphQL" },
