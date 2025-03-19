@@ -19,8 +19,9 @@ jobs:
         run: |
           echo "⚠️ Pulling latest changes..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com
-          git fetch --prune --unshallow --force || { echo "❌ Git fetch failed"; exit 1; }
-          git reset --hard origin/main || { echo "❌ Git reset failed"; exit 1; }
+          git remote prune origin || { echo "❌ Prune failed"; exit 1; }
+          git fetch origin --prune --force "+refs/heads/*:refs/remotes/origin/*" || { echo "❌ Fetch failed"; exit 1; }
+          git reset --hard origin/main || { echo "❌ Reset failed"; exit 1; }
 
       - name: 📦 Install dependencies (Client)
         run: |
