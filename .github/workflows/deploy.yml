@@ -40,12 +40,6 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
           npm run build || { echo "❌ Frontend build failed"; exit 1; }
 
-      - name: 🔧 Build Backend (NestJS)
-        run: |
-          echo "⚡ Building NestJS API..."
-          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
-          npm run build || { echo "❌ Backend build failed"; exit 1; }
-
       - name: 🚀 Restart PM2 Processes
         run: |
           echo "🔄 Restarting PM2 processes..."
