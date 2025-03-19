@@ -1,5 +1,5 @@
-@import "../../App.scss";
-@import "../../components/audio/Audio.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .audio-player {
   position: fixed;
@@ -16,9 +16,7 @@
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
   z-index: 100;
   cursor: pointer;
-  transition:
-    bottom 0.5s ease,
-    height 0.5s ease;
+  transition: bottom 0.5s ease, height 0.5s ease;
 
   -webkit-tap-highlight-color: transparent;
 
@@ -42,12 +40,10 @@
       gap: 30px;
       height: 100%;
 
-
       .audio-player-left {
         justify-content: center;
         align-items: center;
         flex: auto;
-
 
         img {
           height: 120px;
@@ -66,7 +62,7 @@
             max-width: 250px;
             font-size: 12px;
             white-space: wrap;
-            text-overflow:unset
+            text-overflow: unset;
           }
 
           .podcast-tags {
@@ -78,7 +74,7 @@
       .audio-player-right {
         flex: auto;
 
-        @include mini-tablet {  
+        @include mini-tablet {
           .progress {
             width: 200px;
           }
@@ -114,7 +110,7 @@
     .audio-player-left {
       display: flex;
       align-items: center;
-      
+
       flex: 1;
 
       img {
@@ -191,6 +187,5 @@
     font-size: 30px;
     cursor: pointer;
     padding: 10px;
-
   }
 }

@@ -1,66 +1,67 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .text-editor {
-    color: $text;
-    width: 90%;
-    margin-bottom: 20px;
+  color: $text;
+  width: 90%;
+  margin-bottom: 20px;
 
-    .quill {
-        svg path,
-        svg line,
-        svg rect,
-        svg polygon,
-        .ql-stroke {
-            fill: $primary;
-            stroke: $primary;
-        }
-
-        .ql-bold path,
-        .ql-underline path,
-        rect {
-            fill: transparent;
-        }
-
-        .ql-color-picker polyline,
-        .ql-color-picker line {
-            fill: transparent;
-        }
-
-        .ql-link path {
-            fill: transparent;
-        }
-        .ql-toolbar {
-            border: 1.5px solid $primary;
-            border-radius: 6px 6px 0 0;
-            span {
-                color: $primary;
-
-                &::after {
-                    border-color: $primary;
-                }
-            }
-        }
-        .ql-container {
-            border: 1.5px solid $primary;
-            height: 200px;
-            border-radius: 0 0 6px 6px;
-
-            .ql-editor {
-                font-size: $fs-small;
-
-                img {
-                    max-width: 100%;
-                    height: auto;
-                }
-            }
-
-            @include mini-tablet {
-                height: 350px;
-            }
-
-            @include tablet {
-                height: 500px;
-            }
-        }
+  .quill {
+    svg path,
+    svg line,
+    svg rect,
+    svg polygon,
+    .ql-stroke {
+      fill: $primary;
+      stroke: $primary;
     }
+
+    .ql-bold path,
+    .ql-underline path,
+    rect {
+      fill: transparent;
+    }
+
+    .ql-color-picker polyline,
+    .ql-color-picker line {
+      fill: transparent;
+    }
+
+    .ql-link path {
+      fill: transparent;
+    }
+    .ql-toolbar {
+      border: 1.5px solid $primary;
+      border-radius: 6px 6px 0 0;
+      span {
+        color: $primary;
+
+        &::after {
+          border-color: $primary;
+        }
+      }
+    }
+    .ql-container {
+      border: 1.5px solid $primary;
+      height: 200px;
+      border-radius: 0 0 6px 6px;
+
+      .ql-editor {
+        font-size: $fs-small;
+
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+      }
+
+      @include mini-tablet {
+        height: 350px;
+      }
+
+      @include tablet {
+        height: 500px;
+      }
+    }
+  }
 }

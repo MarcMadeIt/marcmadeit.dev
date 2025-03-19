@@ -1,130 +1,121 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  gap: 100px;
+
+  .admin {
+    position: absolute;
     display: flex;
     flex-direction: column;
+    top: 0px;
+    right: 5px;
+    gap: 15px;
+    width: auto;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background-color: $background;
+      color: $text-low;
+      border: 0;
+      outline: 0;
+      padding: 5px 15px;
+      border-radius: 7px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+  }
+
+  .home-hero {
+    width: 100%;
+  }
+
+  .home-blogs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-    gap: 100px;
+    gap: 50px;
 
-    .admin {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        top: 0px;
-        right: 5px;
-        gap: 15px;
-        width: auto;
-    
-        button {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background-color: $background;
-            color: $text-low;
-            border: 0;
-            outline: 0;
-            padding: 5px 15px;
-            border-radius: 7px;
-            font-size: 12px;
-            letter-spacing: .5px;
-            cursor: pointer;
+    .home-blogs-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      h2 {
+        font-size: 35px;
+        font-weight: 200;
+        color: $primary;
+
+        @include mini-tablet {
+          font-size: 45px;
         }
+      }
     }
 
-    .home-hero {
-        width: 100%;
+    .home-blogs-content {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+
+      @include mini-tablet {
+        max-width: 900px;
+      }
+    }
+  }
+
+  .home-about {
+    margin: 100px 0;
+  }
+
+  .home-contact {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 200px 0 100px 0;
+    gap: 15px;
+
+    .icon-contact {
+      font-size: 150px;
+      color: $background;
+      filter: drop-shadow(2px 2px 3.5px $primary);
+      display: flex;
+
+      @include mini-tablet {
+        display: none;
+      }
     }
 
-    .home-blogs {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 50px;
+    .home-contact-content {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
 
-        .home-blogs-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+      h2 {
+        font-size: 28px;
+        font-weight: 200;
+        color: $primary;
 
-            h2 {
-                font-size: 35px;
-                font-weight: 200;
-                color: $primary;
-
-                @include mini-tablet {
-                    font-size: 45px;
-                }
-            }
+        @include mini-tablet {
+          font-size: 35px;
         }
+      }
 
-        .home-blogs-content {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
-
-            @include mini-tablet {
-                max-width: 900px;
-            }
-        
-        }
-
-    
+      h3 {
+        font-weight: 500;
+        color: $text;
+      }
     }
-
-    .home-about {
-        margin: 100px 0;
-    }
-
-    .home-contact {
-        display: flex; 
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        margin: 200px 0 100px 0;
-        gap: 15px;
-
-
-        .icon-contact {
-          font-size: 150px;
-          color: $background;
-          filter: drop-shadow(2px 2px 3.5px $primary);
-          display: flex;
-
-          @include mini-tablet {
-            display: none;
-        }
-        }
-
-        .home-contact-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-
-            
-            h2 {
-                font-size: 28px;
-                font-weight: 200;
-                color: $primary;
-                
-                @include mini-tablet {
-                    font-size: 35px;
-                }
-            }
-            
-            h3 {
-                font-weight: 500;
-                color: $text;
-            }
-            
-        }
-        
-
-
-    }
-
+  }
 }

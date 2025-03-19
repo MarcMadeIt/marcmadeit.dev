@@ -1,7 +1,7 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .contact-popup {
-
   .contact-btn {
     display: inline-block;
     padding: 10px 30px;
@@ -18,9 +18,9 @@
 
     @include desktop {
       &:hover {
-          box-shadow: 0 0 7px 1px $primary;
-          transition: 400ms;
-        }
+        box-shadow: 0 0 7px 1px $primary;
+        transition: 400ms;
+      }
     }
   }
 

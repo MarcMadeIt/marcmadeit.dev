@@ -1,238 +1,219 @@
-@import "../../App.scss";
-
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .audio {
-    display: flex;
-    width: 100%;
-    gap: 10px;
-    align-items: center;
-    justify-content: end;
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  justify-content: end;
 
-    -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
 
-    @include mini-tablet {
-        gap: 20px;
-    }
+  @include mini-tablet {
+    gap: 20px;
+  }
 
+  &.expanded {
+    flex-direction: column;
 
+    .audio-btn-group {
+      .play-pause-btn {
+        padding: 15px;
+      }
+      .pause,
+      .play {
+        font-size: 25px;
+      }
 
-    &.expanded {
-        flex-direction: column;
-
-        .audio-btn-group {
-            .play-pause-btn {
-                padding: 15px;
-         
-            }
-            .pause,
-            .play {
-                font-size: 25px;
-            }
-
-            button {
-                font-size: 30px;
-
-            }
-        }
-
-        .progress-group {
-            gap: 20px;
-
-            .current, .duration {
-                font-size: 14px;
-            }
-        }
-
-    }
-
-    .audio-btn-group{
-        display: flex;
-        gap: 10px;
-        align-items: center;
-
-        
-        .play-pause-btn {
-            border: 2px solid $primary;
-            color: $primary;
-            border-radius: 50%;
-            padding: 10px ;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            .play {
-                padding-left: 3px;
-                
-            }
-            
-            @include large-mobile {
-                padding: 8px;
-                border: 2px solid $primary;
-            }
-        }
-        
-        button {
-            display: none;
-            align-items: center;
-            gap: 2px;
-            background-color: transparent;
-            border: none;
-            outline: none;
-            color: $primary;
-            cursor: pointer;
-            
-            
-            &:hover {
-                border-color: $text-low;
-                color: $text-low;
-            }
-            
-            
-            @include large-mobile {
-                font-size: 20px;
-                display: flex;
-            }
-            
-        }
-        
+      button {
+        font-size: 30px;
+      }
     }
 
     .progress-group {
-        display: flex;
-        gap: 5px;
-        align-items: center;
+      gap: 20px;
 
-        @include large-mobile {
-            gap: 10px;
-        }
-
-
-        
-        .progress {
-            display: flex;
-            appearance: none;
-            background: $shadow;
-            border-radius: 10px;
-            width: 100%;
-            height: 11px;
-            outline: none;
-            position: relative;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-        
-        /* Progress bar - Safari */
-        
-        .progress::-webkit-slider-runnable-track {
-            appearance: none;
-            background: $shadow;
-            border-radius: 10px;
-            position: relative;
-            width: 100%;
-            height: 11px;
-            outline: none;
-        }
-        
-        /* Progress bar - Firefox*/
-        
-        .progress::-moz-range-track {
-            appearance: none;
-            background: $shadow;
-            border-radius: 10px;
-            position: relative;
-            width: 100%;
-            height: 11px;
-            outline: none;
-        }
-        
-        .progress::-moz-focus-outer {
-            border: 0;
-            overflow: hidden;
-        }
-        
-        
-        .progress::-moz-range-progress {
-            background-color: $text-low;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            height: 11px;
-        }
-        
-        
-        /* Progress bar - chrome and safari */
-        
-        .progress::before {
-            content: '';
-            height: 11px;
-            width: var(--seek-before-width);
-            background-color: $text-low;
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-            cursor: pointer;
-            
-        }
-        
-        .progress::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 15px;
-            width: 15px;
-            border-radius: 50%;
-            background-color: $primary;
-            position: relative;
-            border: none;
-            margin: -2px 0 0 0;
-            cursor: pointer;
-            z-index: 3;
-            box-sizing: border-box;
-        }
-        
-        /* While dragging chrome & safari*/
-        
-        .progress:active::-webkit-slider-thumb {
-            transform: scale(1.2);
-            background: $placeholder;
-        }
-        
-        /* knobby firefox*/
-        
-        .progress::-moz-range-thumb {
-            height: 15px;
-            width: 15px;
-            border-radius: 50%;
-            background-color: $primary;
-            position: relative;
-            margin: -2px 0 0 0;
-            border: transparent;
-            cursor: pointer;
-            z-index: 3;
-            box-sizing: border-box;
-        }
-        
-        /* While dragging firefox */
-        
-        .progress:active::-moz-range-thumb{
-            transform: scale(1.2);
-            background: $placeholder;
-        }
-        
-        
-        
-        .current, .duration {
-            font-size: 10px;
-            font-weight: 400;
-            color: $text; 
-            width: 30px;
-            
-            
-            @include mini-tablet{
-                font-size: 12px;
-            }
-        }
-        
-     }
-        
+      .current,
+      .duration {
+        font-size: 14px;
+      }
     }
+  }
+
+  .audio-btn-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    .play-pause-btn {
+      border: 2px solid $primary;
+      color: $primary;
+      border-radius: 50%;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .play {
+        padding-left: 3px;
+      }
+
+      @include large-mobile {
+        padding: 8px;
+        border: 2px solid $primary;
+      }
+    }
+
+    button {
+      display: none;
+      align-items: center;
+      gap: 2px;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      color: $primary;
+      cursor: pointer;
+
+      &:hover {
+        border-color: $text-low;
+        color: $text-low;
+      }
+
+      @include large-mobile {
+        font-size: 20px;
+        display: flex;
+      }
+    }
+  }
+
+  .progress-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    @include large-mobile {
+      gap: 10px;
+    }
+
+    .progress {
+      display: flex;
+      appearance: none;
+      background: $shadow;
+      border-radius: 10px;
+      width: 100%;
+      height: 11px;
+      outline: none;
+      position: relative;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    /* Progress bar - Safari */
+
+    .progress::-webkit-slider-runnable-track {
+      appearance: none;
+      background: $shadow;
+      border-radius: 10px;
+      position: relative;
+      width: 100%;
+      height: 11px;
+      outline: none;
+    }
+
+    /* Progress bar - Firefox*/
+
+    .progress::-moz-range-track {
+      appearance: none;
+      background: $shadow;
+      border-radius: 10px;
+      position: relative;
+      width: 100%;
+      height: 11px;
+      outline: none;
+    }
+
+    .progress::-moz-focus-outer {
+      border: 0;
+      overflow: hidden;
+    }
+
+    .progress::-moz-range-progress {
+      background-color: $text-low;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      height: 11px;
+    }
+
+    /* Progress bar - chrome and safari */
+
+    .progress::before {
+      content: "";
+      height: 11px;
+      width: var(--seek-before-width);
+      background-color: $text-low;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      cursor: pointer;
+    }
+
+    .progress::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      background-color: $primary;
+      position: relative;
+      border: none;
+      margin: -2px 0 0 0;
+      cursor: pointer;
+      z-index: 3;
+      box-sizing: border-box;
+    }
+
+    /* While dragging chrome & safari*/
+
+    .progress:active::-webkit-slider-thumb {
+      transform: scale(1.2);
+      background: $placeholder;
+    }
+
+    /* knobby firefox*/
+
+    .progress::-moz-range-thumb {
+      height: 15px;
+      width: 15px;
+      border-radius: 50%;
+      background-color: $primary;
+      position: relative;
+      margin: -2px 0 0 0;
+      border: transparent;
+      cursor: pointer;
+      z-index: 3;
+      box-sizing: border-box;
+    }
+
+    /* While dragging firefox */
+
+    .progress:active::-moz-range-thumb {
+      transform: scale(1.2);
+      background: $placeholder;
+    }
+
+    .current,
+    .duration {
+      font-size: 10px;
+      font-weight: 400;
+      color: $text;
+      width: 30px;
+
+      @include mini-tablet {
+        font-size: 12px;
+      }
+    }
+  }
+}

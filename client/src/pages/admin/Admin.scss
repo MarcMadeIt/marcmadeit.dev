@@ -1,100 +1,96 @@
-@import "../../App.scss";
-
-
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .admin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 30px;
+
+  .home-btn {
+    position: absolute;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    top: 30px;
+    right: 5px;
+    width: auto;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background-color: $background;
+      color: $text-low;
+      border: 0;
+      outline: 0;
+      padding: 5px 15px;
+      border-radius: 7px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+  }
+
+  .adm-title {
+    color: $primary;
+    margin-bottom: 15px;
+  }
+
+  .layout-buttons {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    button {
+      outline: 0;
+      background-color: transparent;
+      color: $text;
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      padding: 5px 5px;
+    }
+  }
+
+  .layout-container {
+    width: 100%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    padding-top: 30px;
 
-    .home-btn {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        top: 30px;
-        right: 5px;
-        width: auto;
+    .create-options {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 20px;
 
-        button {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background-color: $background;
-            color: $text-low;
-            border: 0;
-            outline: 0;
-            padding: 5px 15px;
-            border-radius: 7px;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-        }
-    }
-
-    .adm-title {
+      .radio {
         color: $primary;
-        margin-bottom: 15px;
-    }
-
-    .layout-buttons {
+        padding: 5px 10px;
         display: flex;
-        gap: 20px;
-        margin-bottom: 20px;
-
-        button {
-            outline: 0;
-            background-color: transparent;
-            color: $text;
-            border: 0;
-            cursor: pointer;
-            font-weight: 800;
-            padding: 5px 5px;
-        }
-    }
-
-    .layout-container {
-        width: 100%;
-        display: flex;
+        gap: 10px;
         align-items: center;
-        justify-content: center;
+        border: 1px solid $primary;
+        border-radius: $borderradius;
 
-
-        .create-options {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0;
-            gap: 20px;
-
-            .radio {
-                color: $primary;
-                padding: 5px 10px;
-                display: flex;
-                gap: 10px;
-                align-items: center; 
-                border: 1px solid $primary;
-                border-radius: $borderradius;
-                
-                input[type="radio"] {
-          
-                  appearance: none;
-                  -webkit-appearance: none;
-                  -moz-appearance: none;
-                  width: 20px; 
-                  height: 20px; 
-                  border: 2px solid $primary; 
-                  border-radius: 50%;
-                  outline: none; 
-                }
-            
-                input[type="radio"]:checked {
-                  background-color: $primary; 
-                }
-              }
-          
+        input[type="radio"] {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          width: 20px;
+          height: 20px;
+          border: 2px solid $primary;
+          border-radius: 50%;
+          outline: none;
         }
+
+        input[type="radio"]:checked {
+          background-color: $primary;
+        }
+      }
     }
+  }
 }

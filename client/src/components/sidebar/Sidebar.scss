@@ -1,138 +1,114 @@
-@import "../../App.scss";
-
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .sidebar {
-    position: fixed;
-    top: -100%;
-    right: 0; 
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    background-color: $background;
-    z-index: 22;
+  position: fixed;
+  top: -100%;
+  right: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $background;
+  z-index: 22;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 100px;
+
+  ul {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 100px;
+    list-style: none;
+    z-index: 22;
+    position: relative;
+    margin-top: 50px;
 
+    .link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      font-size: $fs-small;
 
+      li {
+        text-decoration: none;
+        color: $primary;
+        display: block;
 
+        @include desktop {
+          transition: all 300ms ease;
 
-        ul {
-            display: flex;
-            flex-direction: column;
-            list-style: none;
-            z-index: 22;
-            position: relative; 
-            margin-top: 50px;
-        
-            
-
-            .link {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100px;
-                font-size: $fs-small;
-                
-
-                
-
-                li {
-                    text-decoration: none;
-                    color: $primary;
-                    display: block; 
-
-                    @include desktop {
-                        transition: all 300ms ease;
-
-                        &:hover {
-                            transform: scale(1.1);
-                            transition: all 300ms ease;
-                            filter: drop-shadow($primary 0 0 15px);
-                        }
-                    }     
-  
-                }
-
-                @include mini-tablet {
-                    font-size: 20px;
-                }
-
-                &.active {
-                    
-                    li {
-                        text-decoration: underline $text-low 2px;
-                        text-underline-offset: 4px;
-                        color: $text-low;
-                        transform: scale(1.0);
-                    
-                    }
-                    
-                }
-        
-
-                
-            }
+          &:hover {
+            transform: scale(1.1);
+            transition: all 300ms ease;
+            filter: drop-shadow($primary 0 0 15px);
+          }
         }
-
-        .navbar-socials {
-            color: $primary;
-            display: flex;
-            align-items: center;
-            flex-direction: row;
-            justify-content: center;
-            gap: 30px;
-
-
-            @include desktop {
-                position: absolute;
-                bottom: 200px;
-                left: 0;
-                right: 0;
-
-            }
-
-
-            .item-socials {
-                display: flex;
-                flex-direction: column;
-                
-
-                p {
-                    font-size: 10px;
-
-                    @include desktop {
-                        font-size: 13px;
-                    }
-                }
-
-                span {
-                    font-size: 30px;
-
-                    @include desktop {
-                        font-size: 40px;
-                    }
-                }
-                
-                
-            }
-
-
-            @include desktop {
-                flex-direction: row;
-                gap: 50px;
-            }
-        }
-    
-  
-    &.active {
-      top: 100px;
-      opacity: 1;
+      }
 
       @include mini-tablet {
-        top: 120px;
+        font-size: 20px;
+      }
 
-    }
+      &.active {
+        li {
+          text-decoration: underline $text-low 2px;
+          text-underline-offset: 4px;
+          color: $text-low;
+          transform: scale(1);
+        }
+      }
     }
   }
+
+  .navbar-socials {
+    color: $primary;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+
+    @include desktop {
+      position: absolute;
+      bottom: 200px;
+      left: 0;
+      right: 0;
+    }
+
+    .item-socials {
+      display: flex;
+      flex-direction: column;
+
+      p {
+        font-size: 10px;
+
+        @include desktop {
+          font-size: 13px;
+        }
+      }
+
+      span {
+        font-size: 30px;
+
+        @include desktop {
+          font-size: 40px;
+        }
+      }
+    }
+
+    @include desktop {
+      flex-direction: row;
+      gap: 50px;
+    }
+  }
+
+  &.active {
+    top: 100px;
+    opacity: 1;
+
+    @include mini-tablet {
+      top: 120px;
+    }
+  }
+}

@@ -1,40 +1,39 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .projects {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+  padding: 150px 15px 0 15px;
+
+  @include mini-tablet {
+    padding: 200px 15px 0 15px;
+  }
+
+  .projects-title {
+    color: $primary;
+
+    h2 {
+      font-weight: 300;
+    }
+  }
+
+  .projects-filter {
+    width: 100%;
+  }
+
+  .projects-content {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 50px;
-    padding: 150px 15px 0 15px;
-
-
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 60px;
 
     @include mini-tablet {
-         padding: 200px 15px 0 15px;
-      }
-
-      .projects-title {
-        color: $primary;
-         
-        h2 {
-          font-weight: 300;
-        }
-      }
-
-      .projects-filter {
-        width: 100%;
-      }
-
-      .projects-content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-        gap: 60px;
-
-        @include mini-tablet {
-          max-width: 900px;
-          gap: 100px;
-        }
-      }
+      max-width: 900px;
+      gap: 100px;
+    }
+  }
 }

@@ -1,23 +1,7 @@
+@use "mixins" as *;
+@use "variables" as *;
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-$background: #000000;
-$primary: #06f9ec;
-$secondary: #179c95;
-$text: #cbfffc;
-$text-low: #05bbb2;
-
-$placeholder: #367e86;
-$shadow: #031e1e;
-
-$error: #ea796fd3;
-
-$transparent: #06f9ed5e;
-
-$borderradius: 5px;
-
-$fs-small: 16px;
-
-/* Shadow darker version #283030 */
 
 body {
   height: 100vh;
@@ -102,28 +86,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: $primary;
-}
-
-@mixin large-mobile {
-  @media (min-width: 450px) {
-    @content;
-  }
-}
-
-@mixin mini-tablet {
-  @media (min-width: 700px) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: 1100px) {
-    @content;
-  }
-}
-
-@mixin tablet {
-  @media (min-width: 900px) {
-    @content;
-  }
 }

@@ -1,66 +1,66 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  background-color: $background;
+  z-index: 99;
+  /* border-bottom: 2px solid $shadow; */
+
+  @include mini-tablet {
+    height: 120px;
+    max-width: 1000px;
+    padding: 0 29px;
+  }
+
+  @include desktop {
+    margin-bottom: 100px;
+  }
+
+  a {
+    height: 50px;
+    width: auto;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    height: 100px;
-    width: 100%;
-    padding: 0 20px;
-    position: fixed;
-    top: 0;
-    background-color: $background;
-    z-index: 99;
-    /* border-bottom: 2px solid $shadow; */
 
     @include mini-tablet {
-        height: 120px;
-        max-width: 1000px;
-        padding: 0 29px;
+      height: 60px;
     }
 
-    @include desktop {
-        margin-bottom: 100px;
+    .header-logo-name {
+      display: none;
     }
 
-    a {
-        height: 50px;
+    .header-logo {
+      display: block;
+      height: 100%;
+      width: auto;
+      filter: drop-shadow($primary 0 0 17px);
+    }
+
+    @include mini-tablet {
+      .header-logo-name {
+        display: block;
+        height: 100%;
         width: auto;
-        display: flex;
-        align-items: center;
+      }
 
-        @include mini-tablet {
-            height: 60px;
-        }
-
-        .header-logo-name {
-            display: none;
-        }
-
-        .header-logo {
-            display: block;
-            height: 100%;
-            width: auto;
-            filter: drop-shadow($primary 0 0 17px);
-        }
-
-        @include mini-tablet {
-            .header-logo-name {
-                display: block;
-                height: 100%;
-                width: auto;
-            }
-
-            .header-logo {
-                display: none;
-            }
-        }
+      .header-logo {
+        display: none;
+      }
     }
+  }
 
-    span {
-        color: $primary;
-        z-index: 25;
-        cursor: pointer;
-    }
-
+  span {
+    color: $primary;
+    z-index: 25;
+    cursor: pointer;
+  }
 }

@@ -1,74 +1,74 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .hero {
-    color: $primary;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  color: $primary;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 
+  @include tablet {
+    min-height: 100vh;
+  }
+
+  .hero-nav {
+    display: flex;
+    margin-top: 100px;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
 
     @include tablet {
-        min-height: 100vh;
+      justify-content: center;
+      margin-top: 0;
     }
 
-    .hero-nav {
+    .logo {
+      width: 165px;
+      height: 165px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      @include tablet {
+        width: 200px;
+        height: 200px;
+      }
+    }
+
+    .navbar {
+      text-align: center;
+
+      ul {
+        list-style-type: none;
+        padding: 0;
         display: flex;
-        margin-top: 100px;
-        align-items: center;
         flex-direction: column;
-        gap: 50px;
+        gap: 10px;
 
-        @include tablet {
-            justify-content: center;
-            margin-top: 0;
-        }
+        li {
+          font-size: 22px;
+          font-weight: 200;
+          cursor: pointer;
+          padding: 5px;
+          letter-spacing: 0.5px;
 
-        .logo {
-            width: 165px;
-            height: 165px;
+          @include desktop {
+            transition: all 300ms ease;
+            font-size: 25px;
 
-            img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
+            &:hover {
+              transform: scale(1.1);
+              transition: all 300ms ease;
+              filter: drop-shadow($primary 0 0 15px);
             }
-
-            @include tablet {
-                width: 200px;
-                height: 200px;
-            }
+          }
         }
-
-        .navbar {
-            text-align: center;
-
-            ul {
-                list-style-type: none;
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-
-                li {
-                    font-size: 22px;
-                    font-weight: 200;
-                    cursor: pointer;
-                    padding: 5px;
-                    letter-spacing: 0.5px;
-
-                    @include desktop {
-                        transition: all 300ms ease;
-                        font-size: 25px;
-
-                        &:hover {
-                            transform: scale(1.1);
-                            transition: all 300ms ease;
-                            filter: drop-shadow($primary 0 0 15px);
-                        }
-                    }
-                }
-            }
-        }
+      }
     }
+  }
 }

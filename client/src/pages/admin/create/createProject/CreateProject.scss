@@ -1,210 +1,198 @@
-@import "../../../../App.scss";
+@use "../../../../variables" as *;
+@use "../../../../mixins" as *;
 
 .create-project {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    h3 {
-        color: $primary;
-        font-weight: 500;
-    }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  h3 {
+    color: $primary;
+    font-weight: 500;
+  }
 
-    @include desktop {
-        max-width: 800px;
-       } 
+  @include desktop {
+    max-width: 800px;
+  }
 
+  .form-create {
+    width: 90%;
+    margin-bottom: 50px;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
 
-     .form-create {
+      .title-project {
+        border-radius: 6px;
+        padding: 10px;
+        outline: none;
+        border: none;
+        border: 1.5px solid $primary;
+        font-size: $fs-small;
+        color: $text;
+        background-color: transparent;
         width: 90%;
-        margin-bottom: 50px;
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            width: 100%;
 
-            .title-project {
-                border-radius: 6px;
-                padding: 10px;
-                outline: none;
-                border: none;
-                border: 1.5px solid $primary;
-                font-size: $fs-small;
-                color: $text;
-                background-color: transparent;
-                width: 90%;
-                
-                &::placeholder {
-                    color: $placeholder;
-                }
-
-                &:focus {
-                    box-shadow: 0 0 4px 1px $primary;
-                }
-            }
-
-            .link-project {
-                border-radius: 6px;
-                padding: 10px;
-                outline: none;
-                border: none;
-                border: 1.5px solid $primary;
-                font-size: $fs-small;
-                color: $text;
-                background-color: transparent;
-                width: 90%;
-                
-                &::placeholder {
-                    color: $placeholder;
-                }
-
-                &:focus {
-                    box-shadow: 0 0 4px 1px $primary;
-                }  
-            }
-
-            .file-input-label {
-                background-color: $background;
-                color: $primary;
-                border: 1.5px  solid $primary;
-                padding: 6px 18px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: $fs-small;
-                font-weight: 600;
-                transition: 300ms;
-
-                &:hover {
-                    box-shadow: 0 0 5px 1px $primary;
-                    transition: 300ms;
-                }
-            }
-
-            input[type="file"] {
-                display: none;
-            }
-
-            .file-info {
-                color: $primary;
-                font-size: 12px;
-            
-            }
-
-            .desc-project {
-                border-radius: 6px;
-                padding: 10px;
-                outline: none;
-                background-color: transparent;
-                border: 1.5px  solid $primary;
-                color: $text;
-                font-family: 'Poppins', sans-serif;
-                font-size: $fs-small;
-                width: 90%;
-                height: 150px;
-                resize: none;
-
-                &::placeholder {
-                    color: $placeholder;
-                }
-
-                &:focus {
-                    box-shadow: 0 0 4px 1px $primary;
-                }
-            }
-
-            .submit-button {
-                display: inline-block;
-                padding: 10px 30px;
-                background-color: $primary;
-                border: 0;
-                outline: none;
-                color: $background;
-                border-radius: 6px;
-                margin-top: 30px;
-                font-size: 17px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: 400ms;
-
-                &:hover {
-                    box-shadow: 0 0 4px 1px $primary;
-                    transition: 400ms;
-                }
-            }
- 
-            .react-select-container {
-                    width: auto;
-                    font-size: $fs-small;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    
-                    .react-select__placeholder {
-                        color: $primary;
-                    }
-                    
-                    .react-select__indicator-separator {
-                        background-color: $primary;
-                    }
-                    
-                    .react-select__control--is-focused {
-                         border: none;  
-                    }
-
-                    .css-t3ipsp-control{
-                        box-shadow: 0 0 5px 1px $primary;
-                    }
-                    .react-select__indicator {
-                        svg {
-                            fill: $primary;
-                        }
-                    }
-
-                    .react-select__control {
-                        background-color: transparent;
-                        border: 1.5px solid $primary;
-                        border-radius: 6px;
-                       
-                        .react-select__multi-value {
-                        background-color: $primary;
-
-
-                        svg path {
-                            fill: $background;
-                        }
-                        }
-  
-                    }
-                    
-                    .react-select__menu {
-                        background-color: $background;
-                        color: $primary;
-                        border-radius: 6px;
-                        border: 1px solid $text-low ;
-                        
-                        .react-select__menu-list {
-                            border-radius: 6px;
-                            
-                            
-                            
-                            .react-select__option {
-                                background-color: $background;
-                                color: $primary;
-                                border-radius: 6px;
-                                
-                            }  
-                        }
-                    }
-                        
-
-            
-            }
-
-
-
+        &::placeholder {
+          color: $placeholder;
         }
-    }    
+
+        &:focus {
+          box-shadow: 0 0 4px 1px $primary;
+        }
+      }
+
+      .link-project {
+        border-radius: 6px;
+        padding: 10px;
+        outline: none;
+        border: none;
+        border: 1.5px solid $primary;
+        font-size: $fs-small;
+        color: $text;
+        background-color: transparent;
+        width: 90%;
+
+        &::placeholder {
+          color: $placeholder;
+        }
+
+        &:focus {
+          box-shadow: 0 0 4px 1px $primary;
+        }
+      }
+
+      .file-input-label {
+        background-color: $background;
+        color: $primary;
+        border: 1.5px solid $primary;
+        padding: 6px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: $fs-small;
+        font-weight: 600;
+        transition: 300ms;
+
+        &:hover {
+          box-shadow: 0 0 5px 1px $primary;
+          transition: 300ms;
+        }
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .file-info {
+        color: $primary;
+        font-size: 12px;
+      }
+
+      .desc-project {
+        border-radius: 6px;
+        padding: 10px;
+        outline: none;
+        background-color: transparent;
+        border: 1.5px solid $primary;
+        color: $text;
+        font-family: "Poppins", sans-serif;
+        font-size: $fs-small;
+        width: 90%;
+        height: 150px;
+        resize: none;
+
+        &::placeholder {
+          color: $placeholder;
+        }
+
+        &:focus {
+          box-shadow: 0 0 4px 1px $primary;
+        }
+      }
+
+      .submit-button {
+        display: inline-block;
+        padding: 10px 30px;
+        background-color: $primary;
+        border: 0;
+        outline: none;
+        color: $background;
+        border-radius: 6px;
+        margin-top: 30px;
+        font-size: 17px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 400ms;
+
+        &:hover {
+          box-shadow: 0 0 4px 1px $primary;
+          transition: 400ms;
+        }
+      }
+
+      .react-select-container {
+        width: auto;
+        font-size: $fs-small;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .react-select__placeholder {
+          color: $primary;
+        }
+
+        .react-select__indicator-separator {
+          background-color: $primary;
+        }
+
+        .react-select__control--is-focused {
+          border: none;
+        }
+
+        .css-t3ipsp-control {
+          box-shadow: 0 0 5px 1px $primary;
+        }
+        .react-select__indicator {
+          svg {
+            fill: $primary;
+          }
+        }
+
+        .react-select__control {
+          background-color: transparent;
+          border: 1.5px solid $primary;
+          border-radius: 6px;
+
+          .react-select__multi-value {
+            background-color: $primary;
+
+            svg path {
+              fill: $background;
+            }
+          }
+        }
+
+        .react-select__menu {
+          background-color: $background;
+          color: $primary;
+          border-radius: 6px;
+          border: 1px solid $text-low;
+
+          .react-select__menu-list {
+            border-radius: 6px;
+
+            .react-select__option {
+              background-color: $background;
+              color: $primary;
+              border-radius: 6px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

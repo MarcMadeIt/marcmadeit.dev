@@ -1,116 +1,96 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .filter {
-    display: flex; 
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    -webkit-tap-highlight-color: transparent;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
 
-    @include mini-tablet {
-        gap: 30px;
+  @include mini-tablet {
+    gap: 30px;
+  }
+
+  .dropdown {
+    .fil-dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      color: $secondary;
+      cursor: pointer;
+      font-size: 17px;
+
+      &:focus {
+        color: $primary;
+        // border-bottom: 2px solid $secondary;
+      }
+
+      &:target {
+        color: $primary;
+      }
     }
 
+    .fil-dropdown-menu {
+      background-color: $background;
+      color: $primary;
+      list-style-type: none;
+      position: absolute;
+      z-index: 5;
+      padding: 10px;
+      border-radius: $borderradius;
 
-    .dropdown {
+      li {
+        padding: 5px;
 
+        .fil-dropdown-item {
+          font-size: 15px;
+          background-color: transparent;
+          color: $secondary;
+          border: none;
+          outline: none;
+          cursor: pointer;
 
-
-        .fil-dropdown-btn {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px;
-            border: none;
-            outline: none;
-            background-color: transparent;
-            color: $secondary;
-            cursor:  pointer;
-            font-size: 17px;
-
-            &:focus {
-                color: $primary;
-                // border-bottom: 2px solid $secondary;
-            }
-
-            &:target {
-                color: $primary;
-            }
-        }
-
-        .fil-dropdown-menu {
-            background-color: $background;
+          &:focus {
             color: $primary;
-            list-style-type: none;
-            position: absolute;
-            z-index: 5;
-            padding: 10px;
-            border-radius: $borderradius;
+            // border-bottom: 2px solid $secondary;
+          }
 
-
-            li {
-                padding: 5px;
-                
-
-                
-                .fil-dropdown-item {
-                    font-size: 15px;
-                    background-color: transparent;
-                    color: $secondary;
-                    border: none;
-                    outline: none;
-                    cursor: pointer;
-                    
-
-                    &:focus {
-                        color: $primary;
-                        // border-bottom: 2px solid $secondary;
-                    }
-
-                    &:target {
-                        color: $primary;
-                    }
-
-                    
-                }
-            }
-        }
-
-        
-
-    } 
-
-
-    .search-content {
-
-
-
-        label {
+          &:target {
             color: $primary;
-            display: flex;
-            gap: 5px;
-            align-items: center;
-            border: 1px solid $placeholder;
-            border-radius: $borderradius;
-            padding: 5px;
-            width: 220px;
-
-
-            input {
-                color: $primary;
-                background-color: transparent;
-                border: none;
-                outline: none;
-                font-size: 16px;
-                padding: 2px;
-
-
-                &::placeholder {
-                    color: $placeholder;
-                }
-            }
+          }
         }
+      }
     }
+  }
 
-    
+  .search-content {
+    label {
+      color: $primary;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      border: 1px solid $placeholder;
+      border-radius: $borderradius;
+      padding: 5px;
+      width: 220px;
+
+      input {
+        color: $primary;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        padding: 2px;
+
+        &::placeholder {
+          color: $placeholder;
+        }
+      }
+    }
+  }
 }

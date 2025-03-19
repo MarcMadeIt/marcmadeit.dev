@@ -1,152 +1,160 @@
-@import "../../App.scss";
+@use "../../variables" as *;
+@use "../../mixins" as *;
 
 .project {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 380px;
+  gap: 10px;
+  box-shadow: $shadow 0px 0px 10px 2px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.9s ease;
+  background: rgb(1, 13, 13);
+  background: linear-gradient(
+    0deg,
+    rgb(1, 12, 12) 30%,
+    rgba(2, 27, 27, 0.75) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
+  @include mini-tablet {
+    height: 400px;
+    background: linear-gradient(
+      0deg,
+      #010c0c 20%,
+      rgba(2, 20, 20, 0.8) 60%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+  }
+
+  .project-image {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: $borderradius;
+    }
+  }
+
+  .project-content {
     width: 100%;
-    height: 380px;
+    color: $text;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
     gap: 10px;
-    box-shadow: $shadow 0px 0px 10px 2px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.9s ease;
-    background: rgb(1, 13, 13);
-    background: linear-gradient(0deg, rgb(1, 12, 12) 30%, rgba(2, 27, 27, 0.75) 60%, rgba(0, 0, 0, 0) 100%);
+    padding: 15px;
+    z-index: 2;
 
-    @include mini-tablet {
-        height: 400px;
-        background: linear-gradient(0deg, #010c0c 20%, rgba(2, 20, 20, 0.8) 60%, rgba(0, 0, 0, 0.3) 100%);
+    .project-title {
+      font-size: 13px;
+
+      @include mini-tablet {
+        font-size: 17px;
+      }
     }
 
-    .project-image {
-        position: absolute;
-        z-index: -1;
-        top: 0;
+    .project-desc {
+      font-size: 11.5px;
+      letter-spacing: 0.5px;
+      width: 90%;
 
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: $borderradius;
-        }
+      @include mini-tablet {
+        width: 50%;
+        font-size: 13px;
+      }
     }
 
-    .project-content {
-        width: 100%;
-        color: $text;
+    .project-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+
+      .project-btn {
         display: flex;
-        flex-direction: column;
-        justify-content: end;
         gap: 10px;
-        padding: 15px;
-        z-index: 2;
 
-        .project-title {
-            font-size: 13px;
-
-            @include mini-tablet {
-                font-size: 17px;
-            }
+        @include large-mobile {
+          gap: 15px;
         }
 
-        .project-desc {
-            font-size: 11.5px;
-            letter-spacing: 0.5px;
-            width: 90%;
-
-            @include mini-tablet {
-                width: 50%;
-                font-size: 13px;
-            }
+        @include mini-tablet {
+          gap: 50px;
         }
-
-        .project-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-
-            .project-btn {
-                display: flex;
-                gap: 10px;
-
-
-                @include large-mobile {
-                    gap: 15px;
-                }
-
-                @include mini-tablet {
-                    gap: 50px;
-                }
-                button {
-                    font-size: 13px;
-                    color: $primary;
-                    letter-spacing: 0.5px;
-                    padding: 5px;
-                    font-weight: 600;
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    border: none;
-                    background-color: transparent;
-                    transition: 500ms;
-                    cursor: pointer;
-                    position: relative;
-                    overflow: hidden;
-                }
-                .project-link-btn {
-
-                    @include large-mobile {
-
-                        &::before {
-                            content: "";
-                            position: absolute;
-                            bottom: 0;
-                            left: -100%;
-                            width: 100%;
-                            height: 4px;
-                            background-color: $primary;
-                            transition: 500ms;
-                            border-radius: $borderradius;
-                        }
-                        
-                        &:hover::before {
-                            left: 0;
-                            transition: all 0.5s;
-                        }
-                    }
-
-                    @include mini-tablet {
-                        font-size: 15px;
-                    }
-                }
-                .project-github-btn {
-                    font-size: 15px;
-
-                    .source {
-                        display: none;
-
-                        @include large-mobile {
-                            display: block;
-                        }
-                    }
-                }
-            }
-
-            .project-tags {
-                display: flex;
-                gap: 10px;
-
-                span {
-                    padding: 2px 5px;
-                    border-radius: $borderradius;
-                    background-color: $background;
-                    color: $primary;
-                    border: 1px solid $primary;
-                    font-size: 11px;
-                    font-weight: 500;
-                }
-            }
+        button {
+          font-size: 13px;
+          color: $primary;
+          letter-spacing: 0.5px;
+          padding: 5px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          border: none;
+          background-color: transparent;
+          transition: 500ms;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
         }
+        .project-link-btn {
+          @include large-mobile {
+            &::before {
+              content: "";
+              position: absolute;
+              bottom: 0;
+              left: -100%;
+              width: 100%;
+              height: 4px;
+              background-color: $primary;
+              transition: 500ms;
+              border-radius: $borderradius;
+            }
+
+            &:hover::before {
+              left: 0;
+              transition: all 0.5s;
+            }
+          }
+
+          @include mini-tablet {
+            font-size: 15px;
+          }
+        }
+        .project-github-btn {
+          font-size: 15px;
+
+          .source {
+            display: none;
+
+            @include large-mobile {
+              display: block;
+            }
+          }
+        }
+      }
+
+      .project-tags {
+        display: flex;
+        gap: 10px;
+
+        span {
+          padding: 2px 5px;
+          border-radius: $borderradius;
+          background-color: $background;
+          color: $primary;
+          border: 1px solid $primary;
+          font-size: 11px;
+          font-weight: 500;
+        }
+      }
     }
+  }
 }
