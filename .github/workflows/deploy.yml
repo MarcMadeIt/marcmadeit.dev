@@ -13,14 +13,14 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: 🔄 Pull latest code from GitHub
         run: |
           echo "⚠️ Pulling latest changes..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com
-          git reset --hard HEAD || { echo "❌ Git reset failed"; exit 1; }
-          git pull origin main --force || { echo "❌ Git pull failed"; exit 1; }
+          git fetch --prune --unshallow --force || { echo "❌ Git fetch failed"; exit 1; }
+          git reset --hard origin/main || { echo "❌ Git reset failed"; exit 1; }
 
       - name: 📦 Install dependencies (Client)
         run: |
@@ -39,6 +39,12 @@ jobs:
           echo "⚡ Building Vite React app..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
           npm run build || { echo "❌ Frontend build failed"; exit 1; }
+
+      - name: 🔧 Build Backend (NestJS)
+        run: |
+          echo "⚡ Building NestJS API..."
+          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
+          npm run build || { echo "❌ Backend build failed"; exit 1; }
 
       - name: 🚀 Restart PM2 Processes
         run: |
