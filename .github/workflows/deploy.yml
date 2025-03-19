@@ -43,12 +43,6 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
           npm run build || { echo "❌ Frontend build failed"; exit 1; }
 
-      - name: 🔧 Build Backend (NestJS)
-        run: |
-          echo "⚡ Building NestJS API..."
-          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
-          npm run build || { echo "❌ Backend build failed"; exit 1; }
-
       - name: 🚀 Restart PM2 Processes
         run: |
           echo "🔄 Restarting PM2 process..."
@@ -61,16 +55,17 @@ jobs:
             echo "⚡ Process found! Reloading API..."
             pm2 restart mmi-api --update-env
           else
-            echo "⚠️ Process not found! Starting API..."
-            pm2 start api/dist/main.js --name "mmi-api"
+            echo "⚠️ Process not found! Starting API with npm start..."
+            cd /home/marcmadeit/htdocs/mmi.marccode.com/api
+            pm2 start npm --name "mmi-api" -- start
           fi
 
           if pm2 list | grep -q "mmi-client"; then
             echo "⚡ Process found! Reloading Frontend..."
             pm2 restart mmi-client --update-env
           else
-            echo "⚠️ Process not found! Starting Frontend..."
-            pm2 serve client/dist --name "mmi-client" --spa --port 3000
+            echo "⚠️ Process not found! Serving built frontend..."
+            pm2 serve /home/marcmadeit/htdocs/mmi.marccode.com/client/dist --name "mmi-client" --spa --port 3000
           fi
 
           pm2 save
