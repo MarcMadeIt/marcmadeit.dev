@@ -20,9 +20,6 @@ function Hero() {
             <Link className="link" to="/projects">
               <li>Projects</li>
             </Link>
-
-            <li>TEST</li>
-
             <Link className="link" to="/podcasts">
               <li>Podcasts</li>
             </Link>
