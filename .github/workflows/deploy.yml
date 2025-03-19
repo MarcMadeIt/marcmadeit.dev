@@ -25,17 +25,12 @@ jobs:
           git remote set-head origin -a || { echo "❌ HEAD update failed"; exit 1; }
           git reset --hard origin/main || { echo "❌ Reset failed"; exit 1; }
 
-      - name: 📦 Install dependencies (Client)
+      - name: 📦 Install dependencies
         run: |
-          echo "⚠️ Installing dependencies for Client..."
-          cd /home/marcmadeit/htdocs/mmi.marccode.com/client
-          npm ci || { echo "❌ npm install failed"; exit 1; }
-
-      - name: 📦 Install dependencies (API)
-        run: |
-          echo "⚠️ Installing dependencies for API..."
-          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
-          npm ci || { echo "❌ npm install failed"; exit 1; }
+          echo "⚠️ Installing dependencies..."
+          cd /home/marcmadeit/htdocs/mmi.marccode.com
+          npm ci --prefix client || { echo "❌ Client npm install failed"; exit 1; }
+          npm ci --prefix api || { echo "❌ API npm install failed"; exit 1; }
 
       - name: 🔧 Build Frontend (Vite React)
         run: |
@@ -43,7 +38,7 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
           npm run build || { echo "❌ Frontend build failed"; exit 1; }
 
-      - name: 🚀 Restart PM2 Processes
+      - name: 🚀 Restart PM2 Process (Single Process)
         run: |
           echo "🔄 Restarting PM2 process..."
           export NVM_DIR="$HOME/.nvm"
@@ -51,21 +46,12 @@ jobs:
 
           cd /home/marcmadeit/htdocs/mmi.marccode.com
 
-          if pm2 list | grep -q "mmi-api"; then
-            echo "⚡ Process found! Reloading API..."
-            pm2 restart mmi-api --update-env
+          if pm2 list | grep -q "mmi"; then
+            echo "⚡ Process found! Reloading..."
+            pm2 restart mmi --update-env
           else
-            echo "⚠️ Process not found! Starting API with npm start..."
-            cd /home/marcmadeit/htdocs/mmi.marccode.com/api
-            pm2 start npm --name "mmi-api" -- start
-          fi
-
-          if pm2 list | grep -q "mmi-client"; then
-            echo "⚡ Process found! Reloading Frontend..."
-            pm2 restart mmi-client --update-env
-          else
-            echo "⚠️ Process not found! Serving built frontend..."
-            pm2 serve /home/marcmadeit/htdocs/mmi.marccode.com/client/dist --name "mmi-client" --spa --port 3000
+            echo "⚠️ Process not found! Starting a new instance..."
+            pm2 start npm --name "mmi" --prefix api -- start
           fi
 
           pm2 save
