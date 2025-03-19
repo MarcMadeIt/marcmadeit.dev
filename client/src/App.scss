@@ -1,15 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 $background: #000000;
-$primary: #06F9EC;
+$primary: #06f9ec;
 $secondary: #179c95;
-$text: #CBFFFC;
-$text-low: #05BBB2;
+$text: #cbfffc;
+$text-low: #05bbb2;
 
-$placeholder: #367e86; 
+$placeholder: #367e86;
 $shadow: #031e1e;
 
 $error: #ea796fd3;
@@ -22,15 +19,14 @@ $fs-small: 16px;
 
 /* Shadow darker version #283030 */
 
-
 body {
-    height: 100vh;
-    font-family: 'poppins', sans-serif;
-    background-color: $background;
-    color: $primary;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background-color: $background;
+  color: $primary;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .btn {
@@ -47,47 +43,40 @@ body {
   font-size: 15px;
   font-weight: 700;
 
-
-    &:hover {
-        box-shadow: 0 0 7px 1px $primary;
-        transition: 400ms;
-      }
-
-
+  &:hover {
+    box-shadow: 0 0 7px 1px $primary;
+    transition: 400ms;
+  }
 }
 
 .btn-action {
+  display: inline-block;
+  padding: 10px 30px;
+  background-color: $primary;
+  color: $background;
+  border: 2px solid $primary;
+  border-radius: 6px;
+  outline: none;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: 400ms;
+  font-size: 15px;
+  font-weight: 700;
 
-    display: inline-block;
-    padding: 10px 30px;
-    background-color: $primary;
-    color: $background;
-    border: 2px solid $primary;
-    border-radius: 6px;
-    outline: none;
-    margin-top: 15px;
-    cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 7px 1px $primary;
     transition: 400ms;
-    font-size: 15px;
-    font-weight: 700;
-  
-  
-      &:hover {
-          box-shadow: 0 0 7px 1px $primary;
-          transition: 400ms;
-        }
+  }
 }
-
-
 
 .link {
-    text-decoration: none;
-    color: inherit;
-    padding: 0;
-    margin: 0;
+  text-decoration: none;
+  color: inherit;
+  padding: 0;
+  margin: 0;
 }
 
-.loading-container{
+.loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -99,46 +88,42 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 3px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
-    background: $background;
+  background: $background;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: $primary;
-    border-radius: 10px;
+  background: $primary;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: $primary;
+  background: $primary;
 }
-
 
 @mixin large-mobile {
   @media (min-width: 450px) {
     @content;
   }
-} 
+}
 
 @mixin mini-tablet {
   @media (min-width: 700px) {
     @content;
-
   }
-} 
+}
 
 @mixin desktop {
   @media (min-width: 1100px) {
     @content;
-
   }
 }
 
 @mixin tablet {
   @media (min-width: 900px) {
     @content;
-
   }
 }
