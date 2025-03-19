@@ -43,7 +43,7 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/client
           npm run build || { echo "❌ Frontend build failed"; exit 1; }
 
-      - name: 🚀 Restart PM2 Processes
+      - name: 🚀 Restart PM2 Process (Single Process)
         run: |
           echo "🔄 Restarting PM2 process..."
           export NVM_DIR="$HOME/.nvm"
@@ -51,21 +51,14 @@ jobs:
 
           cd /home/marcmadeit/htdocs/mmi.marccode.com
 
-          if pm2 list | grep -q "mmi-api"; then
-            echo "⚡ Process found! Reloading API..."
-            pm2 restart mmi-api --update-env
+          # If process exists, restart it; otherwise, start it
+          if pm2 list | grep -q "mmi"; then
+            echo "⚡ Process found! Reloading..."
+            pm2 restart mmi --update-env
           else
-            echo "⚠️ Process not found! Starting API with npm start..."
+            echo "⚠️ Process not found! Starting a new instance..."
             cd /home/marcmadeit/htdocs/mmi.marccode.com/api
-            pm2 start npm --name "mmi-api" -- start
-          fi
-
-          if pm2 list | grep -q "mmi-client"; then
-            echo "⚡ Process found! Reloading Frontend..."
-            pm2 restart mmi-client --update-env
-          else
-            echo "⚠️ Process not found! Serving built frontend..."
-            pm2 serve /home/marcmadeit/htdocs/mmi.marccode.com/client/dist --name "mmi-client" --spa --port 3000
+            pm2 start npm --name "mmi" -- start
           fi
 
           pm2 save
