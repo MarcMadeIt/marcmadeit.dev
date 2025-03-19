@@ -19,8 +19,11 @@ jobs:
         run: |
           echo "⚠️ Pulling latest changes..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com
-          git reset --hard HEAD  # Sikrer ren tilstand
-          git pull origin main --force || { echo "❌ Git pull failed"; exit 1; }
+          rm -rf .git/refs/remotes/origin/ || echo "No old references to delete"
+          git remote prune origin || { echo "❌ Prune failed"; exit 1; }
+          git fetch --prune --force || { echo "❌ Fetch failed"; exit 1; }
+          git remote set-head origin -a || { echo "❌ HEAD update failed"; exit 1; }
+          git reset --hard origin/main || { echo "❌ Reset failed"; exit 1; }
 
       - name: 📦 Install dependencies (Client)
         run: |
