@@ -3,7 +3,7 @@ name: Deploy Vite React & NestJS to VPS
 on:
   push:
     branches:
-      - main # Adjust if using a different branch
+      - main
 
 jobs:
   deploy:
@@ -22,10 +22,16 @@ jobs:
           git reset --hard HEAD || { echo "❌ Git reset failed"; exit 1; }
           git pull origin main --force || { echo "❌ Git pull failed"; exit 1; }
 
-      - name: 📦 Install dependencies (Optimized)
+      - name: 📦 Install dependencies (Client)
         run: |
-          echo "⚠️ Installing dependencies..."
-          cd /home/marcmadeit/htdocs/mmi.marccode.com
+          echo "⚠️ Installing dependencies for Client..."
+          cd /home/marcmadeit/htdocs/mmi.marccode.com/client
+          npm ci || { echo "❌ npm install failed"; exit 1; }
+
+      - name: 📦 Install dependencies (API)
+        run: |
+          echo "⚠️ Installing dependencies for API..."
+          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
           npm ci || { echo "❌ npm install failed"; exit 1; }
 
       - name: 🔧 Build Frontend (Vite React)
@@ -40,7 +46,7 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/api
           npm run build || { echo "❌ Backend build failed"; exit 1; }
 
-      - name: 🚀 Restart PM2 Processes (Frontend & Backend)
+      - name: 🚀 Restart PM2 Processes
         run: |
           echo "🔄 Restarting PM2 processes..."
           export NVM_DIR="$HOME/.nvm"
@@ -48,21 +54,15 @@ jobs:
 
           cd /home/marcmadeit/htdocs/mmi.marccode.com
 
-          # Restart or Start NestJS API
           if pm2 list | grep -q "mmi-api"; then
-            echo "⚡ API Process found! Reloading..."
             pm2 restart mmi-api --update-env || { echo "❌ API restart failed"; exit 1; }
           else
-            echo "⚠️ API Process not found! Starting a new instance..."
-            pm2 start dist/main.js --name "mmi-api" || { echo "❌ API start failed"; exit 1; }
+            pm2 start api/dist/main.js --name "mmi-api" || { echo "❌ API start failed"; exit 1; }
           fi
 
-          # Serve Frontend with PM2 (Optional: Use Nginx instead)
           if pm2 list | grep -q "mmi-client"; then
-            echo "⚡ Frontend Process found! Reloading..."
             pm2 restart mmi-client --update-env || { echo "❌ Frontend restart failed"; exit 1; }
           else
-            echo "⚠️ Frontend Process not found! Starting a new instance..."
             pm2 serve client/dist --name "mmi-client" --spa --port 3000 || { echo "❌ Frontend start failed"; exit 1; }
           fi
 
