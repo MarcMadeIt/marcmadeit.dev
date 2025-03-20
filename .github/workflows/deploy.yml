@@ -15,11 +15,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: 🔄 Pull latest code from GitHub
+      - name: 🔄 Pull latest code from GitHub (Simplified)
         run: |
           echo "⚠️ Pulling latest changes..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com
-          git reset --hard HEAD || { echo "❌ Git reset failed"; exit 1; }
           git pull origin main --force || { echo "❌ Git pull failed"; exit 1; }
 
       - name: 📦 Install dependencies (Client)
