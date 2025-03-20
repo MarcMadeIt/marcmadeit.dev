@@ -10,7 +10,6 @@ import {
 } from "react-icons/io5";
 import AccountSet from "./accountSet/AccountSet.jsx";
 import ViewBlogs from "./viewBlogs/ViewBlogs.jsx";
-import ViewLibrary from "./viewLibrary/ViewLibrary.jsx";
 import ViewProjects from "./viewProjects/ViewProjects.jsx";
 import ViewPodcasts from "./viewPodcasts/ViewPodcasts.jsx";
 import { FaPodcast } from "react-icons/fa6";
@@ -106,7 +105,6 @@ function Settings() {
           {currentLayout === "viewBlogs" && <ViewBlogs />}
           {currentLayout === "viewProjects" && <ViewProjects />}
           {currentLayout === "viewPodcasts" && <ViewPodcasts />}
-          {currentLayout === "viewLibrary" && <ViewLibrary />}
         </div>
       </div>
     </>
