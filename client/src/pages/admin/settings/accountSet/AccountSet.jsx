@@ -4,7 +4,7 @@ import { IoLockClosed } from "react-icons/io5";
 import axios from "axios";
 import ChangePassword from "../../../../function/changePassword/ChangePassword.jsx";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function AccountSet() {
   const [userId, setUserId] = useState(null); // <-- store _id from /me

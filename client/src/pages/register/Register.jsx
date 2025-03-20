@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Register.scss";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function Register() {
   const [username, setUsername] = useState("");

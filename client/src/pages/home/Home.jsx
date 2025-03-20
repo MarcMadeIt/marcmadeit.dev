@@ -13,7 +13,7 @@ import axios from "axios";
 import { AuthContext } from "../../context/AuthContext.jsx";
 import { FaHandshake } from "react-icons/fa6";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function Home() {
   const [loading, setLoading] = useState(false);

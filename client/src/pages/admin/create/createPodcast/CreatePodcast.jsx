@@ -21,7 +21,7 @@ function CreatePodcast() {
   const [audioFile, setAudioFile] = useState(null);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
   const validateFile = (file, types) => {
     const validTypes = types;

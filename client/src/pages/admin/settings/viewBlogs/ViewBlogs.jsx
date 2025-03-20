@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import ImageBlog from "../../../../components/image/Image.jsx";
 import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function truncateText(text, limit) {
   const words = text && typeof text === "string" ? text.split(" ") : [];

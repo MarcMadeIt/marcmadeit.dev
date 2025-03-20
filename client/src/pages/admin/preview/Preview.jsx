@@ -3,7 +3,7 @@ import "./Preview.scss";
 import { FaPodcast } from "react-icons/fa6";
 import { IoDocumentAttachOutline, IoEaselOutline } from "react-icons/io5";
 import axios from "axios";
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function Preview() {
   const [blogCount, setBlogCount] = useState(0);

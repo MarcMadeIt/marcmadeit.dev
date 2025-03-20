@@ -8,7 +8,7 @@ import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
 import AudioPlayer from "../../function/audioplayer/AudioPlayer.jsx";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 function Podcasts() {
   const [podcasts, setPodcasts] = useState([]);

@@ -38,7 +38,7 @@ function CreateProject() {
   const [file, setFile] = useState([]);
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_BASE_URL;
+  const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
   const createNewProject = async (ev) => {
     ev.preventDefault();

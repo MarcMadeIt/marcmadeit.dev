@@ -19,11 +19,8 @@ jobs:
         run: |
           echo "⚠️ Pulling latest changes..."
           cd /home/marcmadeit/htdocs/mmi.marccode.com
-          rm -rf .git/refs/remotes/origin/ || echo "No old references to delete"
-          git remote prune origin || { echo "❌ Prune failed"; exit 1; }
-          git fetch --prune --force || { echo "❌ Fetch failed"; exit 1; }
-          git remote set-head origin -a || { echo "❌ HEAD update failed"; exit 1; }
-          git reset --hard origin/main || { echo "❌ Reset failed"; exit 1; }
+          git reset --hard HEAD || { echo "❌ Git reset failed"; exit 1; }
+          git pull origin main --force || { echo "❌ Git pull failed"; exit 1; }
 
       - name: 📦 Install dependencies (Client)
         run: |
@@ -49,20 +46,20 @@ jobs:
           cd /home/marcmadeit/htdocs/mmi.marccode.com/api
           npm run build || { echo "❌ Backend build failed"; exit 1; }
 
-      - name: 🚀 Restart PM2 Process (Single Process)
+      - name: 🚀 Restart PM2 Process (Only API)
         run: |
           echo "🔄 Restarting PM2 process..."
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # Loads NVM correctly
 
-          cd /home/marcmadeit/htdocs/mmi.marccode.com
+          cd /home/marcmadeit/htdocs/mmi.marccode.com/api
 
           if pm2 list | grep -q "mmi"; then
-            echo "⚡ Process found! Reloading..."
+            echo "⚡ API process found! Reloading..."
             pm2 restart mmi --update-env
           else
-            echo "⚠️ Process not found! Starting a new instance..."
-            pm2 start npm --name "mmi" --prefix api -- start
+            echo "⚠️ API process not found! Starting a new instance..."
+            pm2 start npm --name "mmi" -- start
           fi
 
           pm2 save

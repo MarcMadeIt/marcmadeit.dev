@@ -16,7 +16,7 @@ import ViewPodcasts from "./viewPodcasts/ViewPodcasts.jsx";
 import { FaPodcast } from "react-icons/fa6";
 import { AuthContext } from "../../../context/AuthContext.jsx";
 
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 function Settings() {
   const { user, handleLogout } = useContext(AuthContext);
 
