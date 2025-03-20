@@ -25,7 +25,6 @@ function EditProject() {
     { value: "Azure", label: "Azure" },
     { value: "Supabase", label: "Supabase" },
     { value: "Tailwind", label: "Tailwind" },
-    { value: "MySQL", label: "MySQL" },
     { value: "Prisma", label: "Prisma" },
     { value: "GraphQL", label: "GraphQL" },
     { value: "PostgreSQL", label: "PostgreSQL" },

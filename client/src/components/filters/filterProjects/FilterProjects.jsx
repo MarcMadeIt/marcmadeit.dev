@@ -3,24 +3,23 @@ import "../Filters.scss";
 import { FaSearch } from "react-icons/fa";
 import { FaArrowDownWideShort } from "react-icons/fa6";
 
-const options = [
-  { value: "HTML", label: "HTML" },
-  { value: "CSS", label: "CSS" },
-  { value: "JavaScript", label: "JavaScript" },
-  { value: "TypeScript", label: "TypeScript" },
-  { value: "ReactJS", label: "ReactJS" },
-  { value: "NodeJS", label: "NodeJS" },
-  { value: "NextJS", label: "NextJS" },
-  { value: "ExpressJS", label: "ExpressJS" },
-  { value: "MongoDB", label: "MongoDB" },
-  { value: "AWS S3", label: "AWS S3" },
-  { value: "MySQL", label: "MySQL" },
-  { value: "PostgreSQL", label: "PostgreSQL" },
-];
-
 function FilterProjects({ onSearch, onFilter }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("all");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const filterOptions = [
+    { value: "TypeScript", label: "TypeScript" },
+    { value: "NextJS", label: "NextJS" },
+    { value: "ReactJS", label: "ReactJS" },
+    { value: "NestJS", label: "NestJS" },
+    { value: "MongoDB", label: "MongoDB" },
+    { value: "Supabase", label: "Supabase" },
+    { value: "Azure", label: "Azure" },
+    { value: "AWS S3", label: "AWS S3" },
+    { value: "Prisma", label: "Prisma" },
+    { value: "GraphQL", label: "GraphQL" },
+  ];
 
   const handleSearch = (event) => {
     const value = event.target.value;
@@ -29,6 +28,7 @@ function FilterProjects({ onSearch, onFilter }) {
   };
 
   const handleFilterClick = (filter) => {
+    setFilter(filter);
     onFilter(filter);
     setIsDropdownVisible(false);
   };
@@ -69,7 +69,7 @@ function FilterProjects({ onSearch, onFilter }) {
                 Show all
               </button>
             </li>
-            {options.map((option) => (
+            {filterOptions.map((option) => (
               <li key={option.value}>
                 <button
                   className="fil-dropdown-item"

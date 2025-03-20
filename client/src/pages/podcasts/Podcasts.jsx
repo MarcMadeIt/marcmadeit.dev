@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Podcasts.scss";
 import Header from "../../components/header/Header.jsx";
 import Footer from "../../components/footer/Footer.jsx";
-import Filter from "../../components/filter/Filter.jsx";
+import FilterPodcasts from "../../components/filters/filterPodcasts/FilterPodcasts";
 import Podcast from "../../components/podcast/Podcast.jsx";
 import Pagination from "../../function/pagination/Pagination.jsx";
 import { RingLoader } from "react-spinners";
@@ -15,7 +15,7 @@ function Podcasts() {
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(6);
+  const [postsPerPage] = useState(4);
   const [totalCount, setTotalCount] = useState(0);
   const [currentPodcast, setCurrentPodcast] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -94,7 +94,7 @@ function Podcasts() {
           <h2>My Podcasts</h2>
         </div>
         <div className="podcasts-filter">
-          <Filter onSearch={handleSearch} onFilter={handleFilter} />
+          <FilterPodcasts onSearch={handleSearch} onFilter={handleFilter} />
         </div>
         <div className="podcasts-content">
           {filteredPodcasts.length === 0 && !loading ? (
