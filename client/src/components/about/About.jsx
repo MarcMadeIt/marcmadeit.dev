@@ -19,14 +19,14 @@ function About() {
         <div className="about-content">
           <div className="about-details">
             <h2>
-              Marc Møller <hr /> 31 years <hr /> Denmark{" "}
+              Marc Møller <hr /> 32 years <hr /> Denmark
               <img src={FlagImage} alt="" />
             </h2>
           </div>
           <div className="prof">
-            <h2 className="prof-title">Fullstack Developer</h2>
+            <h2 className="prof-title">React Developer</h2>
 
-            <div className="skills">
+            {/* <div className="skills">
               <div className="skills-item">#React</div>
               <div className="skills-item">#Next</div>
               <div className="skills-item">#Node</div>
@@ -40,7 +40,7 @@ function About() {
               <div className="skills-item">#CSS</div>{" "}
               <div className="skills-item">#SASS</div>
               <div className="skills-item">#Tailwind</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
