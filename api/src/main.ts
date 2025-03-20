@@ -17,16 +17,19 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 
-  // Serve React frontend fra /client/dist
   app.useStaticAssets(join(__dirname, "..", "..", "client", "dist"));
   app.setBaseViewsDir(join(__dirname, "..", "..", "client", "dist"));
+
   app.use((req, res, next) => {
+    if (req.url.startsWith("/api/")) {
+      return next();
+    }
     res.sendFile(join(__dirname, "..", "..", "client", "dist", "index.html"));
   });
 
   const port = process.env.PORT || 8000;
   await app.listen(port);
-  console.log(`Application running on http://localhost:${port}`);
+  console.log(`✅ Application running on http://localhost:${port}`);
 }
 
 bootstrap();
