@@ -146,11 +146,11 @@ export class ProjectsService {
 
   async findLimit(
     tags?: string[],
-    limit = 4,
+    limit = 3,
     page = 1
   ): Promise<{ projects: Project[]; totalCount: number }> {
-    const parsedLimit = isNaN(Number(limit)) ? 4 : Number(limit); // Validate limit
-    const parsedPage = isNaN(Number(page)) ? 1 : Number(page); // Validate page
+    const parsedLimit = isNaN(Number(limit)) ? 3 : Number(limit);
+    const parsedPage = isNaN(Number(page)) ? 1 : Number(page);
     const skip = (parsedPage - 1) * parsedLimit;
 
     const query = tags && tags.length > 0 ? { tags: { $in: tags } } : {};

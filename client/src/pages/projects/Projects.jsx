@@ -56,6 +56,7 @@ function Projects() {
 
   const handleFilter = (filter) => {
     setFilter(filter);
+    setCurrentPage(1); // Reset to page 1 when a filter is applied
   };
 
   const filterAndSearchProjects = () => {
@@ -66,14 +67,15 @@ function Projects() {
       filtered = filtered.filter((project) => project.tags.includes(filter));
     }
 
-    // Apply search (include tags in search)
+    // Apply search (include tags, title, and desc in search)
     if (searchTerm) {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (project) =>
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+          project.desc.toLowerCase().includes(lowerCaseSearchTerm) ||
           project.tags.some((tag) =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
+            tag.toLowerCase().includes(lowerCaseSearchTerm)
           )
       );
     }

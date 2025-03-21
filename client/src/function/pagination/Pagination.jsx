@@ -12,6 +12,10 @@ function Pagination({
     (_, index) => index + 1
   );
 
+  if (totalPages <= 1) {
+    return null;
+  }
+
   return (
     <div className="pagination">
       {paginationNumbers.map((pageNumber) => (

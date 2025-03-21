@@ -16,7 +16,7 @@ export function AuthContextProvider({ children }) {
       } catch (error) {
         if (error.message === "Unauthorized: User is not logged in.") {
           try {
-            await refreshToken(); // Attempt to refresh the token
+            await refreshToken();
             const currentUser = await getCurrentUser();
             setUser(currentUser);
           } catch (refreshError) {

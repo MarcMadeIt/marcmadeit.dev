@@ -21,17 +21,12 @@
       border: none;
       outline: none;
       background-color: transparent;
-      color: $secondary;
+      color: $primary;
       cursor: pointer;
       font-size: 17px;
 
-      &:focus {
-        color: $primary;
-        // border-bottom: 2px solid $secondary;
-      }
-
-      &:target {
-        color: $primary;
+      &:active {
+        color: $placeholder;
       }
     }
 
@@ -74,10 +69,13 @@
       display: flex;
       gap: 5px;
       align-items: center;
-      border: 1px solid $placeholder;
       border-radius: $borderradius;
       padding: 5px;
       width: 220px;
+
+      &:focus-within {
+        outline: 1px solid $placeholder;
+      }
 
       input {
         color: $primary;

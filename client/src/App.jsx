@@ -7,7 +7,6 @@ import { AuthContext } from "./context/AuthContext.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import Blogs from "./pages/blogs/Blogs.jsx";
 import BlogPage from "./pages/blogs/blogPage/BlogPage.jsx";
-import Library from "./pages/library/Library.jsx";
 import Projects from "./pages/projects/Projects.jsx";
 import Podcasts from "./pages/podcasts/Podcasts.jsx";
 import EditProject from "./pages/admin/edit/editProject/EditProject.jsx";
@@ -52,7 +51,6 @@ function App() {
 
       {/* Public Route */}
       <Route path="/blogs" element={<Blogs />} />
-      <Route path="/library" element={<Library />} />
       <Route path="/projects" element={<Projects />} />
       <Route path="/podcasts" element={<Podcasts />} />
 
