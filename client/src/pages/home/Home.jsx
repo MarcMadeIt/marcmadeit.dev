@@ -100,15 +100,11 @@ function Home() {
               />
             ))}
         </div>
-
-        {/* View All Posts */}
         <div className="home-blogs-button" id="contact">
           <Link to="/blogs">
             <button className="btn">View All Posts</button>
           </Link>
         </div>
-
-        {/* Contact Section */}
         <div className="section home-contact">
           <FaHandshake className="icon-contact" />
           <div className="home-contact-content">
