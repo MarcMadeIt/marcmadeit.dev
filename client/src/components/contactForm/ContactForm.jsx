@@ -81,15 +81,12 @@ function ContactForm() {
   const formRef = useRef();
 
   const sendMail = (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-
-    // Your existing code for form validation and sending mail
+    e.preventDefault();
     var isNameValid = validateName();
     var isPhoneValid = validatePhone();
     var isEmailValid = validateEmail();
 
     if (isNameValid && isPhoneValid && isEmailValid) {
-      // Use state variables directly
       var params = {
         from_name: name,
         email: email,
