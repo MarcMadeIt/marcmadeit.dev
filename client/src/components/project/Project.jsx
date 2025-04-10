@@ -19,7 +19,6 @@ function Project({ _id, title, desc, tags = [], imageinfo, link, github }) {
 
   const renderTags = () => {
     if (isMobile) {
-      // Render only the first two tags in mobile view
       return tags
         .slice(0, 2)
         .map((tag, index) => (
