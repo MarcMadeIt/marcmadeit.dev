@@ -53,12 +53,12 @@ jobs:
 
           cd /home/marcmadeit/htdocs/mmi.marccode.com/api
 
-          if pm2 list | grep -q "mmi"; then
+          if pm2 list | grep -q "mmi-app"; then
             echo "⚡ API process found! Reloading..."
-            pm2 restart mmi --update-env
+            pm2 restart mmi-app --update-env
           else
             echo "⚠️ API process not found! Starting a new instance..."
-            pm2 start npm --name "mmi" -- start
+            pm2 start npm --name "mmi-app" -- start
           fi
 
           pm2 save
