@@ -109,7 +109,7 @@ function Home() {
           <FaHandshake className="icon-contact" />
           <div className="home-contact-content">
             <h2>Make some work together?</h2>
-            <h3>Let me contact you</h3>
+            <h3>Get in touch</h3>
           </div>
           <ContactPop />
         </div>
